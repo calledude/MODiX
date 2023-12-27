@@ -1,17 +1,13 @@
-﻿#nullable enable
-
+﻿
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-using Microsoft.Extensions.DependencyInjection;
-
 using Discord;
 using Discord.WebSocket;
-
+using Microsoft.Extensions.DependencyInjection;
 using Modix.Data.Models.Core;
 using Modix.Data.Repositories;
 using Modix.Services.Utilities;
@@ -179,7 +175,6 @@ namespace Modix.Services.Core
         /// <returns>A <see cref="Task"/> that will complete when the operation has completed.</returns>
         Task OnAuthenticatedAsync(ISelfUser self);
 
-#nullable enable
         /// <summary>
         /// Requires that there be an authenticated guild for the current request.
         /// </summary>
@@ -191,7 +186,6 @@ namespace Modix.Services.Core
         /// </summary>
         [MemberNotNull(nameof(CurrentUserId))]
         void RequireAuthenticatedUser();
-#nullable restore
 
         /// <summary>
         /// Requires that the given set of claims be present, for the current request.
@@ -453,7 +447,7 @@ namespace Modix.Services.Core
                 Types = new[] { ClaimMappingType.Granted },
                 GuildId = guildRole.Guild.Id
             }))
-            .Select(d=>d.Claim)
+            .Select(d => d.Claim)
             .ToList();
         }
 
@@ -486,7 +480,6 @@ namespace Modix.Services.Core
             return Task.CompletedTask;
         }
 
-#nullable enable
         /// <inheritdoc />
         [MemberNotNull(nameof(CurrentGuildId))]
         public void RequireAuthenticatedGuild()
@@ -504,7 +497,6 @@ namespace Modix.Services.Core
                 // TODO: Booooo for exception-based flow control
                 throw new InvalidOperationException("The current operation requires an authenticated user.");
         }
-#nullable restore
 
         /// <inheritdoc />
         public void RequireClaims(params AuthorizationClaim[] claims)

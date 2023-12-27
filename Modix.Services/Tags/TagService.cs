@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Modix.Data;
 using Modix.Data.ExpandableQueries;
 using Modix.Data.Models.Core;
@@ -71,7 +70,6 @@ namespace Modix.Services.Tags
             _tagCache = tagCache;
         }
 
-#nullable enable
         public async Task CreateTagAsync(ulong guildId, ulong creatorId, string name, string content)
         {
             _authorizationService.RequireClaims(AuthorizationClaim.CreateTag);
@@ -122,7 +120,6 @@ namespace Modix.Services.Tags
 
             _tagCache.Add(guildId, name);
         }
-#nullable restore
 
         public async Task UseTagAsync(ulong guildId, ulong channelId, string name, IMessage invokingMessage)
         {
@@ -378,7 +375,6 @@ namespace Modix.Services.Tags
             return currentUserMaxRank >= ownerRole.Position;
         }
 
-#nullable enable
         private async Task<IRole?> GetDefaultOwnerRoleAsync(IGuildUser user)
         {
             var lowestRankRole = (await _designatedRoleMappingRepository.SearchBriefsAsync(new()
@@ -396,7 +392,6 @@ namespace Modix.Services.Tags
 
             return user.Guild.Roles.FirstOrDefault(x => x.Id == lowestRankRole.Role.Id);
         }
-#nullable restore
 
         private async Task<bool> CanTriviallyMaintainTagAsync(IGuildUser currentUser)
         {

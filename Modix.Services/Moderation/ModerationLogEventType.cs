@@ -1,5 +1,4 @@
-﻿#nullable enable
-
+﻿
 namespace Modix.Services.Moderation
 {
     public enum ModerationLogEventType

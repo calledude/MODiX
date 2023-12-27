@@ -1,5 +1,4 @@
-﻿#nullable enable
-
+﻿
 using Discord.WebSocket;
 
 namespace Discord

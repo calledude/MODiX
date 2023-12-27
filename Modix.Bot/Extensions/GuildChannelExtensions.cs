@@ -1,5 +1,4 @@
-﻿#nullable enable
-
+﻿
 using Discord;
 
 namespace Modix.Bot.Extensions

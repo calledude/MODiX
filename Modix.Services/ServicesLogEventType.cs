@@ -1,5 +1,4 @@
-﻿#nullable enable
-
+﻿
 using Modix.Common;
 
 namespace Modix.Services

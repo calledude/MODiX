@@ -38,7 +38,6 @@ struct CustomHandler
 
             var expected =
 @"```cs
-#nullable enable
 var c = new C();
 c.M(c = null, $"");
 c.ToString();

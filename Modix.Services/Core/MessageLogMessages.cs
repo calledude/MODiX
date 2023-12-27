@@ -1,5 +1,4 @@
-﻿#nullable enable
-
+﻿
 using System;
 
 using Microsoft.Extensions.Logging;

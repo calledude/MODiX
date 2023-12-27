@@ -1,5 +1,4 @@
-﻿#nullable enable
-
+﻿
 namespace Modix.Common
 {
     public enum ApplicationLogEventType

@@ -160,7 +160,6 @@ namespace Modix.Services.Utilities
         private static readonly Regex _containsSpoilerRegex
             = new(@"\|\|.+\|\|", RegexOptions.Compiled);
 
-#nullable enable
         public static string FormatCodeForEmbed(string language, string sourceCode, int maxLength)
         {
             if (maxLength <= 0)
