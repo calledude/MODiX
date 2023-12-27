@@ -170,9 +170,9 @@ namespace Modix.Data.Test.Repositories
 
             using (var existingTransaction = await uut.BeginTransactionAsync(database))
             {
-                #pragma warning disable CS4014
+#pragma warning disable CS4014
                 uut.BeginTransactionAsync(database, cancellationTokenSource.Token);
-                #pragma warning restore CS4014
+#pragma warning restore CS4014
 
                 cancellationTokenSource.Cancel();
             }

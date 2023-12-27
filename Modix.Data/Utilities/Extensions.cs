@@ -14,7 +14,8 @@ namespace Modix.Data.Utilities
     {
         public static string Truncate(this string value, int maxLength, int maxLines, string suffix = "…")
         {
-            if (string.IsNullOrEmpty(value)) return value;
+            if (string.IsNullOrEmpty(value))
+                return value;
 
             if (value.Length <= maxLength)
             {
@@ -22,7 +23,7 @@ namespace Modix.Data.Utilities
             }
 
             var lines = value.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                
+
             return lines.Length > maxLines ? string.Join("\n", lines.Take(maxLines)) : $"{value.Substring(0, maxLength).Trim()}{suffix}";
         }
 

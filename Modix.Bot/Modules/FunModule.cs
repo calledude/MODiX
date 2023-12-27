@@ -18,7 +18,7 @@ namespace Modix.Modules
     [HelpTags("jumbo")]
     public class FunModule : InteractionModuleBase
     {
-        private static readonly string[] _owoFaces = {"(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"};
+        private static readonly string[] _owoFaces = { "(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^" };
 
         private const ushort MinimumAvatarSize = 16;
         private const ushort MaximumAvatarSize = 4096;

@@ -102,7 +102,7 @@ namespace Modix.Data.Utilities
             if (criteria == null)
                 return source;
 
-            foreach(var item in criteria)
+            foreach (var item in criteria)
             {
                 if (!sortablePropertyMap.TryGetValue(item.PropertyName, out var selector))
                     throw new InvalidOperationException($"{item.PropertyName} is not a sortable property of {typeof(T).FullName}");
@@ -130,7 +130,7 @@ namespace Modix.Data.Utilities
                 if (criteria.FirstRecordIndex.HasValue && (criteria.FirstRecordIndex.Value != 0))
                     source = source.Skip(criteria.FirstRecordIndex.Value);
 
-                if(criteria.LastRecordIndex.HasValue || maxPageSize.HasValue)
+                if (criteria.LastRecordIndex.HasValue || maxPageSize.HasValue)
                     source = source.Take(Math.Min(criteria.PageSize ?? int.MaxValue, maxPageSize ?? int.MaxValue));
             }
 

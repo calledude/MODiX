@@ -27,7 +27,7 @@ namespace Modix.Data.Models.Promotions
         /// <summary>
         /// See <see cref="PromotionCampaignEntity.Subject"/>.
         /// </summary>
-        public GuildUserBrief Subject { get; set; }  = null!;
+        public GuildUserBrief Subject { get; set; } = null!;
 
         /// <summary>
         /// See <see cref="PromotionCampaignEntity.TargetRole"/>.

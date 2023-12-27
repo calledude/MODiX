@@ -44,7 +44,7 @@ namespace Modix.Data.Test.Repositories
 
             uut.ModixContext.ShouldBeSameAs(modixContext);
         }
-        
+
         #endregion Constructor() Tests
 
         #region BeginCreateTransactionAsync() Tests
@@ -87,7 +87,8 @@ namespace Modix.Data.Test.Repositories
             var database = Substitute.ForPartsOf<DatabaseFacade>(modixContext);
             modixContext.Database.Returns(database);
 
-            using (var transaction = await uut.BeginCreateTransactionAsync(default)) { }
+            using (var transaction = await uut.BeginCreateTransactionAsync(default))
+            { }
 
             await database.ShouldHaveReceived(1)
                 .BeginTransactionAsync();
@@ -102,7 +103,7 @@ namespace Modix.Data.Test.Repositories
         {
             (var modixContext, var uut) = BuildTestContext();
 
-            await Should.ThrowAsync<ArgumentNullException>(async () => 
+            await Should.ThrowAsync<ArgumentNullException>(async () =>
                 await uut.CreateAsync(null!, default));
 
             modixContext.Set<GuildUserEntity>().AsEnumerable()

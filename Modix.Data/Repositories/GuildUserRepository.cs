@@ -144,7 +144,7 @@ namespace Modix.Data.Repositories
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if(entity == null)
+            if (entity == null)
                 return false;
 
             var data = GuildUserMutationData.FromEntity(entity);

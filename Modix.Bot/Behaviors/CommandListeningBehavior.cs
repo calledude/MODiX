@@ -70,9 +70,9 @@ namespace Modix.Bot.Behaviors
 
             await AuthorizationService.OnAuthenticatedAsync(author.Id, author.Guild.Id, author.RoleIds.ToList());
 
-            var commandResult =  await CommandService.ExecuteAsync(commandContext, argPos.Value, ServiceProvider);
+            var commandResult = await CommandService.ExecuteAsync(commandContext, argPos.Value, ServiceProvider);
 
-            if(!commandResult.IsSuccess)
+            if (!commandResult.IsSuccess)
             {
                 var error = $"{commandResult.Error}: {commandResult.ErrorReason}";
 
@@ -117,5 +117,5 @@ namespace Modix.Bot.Behaviors
         internal protected IAuthorizationService AuthorizationService { get; }
 
         private readonly ICommandPrefixParser _commandPrefixParser;
-   }
+    }
 }

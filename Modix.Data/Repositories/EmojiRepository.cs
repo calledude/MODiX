@@ -262,7 +262,7 @@ namespace Modix.Data.Repositories
                         from ""Emoji""
                         where ""GuildId"" = :GuildId
                             and ""Timestamp"" >= :StartTimestamp
-                            and { (emoji.Id is null ? @"""EmojiName"" = :EmojiName" : @"""EmojiId"" = :EmojiId") }
+                            and {(emoji.Id is null ? @"""EmojiName"" = :EmojiName" : @"""EmojiId"" = :EmojiId")}
                         group by ""UserId""
                         order by count(*) desc
                         limit 1
@@ -276,7 +276,7 @@ namespace Modix.Data.Repositories
                     )
                     select ""EmojiId"", ""EmojiName"", ""IsAnimated"", ""Uses"", ""Rank"", ""TopUserId"", ""TopUserUses""
                     from stats, user_stats
-                    where { (emoji.Id is null ? @"""EmojiName"" = :EmojiName" : @"""EmojiId"" = :EmojiId") }";
+                    where {(emoji.Id is null ? @"""EmojiName"" = :EmojiName" : @"""EmojiId"" = :EmojiId")}";
         }
 
         /// <inheritdoc />
@@ -375,7 +375,7 @@ namespace Modix.Data.Repositories
                     });
                 }
 
-                if(userId.HasValue)
+                if (userId.HasValue)
                 {
                     paramList.Add(new NpgsqlParameter(":UserId", NpgsqlDbType.Bigint)
                     {

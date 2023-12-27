@@ -10,18 +10,18 @@ namespace Modix.Services.Core
         public enum EventType
         {
             MessageReceivedHandling = ServicesLogEventType.MessageTracking + 0x0001,
-            MessageReceivedHandled  = ServicesLogEventType.MessageTracking + 0x0002,
-            MessageDeletedHandling  = ServicesLogEventType.MessageTracking + 0x0003,
-            MessageDeletedHandled   = ServicesLogEventType.MessageTracking + 0x0004,
-            IgnoringCommandMessage  = ServicesLogEventType.MessageTracking + 0x0005,
+            MessageReceivedHandled = ServicesLogEventType.MessageTracking + 0x0002,
+            MessageDeletedHandling = ServicesLogEventType.MessageTracking + 0x0003,
+            MessageDeletedHandled = ServicesLogEventType.MessageTracking + 0x0004,
+            IgnoringCommandMessage = ServicesLogEventType.MessageTracking + 0x0005,
             IgnoringNonGuildMessage = ServicesLogEventType.MessageTracking + 0x0006,
             IgnoringNonHumanMessage = ServicesLogEventType.MessageTracking + 0x0007,
-            MessageRecordCreating   = ServicesLogEventType.MessageTracking + 0x0008,
-            MessageRecordCreated    = ServicesLogEventType.MessageTracking + 0x0009,
-            MessageRecordDeleting   = ServicesLogEventType.MessageTracking + 0x000A,
-            MessageRecordDeleted    = ServicesLogEventType.MessageTracking + 0x000B,
-            TransactionBeginning    = ServicesLogEventType.MessageTracking + 0x000C,
-            TransactionCommitted    = ServicesLogEventType.MessageTracking + 0x000D
+            MessageRecordCreating = ServicesLogEventType.MessageTracking + 0x0008,
+            MessageRecordCreated = ServicesLogEventType.MessageTracking + 0x0009,
+            MessageRecordDeleting = ServicesLogEventType.MessageTracking + 0x000A,
+            MessageRecordDeleted = ServicesLogEventType.MessageTracking + 0x000B,
+            TransactionBeginning = ServicesLogEventType.MessageTracking + 0x000C,
+            TransactionCommitted = ServicesLogEventType.MessageTracking + 0x000D
         }
 
         public static IDisposable? BeginMessageNotificationScope(

@@ -22,7 +22,7 @@ namespace Modix.Data.Models.Moderation
         /// See <see cref="ModerationActionEntity.GuildId"/>.
         /// </summary>
         public ulong GuildId { get; set; }
-        
+
         internal DeletedMessageBatchEntity ToEntity()
             => new DeletedMessageBatchEntity()
             {

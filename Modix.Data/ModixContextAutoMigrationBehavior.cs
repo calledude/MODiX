@@ -18,7 +18,8 @@ namespace Modix.Data
                 IServiceScopeFactory serviceScopeFactory)
             : base(
                 logger,
-                serviceScopeFactory) { }
+                serviceScopeFactory)
+        { }
 
         protected override async Task OnStartingAsync(
             IServiceProvider serviceProvider,

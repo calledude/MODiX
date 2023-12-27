@@ -27,7 +27,7 @@ namespace Shouldly
         {
             summary.ShouldNotBeNull();
             summary.Id.ShouldBeOneOf(ClaimMappings.Entities.Select(x => x.Id).ToArray());
-            
+
             var entity = ClaimMappings.Entities.First(x => x.Id == summary.Id);
 
             summary.ShouldNotBeNull();

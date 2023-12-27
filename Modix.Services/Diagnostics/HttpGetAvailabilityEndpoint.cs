@@ -43,7 +43,7 @@ namespace Modix.Services.Diagnostics
             }
             catch (Exception ex) when (
                     (ex is HttpRequestException)
-                ||  (ex is TaskCanceledException))
+                || (ex is TaskCanceledException))
             {
                 _logger.LogWarning(ex, "An HTTP Endpoint ({Url}) appears to be unavailable", _url);
 

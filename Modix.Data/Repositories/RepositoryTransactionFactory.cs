@@ -104,7 +104,7 @@ namespace Modix.Data.Repositories
 
             public void Dispose()
             {
-                if(!_hasDisposed)
+                if (!_hasDisposed)
                 {
                     if (!_hasCommitted)
                         _transaction?.Rollback();

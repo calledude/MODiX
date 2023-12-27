@@ -11,20 +11,20 @@ namespace Modix.Services.Moderation
     {
         public enum EventType
         {
-            IgnoringMessageWithNoAttachments    = ModerationLogEventType.AttachmentBlacklist + 0x01,
-            IngoringNonGuildMessage             = ModerationLogEventType.AttachmentBlacklist + 0x02,
-            IngoringNonHumanMessage             = ModerationLogEventType.AttachmentBlacklist + 0x03,
-            IgnoringUnmoderatedChannel          = ModerationLogEventType.AttachmentBlacklist + 0x04,
-            SuspiciousAttachmentsSearching      = ModerationLogEventType.AttachmentBlacklist + 0x05,
-            SuspiciousAttachmentsNotFound       = ModerationLogEventType.AttachmentBlacklist + 0x06,
-            SuspiciousAttachmentsFound          = ModerationLogEventType.AttachmentBlacklist + 0x07,
-            ChannelModerationStatusFetching     = ModerationLogEventType.AttachmentBlacklist + 0x08,
-            ChannelModerationStatusFetched      = ModerationLogEventType.AttachmentBlacklist + 0x09,
-            SelfUserFetched                     = ModerationLogEventType.AttachmentBlacklist + 0x0B,
-            SuspiciousMessageDeleting           = ModerationLogEventType.AttachmentBlacklist + 0x0C,
-            SuspiciousMessageDeleted            = ModerationLogEventType.AttachmentBlacklist + 0x0D,
-            ReplySending                        = ModerationLogEventType.AttachmentBlacklist + 0x0E,
-            ReplySent                           = ModerationLogEventType.AttachmentBlacklist + 0x0F
+            IgnoringMessageWithNoAttachments = ModerationLogEventType.AttachmentBlacklist + 0x01,
+            IngoringNonGuildMessage = ModerationLogEventType.AttachmentBlacklist + 0x02,
+            IngoringNonHumanMessage = ModerationLogEventType.AttachmentBlacklist + 0x03,
+            IgnoringUnmoderatedChannel = ModerationLogEventType.AttachmentBlacklist + 0x04,
+            SuspiciousAttachmentsSearching = ModerationLogEventType.AttachmentBlacklist + 0x05,
+            SuspiciousAttachmentsNotFound = ModerationLogEventType.AttachmentBlacklist + 0x06,
+            SuspiciousAttachmentsFound = ModerationLogEventType.AttachmentBlacklist + 0x07,
+            ChannelModerationStatusFetching = ModerationLogEventType.AttachmentBlacklist + 0x08,
+            ChannelModerationStatusFetched = ModerationLogEventType.AttachmentBlacklist + 0x09,
+            SelfUserFetched = ModerationLogEventType.AttachmentBlacklist + 0x0B,
+            SuspiciousMessageDeleting = ModerationLogEventType.AttachmentBlacklist + 0x0C,
+            SuspiciousMessageDeleted = ModerationLogEventType.AttachmentBlacklist + 0x0D,
+            ReplySending = ModerationLogEventType.AttachmentBlacklist + 0x0E,
+            ReplySent = ModerationLogEventType.AttachmentBlacklist + 0x0F
         }
 
         public static IDisposable BeginMessageScope(

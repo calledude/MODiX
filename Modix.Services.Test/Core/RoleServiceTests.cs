@@ -92,12 +92,12 @@ namespace Modix.Services.Test.Core
 
         public static readonly ImmutableArray<TestCaseData> TrackRoleAsync_TestCaseData
             = ImmutableArray.Create(
-                BuildTestCaseData_TrackRoleAsync(   guildId: default,           roleId: default,        roleName: string.Empty, rolePosition: default       ).SetName("{m}(Default Values)"),
-                BuildTestCaseData_TrackRoleAsync(   guildId: ulong.MinValue,    roleId: ulong.MinValue, roleName: string.Empty, rolePosition: int.MinValue  ).SetName("{m}(Min Values)"),
-                BuildTestCaseData_TrackRoleAsync(   guildId: ulong.MaxValue,    roleId: ulong.MaxValue, roleName: string.Empty, rolePosition: int.MaxValue  ).SetName("{m}(Max Values)"),
-                BuildTestCaseData_TrackRoleAsync(   guildId: 1UL,               roleId: 2UL,            roleName: "3",          rolePosition: 4             ).SetName("{m}(Unique Values 1)"),
-                BuildTestCaseData_TrackRoleAsync(   guildId: 5UL,               roleId: 6UL,            roleName: "7",          rolePosition: 8             ).SetName("{m}(Unique Values 2)"),
-                BuildTestCaseData_TrackRoleAsync(   guildId: 9UL,               roleId: 10UL,           roleName: "11",         rolePosition: 12            ).SetName("{m}(Unique Values 3)"));
+                BuildTestCaseData_TrackRoleAsync(guildId: default, roleId: default, roleName: string.Empty, rolePosition: default).SetName("{m}(Default Values)"),
+                BuildTestCaseData_TrackRoleAsync(guildId: ulong.MinValue, roleId: ulong.MinValue, roleName: string.Empty, rolePosition: int.MinValue).SetName("{m}(Min Values)"),
+                BuildTestCaseData_TrackRoleAsync(guildId: ulong.MaxValue, roleId: ulong.MaxValue, roleName: string.Empty, rolePosition: int.MaxValue).SetName("{m}(Max Values)"),
+                BuildTestCaseData_TrackRoleAsync(guildId: 1UL, roleId: 2UL, roleName: "3", rolePosition: 4).SetName("{m}(Unique Values 1)"),
+                BuildTestCaseData_TrackRoleAsync(guildId: 5UL, roleId: 6UL, roleName: "7", rolePosition: 8).SetName("{m}(Unique Values 2)"),
+                BuildTestCaseData_TrackRoleAsync(guildId: 9UL, roleId: 10UL, roleName: "11", rolePosition: 12).SetName("{m}(Unique Values 3)"));
 
         [TestCaseSource(nameof(TrackRoleAsync_TestCaseData))]
         public async Task TrackRoleAsync_RoleUpdateSucceeds_DoesNotCreateRole(
@@ -117,8 +117,8 @@ namespace Modix.Services.Test.Core
 
             testContext.MockGuildRoleRepository.ShouldHaveReceived(x => x
                 .TryUpdateAsync(role.Id, It.IsNotNull<Action<GuildRoleMutationData>>()));
-            testContext.GuildRoleMutationData.Name      .ShouldBe(role.Name);
-            testContext.GuildRoleMutationData.Position  .ShouldBe(role.Position);
+            testContext.GuildRoleMutationData.Name.ShouldBe(role.Name);
+            testContext.GuildRoleMutationData.Position.ShouldBe(role.Position);
 
             testContext.MockGuildRoleRepository.ShouldNotHaveReceived(x => x
                 .CreateAsync(It.IsAny<GuildRoleCreationData>()));
@@ -152,10 +152,10 @@ namespace Modix.Services.Test.Core
                 .Where(x => x.Method.Name == nameof(IGuildRoleRepository.CreateAsync))
                 .Select(x => (GuildRoleCreationData)x.Arguments[0])
                 .First();
-            creationData.RoleId     .ShouldBe(role.Id);
-            creationData.GuildId    .ShouldBe(role.Guild.Id);
-            creationData.Name       .ShouldBe(role.Name);
-            creationData.Position   .ShouldBe(role.Position);
+            creationData.RoleId.ShouldBe(role.Id);
+            creationData.GuildId.ShouldBe(role.Guild.Id);
+            creationData.Name.ShouldBe(role.Name);
+            creationData.Position.ShouldBe(role.Position);
 
             testContext.MockCreateTransaction.ShouldHaveReceived(x => x
                 .Dispose());

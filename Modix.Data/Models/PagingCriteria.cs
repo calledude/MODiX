@@ -20,7 +20,7 @@ namespace Modix.Data.Models
         /// </summary>
         [Range(0, int.MaxValue)]
         public int? LastRecordIndex { get; set; }
-        
+
         /// <summary>
         /// The total number of records to be returned.
         /// A value of null indicates that all records following <see cref="FirstRecordIndex"/> should be returned.

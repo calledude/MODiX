@@ -74,15 +74,15 @@ namespace Modix.Services.Core
                 async (guildId) =>
                 {
                     MessageLogMessages.MessageRecordCreating(_logger);
-                    
+
                     await _channelService.TrackChannelAsync(channel.Name, channel.Id, guildId, channel is IThreadChannel threadChannel ? threadChannel.CategoryId : null, cancellationToken);
                     await _messageRepository.CreateAsync(new MessageCreationData()
                     {
-                        Id          = message.Id,
-                        GuildId     = guildId,
-                        ChannelId   = channel.Id,
-                        AuthorId    = message.Author.Id,
-                        Timestamp   = message.Timestamp
+                        Id = message.Id,
+                        GuildId = guildId,
+                        ChannelId = channel.Id,
+                        AuthorId = message.Author.Id,
+                        Timestamp = message.Timestamp
                     });
 
                     MessageLogMessages.MessageRecordCreated(_logger);

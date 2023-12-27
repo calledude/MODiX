@@ -14,7 +14,7 @@ namespace Modix.Data.Models.Promotions
         /// See <see cref="PromotionCommentEntity.Id"/>.
         /// </summary>
         public long Id { get; set; }
-        
+
         /// <summary>
         /// See <see cref="PromotionCommentEntity.Campaign"/>.
         /// </summary>

@@ -33,7 +33,7 @@ namespace Modix.Services.Utilities
             {
                 property.ShouldSerialize = instance => false;
             }
-            
+
             return property;
         }
     }

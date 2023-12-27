@@ -15,7 +15,7 @@ namespace Discord
             if (string.IsNullOrEmpty(fieldName))
                 throw new ArgumentException("Cannot be empty", nameof(fieldName));
 
-            for(var i = 0; i < text.Length; i += EmbedFieldBuilder.MaxFieldValueLength)
+            for (var i = 0; i < text.Length; i += EmbedFieldBuilder.MaxFieldValueLength)
                 yield return new EmbedFieldBuilder()
                     .WithName((i == 0) ? fieldName : "(continued)")
                     .WithValue(text[i..Math.Min(text.Length, (i + EmbedFieldBuilder.MaxFieldValueLength))]);

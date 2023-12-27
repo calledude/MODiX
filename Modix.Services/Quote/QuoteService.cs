@@ -65,7 +65,7 @@ namespace Modix.Services.Quote
         {
             var embed = BuildQuoteEmbed(message, executingUser);
 
-            if(callback == null || embed == null)
+            if (callback == null || embed == null)
             {
                 return;
             }
@@ -88,7 +88,8 @@ namespace Modix.Services.Quote
         private bool TryAddOtherAttachment(IMessage message, EmbedBuilder embed)
         {
             var firstAttachment = message.Attachments.FirstOrDefault();
-            if (firstAttachment == null) return false;
+            if (firstAttachment == null)
+                return false;
 
             embed.AddField($"Attachment (Size: {new ByteSize(firstAttachment.Size)})", firstAttachment.Url);
 
@@ -120,7 +121,8 @@ namespace Modix.Services.Quote
         private bool TryAddRichEmbed(IMessage message, IUser executingUser, ref EmbedBuilder embed)
         {
             var firstEmbed = message.Embeds.FirstOrDefault();
-            if (firstEmbed?.Type != EmbedType.Rich) { return false; }
+            if (firstEmbed?.Type != EmbedType.Rich)
+            { return false; }
 
             embed = message.Embeds
                     .First()
@@ -137,7 +139,8 @@ namespace Modix.Services.Quote
 
         private void AddActivity(IMessage message, EmbedBuilder embed)
         {
-            if (message.Activity == null) { return; }
+            if (message.Activity == null)
+            { return; }
 
             embed
                 .AddField("Invite Type", message.Activity.Type)
@@ -146,14 +149,16 @@ namespace Modix.Services.Quote
 
         private void AddOtherEmbed(IMessage message, EmbedBuilder embed)
         {
-            if (message.Embeds.Count == 0) return;
+            if (message.Embeds.Count == 0)
+                return;
 
             embed.AddField("Embed Type", message.Embeds.First().Type);
         }
 
         private void AddContent(IMessage message, EmbedBuilder embed)
         {
-            if (string.IsNullOrWhiteSpace(message.Content)) return;
+            if (string.IsNullOrWhiteSpace(message.Content))
+                return;
 
             embed.WithDescription(message.Content);
         }

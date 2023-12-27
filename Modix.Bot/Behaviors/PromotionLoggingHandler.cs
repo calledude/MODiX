@@ -159,7 +159,7 @@ namespace Modix.Behaviors
         /// <summary>
         /// A <see cref="ModixConfig"/> for interacting with the bot configuration.
         /// </summary>
-        internal protected ModixConfig ModixConfig  { get; }
+        internal protected ModixConfig ModixConfig { get; }
 
         private static readonly Dictionary<(PromotionActionType, PromotionSentiment?, PromotionCampaignOutcome?), string> _logRenderTemplates
             = new()

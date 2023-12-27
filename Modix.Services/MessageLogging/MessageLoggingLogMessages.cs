@@ -11,20 +11,20 @@ namespace Modix.Services.MessageLogging
     {
         public enum EventType
         {
-            MessageDeletedHandling      = ServicesLogEventType.MessageLogging + 0x0001,
-            MessageDeletedHandled       = ServicesLogEventType.MessageLogging + 0x0002,
-            MessageUpdatedHandling      = ServicesLogEventType.MessageLogging + 0x0003,
-            MessageUpdatedHandled       = ServicesLogEventType.MessageLogging + 0x0004,
-            IgnoringNonGuildMessage     = ServicesLogEventType.MessageLogging + 0x0005,
-            IgnoringUnchangedMessage    = ServicesLogEventType.MessageLogging + 0x0006,
-            IgnoringUnmoderatedChannel  = ServicesLogEventType.MessageLogging + 0x0007,
-            ModeratedChannelIdentified  = ServicesLogEventType.MessageLogging + 0x0008,
-            SelfUserFetched             = ServicesLogEventType.MessageLogging + 0x0009,
+            MessageDeletedHandling = ServicesLogEventType.MessageLogging + 0x0001,
+            MessageDeletedHandled = ServicesLogEventType.MessageLogging + 0x0002,
+            MessageUpdatedHandling = ServicesLogEventType.MessageLogging + 0x0003,
+            MessageUpdatedHandled = ServicesLogEventType.MessageLogging + 0x0004,
+            IgnoringNonGuildMessage = ServicesLogEventType.MessageLogging + 0x0005,
+            IgnoringUnchangedMessage = ServicesLogEventType.MessageLogging + 0x0006,
+            IgnoringUnmoderatedChannel = ServicesLogEventType.MessageLogging + 0x0007,
+            ModeratedChannelIdentified = ServicesLogEventType.MessageLogging + 0x0008,
+            SelfUserFetched = ServicesLogEventType.MessageLogging + 0x0009,
             IgnoringSelfAuthoredMessage = ServicesLogEventType.MessageLogging + 0x000A,
-            MessageLogChannelsFetched   = ServicesLogEventType.MessageLogging + 0x000B,
-            MessageLogChannelsNotFound  = ServicesLogEventType.MessageLogging + 0x000C,
-            MessageLogMessageSending    = ServicesLogEventType.MessageLogging + 0x000D,
-            MessageLogMessageSent       = ServicesLogEventType.MessageLogging + 0x000E
+            MessageLogChannelsFetched = ServicesLogEventType.MessageLogging + 0x000B,
+            MessageLogChannelsNotFound = ServicesLogEventType.MessageLogging + 0x000C,
+            MessageLogMessageSending = ServicesLogEventType.MessageLogging + 0x000D,
+            MessageLogMessageSent = ServicesLogEventType.MessageLogging + 0x000E
         }
 
         public static IDisposable? BeginMessageNotificationScope(

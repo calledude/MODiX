@@ -63,7 +63,7 @@ namespace Modix.Services.Diagnostics
                 IServiceCollection services,
                 IConfiguration configuration)
             => services
-                .AddSingleton<ILatencyEndpoint>(serviceProvider => new PingLatencyEndpoint("Google",     "8.8.8.8", serviceProvider.GetRequiredService<ILogger<PingLatencyEndpoint>>()))
+                .AddSingleton<ILatencyEndpoint>(serviceProvider => new PingLatencyEndpoint("Google", "8.8.8.8", serviceProvider.GetRequiredService<ILogger<PingLatencyEndpoint>>()))
                 .AddSingleton<ILatencyEndpoint>(serviceProvider => new PingLatencyEndpoint("Cloudflare", "1.1.1.1", serviceProvider.GetRequiredService<ILogger<PingLatencyEndpoint>>()));
     }
 }

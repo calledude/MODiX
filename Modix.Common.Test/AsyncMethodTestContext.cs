@@ -24,7 +24,7 @@ namespace Modix.Common.Test
         protected virtual void Dispose(
             bool disposeManaged)
         {
-            if(disposeManaged)
+            if (disposeManaged)
                 CancellationTokenSource.Dispose();
         }
     }

@@ -8,8 +8,8 @@ namespace Modix.Data
     {
         public enum EventType
         {
-            ContextMigrating    = DataLogEventType.DbContext + 0x0001,
-            ContextMigrated     = DataLogEventType.DbContext + 0x0002
+            ContextMigrating = DataLogEventType.DbContext + 0x0001,
+            ContextMigrated = DataLogEventType.DbContext + 0x0002
         }
 
         public static void ContextMigrating(

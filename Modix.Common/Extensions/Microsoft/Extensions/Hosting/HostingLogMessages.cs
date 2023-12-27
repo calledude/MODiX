@@ -10,14 +10,14 @@ namespace Microsoft.Extensions.Hosting
     {
         public enum EventType
         {
-            BehaviorsStarting   = CommonLogEventType.Hosting + 0x0001,
-            BehaviorsStarted    = CommonLogEventType.Hosting + 0x0002,
-            BehaviorsStopping   = CommonLogEventType.Hosting + 0x0003,
-            BehaviorsStopped    = CommonLogEventType.Hosting + 0x0004,
-            BehaviorStarting    = CommonLogEventType.Hosting + 0x0005,
-            BehaviorStarted     = CommonLogEventType.Hosting + 0x0006,
-            BehaviorStopping    = CommonLogEventType.Hosting + 0x0007,
-            BehaviorStopped     = CommonLogEventType.Hosting + 0x0008
+            BehaviorsStarting = CommonLogEventType.Hosting + 0x0001,
+            BehaviorsStarted = CommonLogEventType.Hosting + 0x0002,
+            BehaviorsStopping = CommonLogEventType.Hosting + 0x0003,
+            BehaviorsStopped = CommonLogEventType.Hosting + 0x0004,
+            BehaviorStarting = CommonLogEventType.Hosting + 0x0005,
+            BehaviorStarted = CommonLogEventType.Hosting + 0x0006,
+            BehaviorStopping = CommonLogEventType.Hosting + 0x0007,
+            BehaviorStopped = CommonLogEventType.Hosting + 0x0008
         }
 
         public static IDisposable? BeginBehaviorScope(

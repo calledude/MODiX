@@ -9,7 +9,7 @@ namespace System.Linq
         {
             var total = 0L;
             var count = 0;
-            foreach(var value in values)
+            foreach (var value in values)
             {
                 total += value;
                 ++count;

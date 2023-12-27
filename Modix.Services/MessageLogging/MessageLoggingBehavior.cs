@@ -95,7 +95,7 @@ namespace Modix.Services.MessageLogging
             CancellationToken cancellationToken)
         {
             var guild = (notification.Channel as SocketGuildChannel)?.Guild;
-            if(notification.NewMessage.Author.Id == default)
+            if (notification.NewMessage.Author.Id == default)
             {
                 // update caused by new thread created or deleted
                 return;

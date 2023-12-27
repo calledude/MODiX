@@ -35,7 +35,7 @@ namespace Modix.Modules
             var reg = new Regex(QueryPattern);
             foreach (var c in term)
             {
-                if(!reg.IsMatch(c.ToString()))
+                if (!reg.IsMatch(c.ToString()))
                 {
                     //Double the escape char so discord will print it as well
                     var s = (c == '\\') ? "\\\\" : c.ToString();

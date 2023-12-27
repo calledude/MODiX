@@ -40,7 +40,7 @@ namespace Modix.Data.Repositories
         /// containing the action representing the creation.
         /// </returns>
         Task<PromotionActionSummary> CreateAsync(PromotionCommentCreationData data);
-        
+
         /// <summary>
         /// Creates a modified comment within the repository.
         /// </summary>

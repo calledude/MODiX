@@ -85,7 +85,7 @@ namespace Modix.Modules
                 await FollowupAsync($"There is already an active campaign ({existingCampaign.Id}) for {subject.Mention} to be promoted to {MentionUtils.MentionRole(targetRole.Id)}.", allowedMentions: AllowedMentions.None);
                 return;
             }
-            
+
             await Context.GetUserConfirmationAsync(
                 $"You are nominating {subject.Mention} for promotion to {MentionUtils.MentionRole(targetRole.Id)}.",
                 customIdSuffix: $"nominate:{Context.User.Id},{subject.Id}");

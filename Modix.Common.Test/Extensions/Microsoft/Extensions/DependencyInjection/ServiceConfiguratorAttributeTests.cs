@@ -42,7 +42,8 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
 
             public void ConfigureServices(
                 IServiceCollection services,
-                IConfiguration configuration) { }
+                IConfiguration configuration)
+            { }
         }
 
         [ServiceConfigurator]
@@ -50,13 +51,15 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
             : IServiceConfigurator
         {
             public InvalidFakeServiceConfigurator3(
-                #pragma warning disable IDE0060 // Remove unused parameter
-                string value) { }
-                #pragma warning restore IDE0060 // Remove unused parameter
+#pragma warning disable IDE0060 // Remove unused parameter
+                string value)
+            { }
+#pragma warning restore IDE0060 // Remove unused parameter
 
             public void ConfigureServices(
                 IServiceCollection services,
-                IConfiguration configuration) { }
+                IConfiguration configuration)
+            { }
         }
 
         [ServiceConfigurator]
@@ -65,7 +68,8 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
         {
             public void ConfigureServices(
                 IServiceCollection services,
-                IConfiguration configuration) { }
+                IConfiguration configuration)
+            { }
         }
 
         [ServiceConfigurator]
@@ -74,7 +78,8 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
         {
             public void ConfigureServices(
                 IServiceCollection services,
-                IConfiguration configuration) { }
+                IConfiguration configuration)
+            { }
         }
 
         [ServiceConfigurator]
@@ -83,7 +88,8 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
         {
             public void ConfigureServices(
                 IServiceCollection services,
-                IConfiguration configuration) { }
+                IConfiguration configuration)
+            { }
         }
 
         [ServiceConfigurator]
@@ -92,7 +98,8 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
         {
             public void ConfigureServices(
                 IServiceCollection services,
-                IConfiguration configuration) { }
+                IConfiguration configuration)
+            { }
         }
 
         #endregion Fakes
@@ -140,13 +147,13 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
                             MakeFakeAssembly(),
                             ImmutableArray<Type>.Empty)
                         .SetName("{m}(Assembly is empty)"),
-                    
+
                     new TestCaseData(
                             MakeFakeAssembly(
                                 typeof(FakeType).GetTypeInfo()),
                             ImmutableArray<Type>.Empty)
                         .SetName("{m}(Assembly contains no ServiceConfigurators)"),
-                    
+
                     new TestCaseData(
                             MakeFakeAssembly(
                                 typeof(FakeServiceConfigurator1).GetTypeInfo()),

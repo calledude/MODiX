@@ -27,7 +27,7 @@ namespace Modix.Services.Utilities
         /// </summary>
         public static Color HsvToRgb(float h, float s, float v)
         {
-            var hi = (int) Math.Floor(h / 60.0) % 6;
+            var hi = (int)Math.Floor(h / 60.0) % 6;
             var f = (h / 60f) - MathF.Floor(h / 60f);
 
             var p = v * (1f - s);

@@ -9,7 +9,7 @@
         protected override void Dispose(
             bool disposeManaged)
         {
-            if(disposeManaged)
+            if (disposeManaged)
                 LoggerFactory.Dispose();
             base.Dispose(disposeManaged);
         }

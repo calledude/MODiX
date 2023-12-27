@@ -106,7 +106,8 @@ namespace Modix.Data.Test.Repositories
             var database = Substitute.ForPartsOf<DatabaseFacade>(modixContext);
             modixContext.Database.Returns(database);
 
-            using (var transaction = await uut.BeginCreateTransactionAsync()) { }
+            using (var transaction = await uut.BeginCreateTransactionAsync())
+            { }
 
             await database.ShouldHaveReceived(1)
                 .BeginTransactionAsync();
@@ -170,7 +171,8 @@ namespace Modix.Data.Test.Repositories
             var database = Substitute.ForPartsOf<DatabaseFacade>(modixContext);
             modixContext.Database.Returns(database);
 
-            using (var transaction = await uut.BeginDeleteTransactionAsync()) { }
+            using (var transaction = await uut.BeginDeleteTransactionAsync())
+            { }
 
             await database.ShouldHaveReceived(1)
                 .BeginTransactionAsync();

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +19,7 @@ namespace Modix.Data.Utilities
 
         public static readonly Expression<Func<string, string, bool>> DbCaseInsensitiveContains = (value, search) =>
             // % _ are special characters and need to be escaped
-            EF.Functions.ILike(value, "%"+EscapeLikePattern.Invoke(search)+"%");
+            EF.Functions.ILike(value, "%" + EscapeLikePattern.Invoke(search) + "%");
 
         private static readonly Expression<Func<string, string>> EscapeLikePattern =
             s => s.Replace("_", "%_").Replace("%", "%%");

@@ -34,7 +34,7 @@ namespace Modix.Services.MessageContentPatterns
             _memoryCache = memoryCache;
         }
 
-        private static object GetKeyForCache(ulong guildId) => new {guildId, Target = "MessageContentPattern"};
+        private static object GetKeyForCache(ulong guildId) => new { guildId, Target = "MessageContentPattern" };
 
         private readonly MemoryCacheEntryOptions _patternCacheEntryOptions =
             new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(1));

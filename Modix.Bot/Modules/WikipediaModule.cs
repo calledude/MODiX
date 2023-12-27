@@ -69,7 +69,7 @@ namespace Modix.Modules
                        .WithColor(new Color(95, 186, 125))
                        .WithTitle($"Results for {phrase} (pt {i + 1})")
                        .WithDescription(message.Substring(cursor, (i == batchCount - 1) ? message.Length - cursor : DiscordConfig.MaxMessageSize));
-                    
+
                     await FollowupAsync(embed: builder.Build());
                     cursor += DiscordConfig.MaxMessageSize;
                 }

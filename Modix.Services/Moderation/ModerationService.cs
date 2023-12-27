@@ -128,7 +128,9 @@ namespace Modix.Services.Moderation
             var mentionableRoleMappings = await _designatedRoleMappingRepository.SearchBriefsAsync(
                 new DesignatedRoleMappingSearchCriteria
                 {
-                    GuildId = guild.Id, Type = DesignatedRoleType.RestrictedMentionability, IsDeleted = false
+                    GuildId = guild.Id,
+                    Type = DesignatedRoleType.RestrictedMentionability,
+                    IsDeleted = false
                 });
 
             Log.Information("Roles with RestrictedMentionability are: {Roles}",
@@ -249,7 +251,9 @@ namespace Modix.Services.Moderation
                 foreach (var mapping in await _designatedRoleMappingRepository
                     .SearchBriefsAsync(new DesignatedRoleMappingSearchCriteria()
                     {
-                        GuildId = guild.Id, Type = DesignatedRoleType.ModerationMute, IsDeleted = false,
+                        GuildId = guild.Id,
+                        Type = DesignatedRoleType.ModerationMute,
+                        IsDeleted = false,
                     }))
                 {
                     await _designatedRoleMappingRepository.TryDeleteAsync(mapping.Id,
@@ -292,7 +296,7 @@ namespace Modix.Services.Moderation
                     if (await _infractionRepository.AnyAsync(new InfractionSearchCriteria()
                     {
                         GuildId = guildId,
-                        Types = new[] {type},
+                        Types = new[] { type },
                         SubjectId = subjectId,
                         IsRescinded = false,
                         IsDeleted = false
@@ -360,7 +364,7 @@ namespace Modix.Services.Moderation
                 new InfractionSearchCriteria()
                 {
                     GuildId = _authorizationService.CurrentGuildId.Value,
-                    Types = new[] {type},
+                    Types = new[] { type },
                     SubjectId = subjectId,
                     IsRescinded = false,
                     IsDeleted = false,
@@ -452,7 +456,7 @@ namespace Modix.Services.Moderation
                     CreatedById = deletedById
                 }, cancellationToken);
 
-            await message.DeleteAsync(new RequestOptions() {CancelToken = cancellationToken});
+            await message.DeleteAsync(new RequestOptions() { CancelToken = cancellationToken });
 
             transaction.Commit();
         }
@@ -546,7 +550,9 @@ namespace Modix.Services.Moderation
 
             return await _infractionRepository.GetInfractionCountsAsync(new InfractionSearchCriteria
             {
-                GuildId = _authorizationService.CurrentGuildId, SubjectId = subjectId, IsDeleted = false
+                GuildId = _authorizationService.CurrentGuildId,
+                SubjectId = subjectId,
+                IsDeleted = false
             });
         }
 
@@ -563,7 +569,8 @@ namespace Modix.Services.Moderation
                     IsDeleted = false,
                     ExpiresRange = new DateTimeOffsetRange()
                     {
-                        From = DateTimeOffset.MinValue, To = DateTimeOffset.MaxValue,
+                        From = DateTimeOffset.MinValue,
+                        To = DateTimeOffset.MaxValue,
                     }
                 },
                 new[]
@@ -606,7 +613,9 @@ namespace Modix.Services.Moderation
             var mapping = (await _designatedRoleMappingRepository.SearchBriefsAsync(
                 new DesignatedRoleMappingSearchCriteria()
                 {
-                    GuildId = guild.Id, Type = DesignatedRoleType.ModerationMute, IsDeleted = false
+                    GuildId = guild.Id,
+                    Type = DesignatedRoleType.ModerationMute,
+                    IsDeleted = false
                 })).FirstOrDefault();
 
             if (!(mapping is null))
@@ -710,7 +719,7 @@ namespace Modix.Services.Moderation
             bool isAutoRescind = false)
         {
             RequestOptions? GetRequestOptions() =>
-                string.IsNullOrEmpty(reason) ? null : new RequestOptions {AuditLogReason = reason};
+                string.IsNullOrEmpty(reason) ? null : new RequestOptions { AuditLogReason = reason };
 
             if (!isAutoRescind)
             {
@@ -756,7 +765,9 @@ namespace Modix.Services.Moderation
             var mapping = (await _designatedRoleMappingRepository.SearchBriefsAsync(
                 new DesignatedRoleMappingSearchCriteria()
                 {
-                    GuildId = guild.Id, Type = DesignatedRoleType.ModerationMute, IsDeleted = false
+                    GuildId = guild.Id,
+                    Type = DesignatedRoleType.ModerationMute,
+                    IsDeleted = false
                 })).FirstOrDefault();
 
             if (mapping == null)
@@ -770,7 +781,9 @@ namespace Modix.Services.Moderation
             => (await _designatedRoleMappingRepository
                     .SearchBriefsAsync(new DesignatedRoleMappingSearchCriteria
                     {
-                        GuildId = guildId, Type = DesignatedRoleType.Rank, IsDeleted = false,
+                        GuildId = guildId,
+                        Type = DesignatedRoleType.Rank,
+                        IsDeleted = false,
                     }))
                 .Select(r => r.Role);
 

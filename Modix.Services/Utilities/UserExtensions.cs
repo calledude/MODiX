@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Modix.Data.Models.Core;
 
 namespace Modix.Services.Utilities

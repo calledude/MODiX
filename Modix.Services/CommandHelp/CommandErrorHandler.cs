@@ -118,7 +118,8 @@ namespace Modix.Services.CommandHelp
             //If there's an error reply when the reaction is removed, delete that reply,
             //remove the cached error, remove it from the cached replies, and remove
             //the reactions from the original message
-            if (ErrorReplies.TryGetValue(cachedMessage.Id, out var botReplyId) == false) { return; }
+            if (ErrorReplies.TryGetValue(cachedMessage.Id, out var botReplyId) == false)
+            { return; }
 
             var channel = await cachedChannel.GetOrDownloadAsync();
             await channel.DeleteMessageAsync(botReplyId);

@@ -21,7 +21,8 @@ namespace Microsoft.Extensions.Hosting
                 IServiceScopeFactory serviceScopeFactory)
             : base(
                 logger,
-                serviceScopeFactory) { }
+                serviceScopeFactory)
+        { }
 
         /// <inheritdoc/>
         internal protected override async Task OnStartingAsync(

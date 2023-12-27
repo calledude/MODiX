@@ -40,20 +40,22 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
         private class FakeSimpleTransientService { }
 
         private interface IFakeAbstractService1 { }
-        
+
         private interface IFakeAbstractService2 { }
-        
+
         private interface IFakeAbstractService3 { }
 
         [ServiceBinding(ServiceLifetime.Singleton)]
         private class FakeAbstractService
-            : IFakeAbstractService1 { }
+            : IFakeAbstractService1
+        { }
 
         [ServiceBinding(ServiceLifetime.Scoped)]
         private class FakeSharedAbstractService
             : IFakeAbstractService1,
                 IFakeAbstractService2,
-                IFakeAbstractService3 { }
+                IFakeAbstractService3
+        { }
 
         [ServiceBinding(ServiceLifetime.Transient)]
         private sealed class FakeDisposableService
@@ -121,35 +123,35 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
                             MakeFakeAssembly(),
                             ImmutableArray<ServiceDescriptorExpectation>.Empty)
                         .SetName("{m}(Empty Assembly)"),
-                    
+
                     new TestCaseData(
                             MakeFakeAssembly(
                                 typeof(FakeType).GetTypeInfo()),
                             ImmutableArray<ServiceDescriptorExpectation>.Empty)
                         .SetName("{m}(Type has no ServiceBinding)"),
-                    
+
                     new TestCaseData(
                             MakeFakeAssembly(
                                 typeof(FakeSimpleSingletonService).GetTypeInfo()),
                             ImmutableArray.Create(
                                 /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                    */
-                                new ServiceDescriptorExpectation(   typeof(FakeSimpleSingletonService), typeof(FakeSimpleSingletonService), null,                               ServiceLifetime.Singleton   )))
+                                new ServiceDescriptorExpectation(typeof(FakeSimpleSingletonService), typeof(FakeSimpleSingletonService), null, ServiceLifetime.Singleton)))
                         .SetName("{m}(ServiceBinding.Lifetime is Singleton)"),
-                    
+
                     new TestCaseData(
                             MakeFakeAssembly(
                                 typeof(FakeSimpleScopedService).GetTypeInfo()),
                             ImmutableArray.Create(
                                 /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                */
-                                new ServiceDescriptorExpectation(   typeof(FakeSimpleScopedService),    typeof(FakeSimpleScopedService),    null,                               ServiceLifetime.Scoped  )))
+                                new ServiceDescriptorExpectation(typeof(FakeSimpleScopedService), typeof(FakeSimpleScopedService), null, ServiceLifetime.Scoped)))
                         .SetName("{m}(ServiceBinding.Lifetime is Scoped)"),
-                    
+
                     new TestCaseData(
                             MakeFakeAssembly(
                                 typeof(FakeSimpleTransientService).GetTypeInfo()),
                             ImmutableArray.Create(
                                 /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                    */
-                                new ServiceDescriptorExpectation(   typeof(FakeSimpleTransientService), typeof(FakeSimpleTransientService), null,                               ServiceLifetime.Transient   )))
+                                new ServiceDescriptorExpectation(typeof(FakeSimpleTransientService), typeof(FakeSimpleTransientService), null, ServiceLifetime.Transient)))
                         .SetName("{m}(ServiceBinding.Lifetime is Transient)"),
 
                     new TestCaseData(
@@ -157,7 +159,7 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
                                 typeof(FakeAbstractService).GetTypeInfo()),
                             ImmutableArray.Create(
                                 /*                                  serviceType,                   implementationType,          implementationFactoryServiceType,   lifetime                    */
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService1), typeof(FakeAbstractService), null,                               ServiceLifetime.Singleton   )))
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), typeof(FakeAbstractService), null, ServiceLifetime.Singleton)))
                         .SetName("{m}(Service implements an interface)"),
 
                     new TestCaseData(
@@ -165,10 +167,10 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
                                 typeof(FakeSharedAbstractService).GetTypeInfo()),
                             ImmutableArray.Create(
                                 /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                */
-                                new ServiceDescriptorExpectation(   typeof(FakeSharedAbstractService),  typeof(FakeSharedAbstractService),  null,                               ServiceLifetime.Scoped  ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService1),      null,                               typeof(FakeSharedAbstractService),  ServiceLifetime.Scoped  ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService2),      null,                               typeof(FakeSharedAbstractService),  ServiceLifetime.Scoped  ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService3),      null,                               typeof(FakeSharedAbstractService),  ServiceLifetime.Scoped  )
+                                new ServiceDescriptorExpectation(typeof(FakeSharedAbstractService), typeof(FakeSharedAbstractService), null, ServiceLifetime.Scoped),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped)
                             ))
                         .SetName("{m}(Service implements many interfaces)"),
 
@@ -177,10 +179,10 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
                                 typeof(FakeDisposableService).GetTypeInfo()),
                             ImmutableArray.Create(
                                 /*                                  serviceType,                    implementationType,             implementationFactoryServiceType,   lifetime                    */
-                                new ServiceDescriptorExpectation(   typeof(FakeDisposableService),  typeof(FakeDisposableService),  null,                               ServiceLifetime.Transient   ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService1),  null,                           typeof(FakeDisposableService),      ServiceLifetime.Transient   ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService2),  null,                           typeof(FakeDisposableService),      ServiceLifetime.Transient   ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService3),  null,                           typeof(FakeDisposableService),      ServiceLifetime.Transient   )
+                                new ServiceDescriptorExpectation(typeof(FakeDisposableService), typeof(FakeDisposableService), null, ServiceLifetime.Transient),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeDisposableService), ServiceLifetime.Transient)
                             ))
                         .SetName("{m}(Service is Disposable)"),
 
@@ -195,18 +197,18 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
                                 typeof(FakeDisposableService).GetTypeInfo()),
                             ImmutableArray.Create(
                                 /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                    */
-                                new ServiceDescriptorExpectation(   typeof(FakeSimpleSingletonService), typeof(FakeSimpleSingletonService), null,                               ServiceLifetime.Singleton   ),
-                                new ServiceDescriptorExpectation(   typeof(FakeSimpleScopedService),    typeof(FakeSimpleScopedService),    null,                               ServiceLifetime.Scoped      ),
-                                new ServiceDescriptorExpectation(   typeof(FakeSimpleTransientService), typeof(FakeSimpleTransientService), null,                               ServiceLifetime.Transient   ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService1),      typeof(FakeAbstractService),        null,                               ServiceLifetime.Singleton   ),
-                                new ServiceDescriptorExpectation(   typeof(FakeSharedAbstractService),  typeof(FakeSharedAbstractService),  null,                               ServiceLifetime.Scoped      ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService1),      null,                               typeof(FakeSharedAbstractService),  ServiceLifetime.Scoped      ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService2),      null,                               typeof(FakeSharedAbstractService),  ServiceLifetime.Scoped      ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService3),      null,                               typeof(FakeSharedAbstractService),  ServiceLifetime.Scoped      ),
-                                new ServiceDescriptorExpectation(   typeof(FakeDisposableService),      typeof(FakeDisposableService),      null,                               ServiceLifetime.Transient   ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService1),      null,                               typeof(FakeDisposableService),      ServiceLifetime.Transient   ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService2),      null,                               typeof(FakeDisposableService),      ServiceLifetime.Transient   ),
-                                new ServiceDescriptorExpectation(   typeof(IFakeAbstractService3),      null,                               typeof(FakeDisposableService),      ServiceLifetime.Transient   )
+                                new ServiceDescriptorExpectation(typeof(FakeSimpleSingletonService), typeof(FakeSimpleSingletonService), null, ServiceLifetime.Singleton),
+                                new ServiceDescriptorExpectation(typeof(FakeSimpleScopedService), typeof(FakeSimpleScopedService), null, ServiceLifetime.Scoped),
+                                new ServiceDescriptorExpectation(typeof(FakeSimpleTransientService), typeof(FakeSimpleTransientService), null, ServiceLifetime.Transient),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), typeof(FakeAbstractService), null, ServiceLifetime.Singleton),
+                                new ServiceDescriptorExpectation(typeof(FakeSharedAbstractService), typeof(FakeSharedAbstractService), null, ServiceLifetime.Scoped),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
+                                new ServiceDescriptorExpectation(typeof(FakeDisposableService), typeof(FakeDisposableService), null, ServiceLifetime.Transient),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
+                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeDisposableService), ServiceLifetime.Transient)
                             ))
                         .SetName("{m}(Many ServiceBindings present)")
                 );
@@ -222,13 +224,13 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
 
             var unmatchedResults = results.ToHashSet();
 
-            foreach(var expectedResult in expectedResults)
+            foreach (var expectedResult in expectedResults)
             {
                 results.ShouldContain(result => expectedResult.MatchesActual(result));
 
                 var result = unmatchedResults.First(result => expectedResult.MatchesActual(result));
 
-                if(expectedResult.ImplementationFactoryServiceType is { })
+                if (expectedResult.ImplementationFactoryServiceType is { })
                 {
                     var mockServiceProvider = new Mock<IServiceProvider>();
                     var service = new object();

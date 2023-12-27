@@ -76,11 +76,11 @@ namespace Modix.Modules
 
             var suffix = latency switch
             {
-                _ when (latency is null)    => "💔",
-                _ when (latency > 300)      => "💔",
-                _ when (latency > 100)      => "💛", //Yellow heart - trust me
-                _ when (latency <= 100)     => "💚", //Green heart - trust me again
-                _                           => "❓"
+                _ when (latency is null) => "💔",
+                _ when (latency > 300) => "💔",
+                _ when (latency > 100) => "💛", //Yellow heart - trust me
+                _ when (latency <= 100) => "💚", //Green heart - trust me again
+                _ => "❓"
             };
 
             return $"{icon} {latency: 0}ms {suffix}";
@@ -94,11 +94,11 @@ namespace Modix.Modules
                 double? latency)
             => latency switch
             {
-                _ when (latency is null)    => Color.Red,
-                _ when (latency > 300)      => Color.Red,
-                _ when (latency > 100)      => Color.Gold,
-                _ when (latency <= 100)     => Color.Green,
-                _                           => Color.Default
+                _ when (latency is null) => Color.Red,
+                _ when (latency > 300) => Color.Red,
+                _ when (latency > 100) => Color.Gold,
+                _ when (latency <= 100) => Color.Green,
+                _ => Color.Default
             };
 
         private const int Timeout

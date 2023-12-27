@@ -26,25 +26,25 @@ namespace Microsoft.Extensions.DependencyInjection
                     {
                         { Length: 0 } => Enumerable.Empty<ServiceDescriptor>()
                             .Append(ServiceDescriptor.Describe(
-                                serviceType:        implementationType,
+                                serviceType: implementationType,
                                 implementationType: implementationType,
-                                lifetime:           attribute.Lifetime)),
-                        
+                                lifetime: attribute.Lifetime)),
+
                         { Length: 1 } => Enumerable.Empty<ServiceDescriptor>()
                             .Append(ServiceDescriptor.Describe(
-                                serviceType:        interfaces[0],
+                                serviceType: interfaces[0],
                                 implementationType: implementationType,
-                                lifetime:           attribute.Lifetime)),
-                        
+                                lifetime: attribute.Lifetime)),
+
                         _ => interfaces
                             .Select(@interface => ServiceDescriptor.Describe(
-                                serviceType:            @interface,
-                                implementationFactory:  serviceProvider => serviceProvider.GetRequiredService(implementationType),
-                                lifetime:               attribute.Lifetime))
+                                serviceType: @interface,
+                                implementationFactory: serviceProvider => serviceProvider.GetRequiredService(implementationType),
+                                lifetime: attribute.Lifetime))
                             .Append(ServiceDescriptor.Describe(
-                                serviceType:        implementationType,
+                                serviceType: implementationType,
                                 implementationType: implementationType,
-                                lifetime:           attribute.Lifetime)),
+                                lifetime: attribute.Lifetime)),
                     };
                 });
 

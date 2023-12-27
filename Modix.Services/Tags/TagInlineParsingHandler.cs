@@ -32,27 +32,35 @@ namespace Modix.Services.Tags
         {
             var message = notification.Message;
 
-            if (message is not SocketUserMessage userMessage || userMessage.Author.IsBot) { return; }
-            if (userMessage.Author is not SocketGuildUser guildUser) { return; }
+            if (message is not SocketUserMessage userMessage || userMessage.Author.IsBot)
+            { return; }
+            if (userMessage.Author is not SocketGuildUser guildUser)
+            { return; }
 
             //TODO: Refactor when we have a configurable prefix
-            if (message.Content.StartsWith('!')) { return; }
+            if (message.Content.StartsWith('!'))
+            { return; }
 
             //Remove code blocks from the message we are processing
             var content = Regex.Replace(message.Content, @"(`{1,3}).*?(.\1)", string.Empty, RegexOptions.Singleline);
             //Remove quotes from the message we are processing
             content = Regex.Replace(content, "^>.*$", string.Empty, RegexOptions.Multiline);
 
-            if (string.IsNullOrWhiteSpace(content)) { return; }
+            if (string.IsNullOrWhiteSpace(content))
+            { return; }
 
             var match = _inlineTagRegex.Match(content);
-            if (!match.Success) { return; }
+            if (!match.Success)
+            { return; }
 
             var tagName = match.Groups[1].Value;
-            if (string.IsNullOrWhiteSpace(tagName)) { return; }
+            if (string.IsNullOrWhiteSpace(tagName))
+            { return; }
 
-            if (await AuthorizationService.HasClaimsAsync(guildUser.Id, guildUser.Guild.Id, guildUser.Roles.Select(x => x.Id).ToList(), AuthorizationClaim.UseTag) == false) { return; }
-            if (await TagService.TagExistsAsync(guildUser.Guild.Id, tagName) == false) { return; }
+            if (await AuthorizationService.HasClaimsAsync(guildUser.Id, guildUser.Guild.Id, guildUser.Roles.Select(x => x.Id).ToList(), AuthorizationClaim.UseTag) == false)
+            { return; }
+            if (await TagService.TagExistsAsync(guildUser.Guild.Id, tagName) == false)
+            { return; }
 
             try
             {

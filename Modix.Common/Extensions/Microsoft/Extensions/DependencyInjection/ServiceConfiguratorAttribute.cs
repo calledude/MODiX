@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         throw new InvalidOperationException($"Invalid use of {typeof(ServiceConfiguratorAttribute)} upon type {typeInfo}: Type must implement {typeof(IServiceConfigurator)}.");
 
                     var constructor = typeInfo.GetConstructor(Type.EmptyTypes);
-                    if(constructor is null)
+                    if (constructor is null)
                         throw new InvalidOperationException($"Invalid use of {typeof(ServiceConfiguratorAttribute)} upon type {typeInfo}: Type must have a public parameterless constructor.");
 
                     return (IServiceConfigurator)constructor.Invoke(null);

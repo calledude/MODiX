@@ -9,15 +9,15 @@ namespace Modix.Services.Core
     {
         public enum EventType
         {
-            RoleTracking            = 0x0001,
-            RoleTracked             = 0x0002,
-            RoleUpdating            = 0x0003,
-            RoleUpdated             = 0x0004,
-            RoleUpdateFailed        = 0x0005,
-            RoleCreating            = 0x0006,
-            RoleCreated             = 0x0007,
-            TransactionBeginning    = 0x0008,
-            TransactionCommitting    = 0x0009
+            RoleTracking = 0x0001,
+            RoleTracked = 0x0002,
+            RoleUpdating = 0x0003,
+            RoleUpdated = 0x0004,
+            RoleUpdateFailed = 0x0005,
+            RoleCreating = 0x0006,
+            RoleCreated = 0x0007,
+            TransactionBeginning = 0x0008,
+            TransactionCommitting = 0x0009
         }
 
         public static IDisposable? BeginRoleScope(

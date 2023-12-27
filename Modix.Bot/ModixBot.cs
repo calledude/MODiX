@@ -94,7 +94,7 @@ namespace Modix
                 await _commands.AddModulesAsync(typeof(ModixBot).Assembly, _scope.ServiceProvider);
 
                 Log.LogInformation("{Modules} modules loaded, containing {Commands} commands",
-                    _commands.Modules.Count(), _commands.Modules.SelectMany(d=>d.Commands).Count());
+                    _commands.Modules.Count(), _commands.Modules.SelectMany(d => d.Commands).Count());
 
                 Log.LogInformation("Logging into Discord and starting the client.");
 
@@ -172,7 +172,7 @@ namespace Modix
         {
             // Reconnections are handled by Discord.NET, we
             // don't need to worry about handling this ourselves
-            if(ex is GatewayReconnectException)
+            if (ex is GatewayReconnectException)
             {
                 Log.LogInformation("Received gateway reconnect");
                 return Task.CompletedTask;

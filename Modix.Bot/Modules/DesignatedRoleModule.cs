@@ -48,7 +48,7 @@ namespace Modix.Modules
                 Timestamp = DateTimeOffset.UtcNow
             };
 
-            foreach(var type in Enum.GetValues<DesignatedRoleType>())
+            foreach (var type in Enum.GetValues<DesignatedRoleType>())
             {
                 var designatedRoles = roles
                     .Where(x => x.Type == type)

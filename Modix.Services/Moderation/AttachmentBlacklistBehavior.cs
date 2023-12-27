@@ -154,7 +154,7 @@ namespace Modix.Services.Moderation
                     .Any(extension => filename.EndsWith(extension)))
                 .ToArray();
 
-            if(!blacklistedFilenames.Any())
+            if (!blacklistedFilenames.Any())
             {
                 AttachmentBlacklistLogMessages.SuspiciousAttachmentsNotFound(_logger);
                 return;

@@ -8,12 +8,12 @@ namespace Modix.Common.Messaging
     {
         public enum EventType
         {
-            HandlersInvoking    = CommonLogEventType.Messaging + 0x0100,
-            HandlersInvoked     = CommonLogEventType.Messaging + 0x0200,
-            HandlerInvoking     = CommonLogEventType.Messaging + 0x0300,
-            HandlerInvoked      = CommonLogEventType.Messaging + 0x0400,
-            HandlerFailed       = CommonLogEventType.Messaging + 0x0500,
-            DispatchFailed      = CommonLogEventType.Messaging + 0x0600
+            HandlersInvoking = CommonLogEventType.Messaging + 0x0100,
+            HandlersInvoked = CommonLogEventType.Messaging + 0x0200,
+            HandlerInvoking = CommonLogEventType.Messaging + 0x0300,
+            HandlerInvoked = CommonLogEventType.Messaging + 0x0400,
+            HandlerFailed = CommonLogEventType.Messaging + 0x0500,
+            DispatchFailed = CommonLogEventType.Messaging + 0x0600
         }
 
         public static IDisposable? BeginHandlerScope(

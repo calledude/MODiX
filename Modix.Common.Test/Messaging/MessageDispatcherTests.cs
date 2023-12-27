@@ -79,11 +79,11 @@ namespace Modix.Common.Test.Messaging
         public static readonly ImmutableArray<TestCaseData> DispatchAsync_TestCaseData
             = ImmutableArray.Create(
                 /*                  dispatchTimeout,            handlerCount,   timeout,                    cancellationTokenSourceDelay    */
-                new TestCaseData(   TimeSpan.Zero,              0,              TimeSpan.Zero,              TimeSpan.Zero                   ).SetName("{m}(No handlers registered)"),
-                new TestCaseData(   TimeSpan.Zero,              1,              TimeSpan.Zero,              TimeSpan.Zero                   ).SetName("{m}(One handler registered)"),
-                new TestCaseData(   TimeSpan.Zero,              3,              TimeSpan.Zero,              TimeSpan.Zero                   ).SetName("{m}(Many handlers registered)"),
-                new TestCaseData(   TimeSpan.FromSeconds(1),    1,              null,                       TimeSpan.FromSeconds(1)         ).SetName("{m}(Timeout not given)"),
-                new TestCaseData(   TimeSpan.FromSeconds(2),    1,              TimeSpan.FromSeconds(3),    TimeSpan.FromSeconds(3)         ).SetName("{m}(Timeout given)"));
+                new TestCaseData(TimeSpan.Zero, 0, TimeSpan.Zero, TimeSpan.Zero).SetName("{m}(No handlers registered)"),
+                new TestCaseData(TimeSpan.Zero, 1, TimeSpan.Zero, TimeSpan.Zero).SetName("{m}(One handler registered)"),
+                new TestCaseData(TimeSpan.Zero, 3, TimeSpan.Zero, TimeSpan.Zero).SetName("{m}(Many handlers registered)"),
+                new TestCaseData(TimeSpan.FromSeconds(1), 1, null, TimeSpan.FromSeconds(1)).SetName("{m}(Timeout not given)"),
+                new TestCaseData(TimeSpan.FromSeconds(2), 1, TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3)).SetName("{m}(Timeout given)"));
 
         [TestCaseSource(nameof(DispatchAsync_TestCaseData))]
         public async Task DispatchAsync_Always_InvokesHandlersInServiceScopeWithTimeout(
@@ -155,10 +155,10 @@ namespace Modix.Common.Test.Messaging
         public static readonly ImmutableArray<TestCaseData> DispatchAsync_HandlerThrowsException_TestCaseData
             = ImmutableArray.Create(
                 /*                  handlerCount,   handlerExceptionIndex   */
-                new TestCaseData(   1,              0                       ).SetName("{m}(Single handler)"),
-                new TestCaseData(   3,              0                       ).SetName("{m}(First handler)"),
-                new TestCaseData(   3,              1                       ).SetName("{m}(Second handler)"),
-                new TestCaseData(   3,              2                       ).SetName("{m}(Third handler)"));
+                new TestCaseData(1, 0).SetName("{m}(Single handler)"),
+                new TestCaseData(3, 0).SetName("{m}(First handler)"),
+                new TestCaseData(3, 1).SetName("{m}(Second handler)"),
+                new TestCaseData(3, 2).SetName("{m}(Third handler)"));
 
         [TestCaseSource(nameof(DispatchAsync_HandlerThrowsException_TestCaseData))]
         public async Task DispatchAsync_HandlerThrowsException_InvokesOtherHandlers(
