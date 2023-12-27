@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using Modix.Common.Messaging;
 using Moq;
 using NUnit.Framework;
 using Shouldly;
-
-using Modix.Common.Messaging;
 
 namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
 {

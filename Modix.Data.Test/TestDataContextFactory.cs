@@ -1,12 +1,9 @@
 ﻿using System;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-
-using NSubstitute;
-
 using Modix.Data.Models.Core;
 using Modix.Data.Models.Tags;
+using NSubstitute;
 
 namespace Modix.Data.Test
 {

@@ -1,10 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Modix.Services.Core;
 using Modix.Data.Models.Core;
-using System.Collections.Generic;
 using Modix.Data.Repositories;
+using Modix.Services.Core;
 
 namespace Modix.Services.Starboard
 {

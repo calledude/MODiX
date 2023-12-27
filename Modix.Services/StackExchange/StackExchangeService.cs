@@ -1,9 +1,9 @@
-﻿using Modix.Services.Utilities;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Modix.Services.Utilities;
+using Newtonsoft.Json;
 
 namespace Modix.Services.StackExchange
 {

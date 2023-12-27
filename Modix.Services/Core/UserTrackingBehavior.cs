@@ -1,12 +1,9 @@
 ﻿
 using System.Threading;
 using System.Threading.Tasks;
-
-using Microsoft.Extensions.DependencyInjection;
-
 using Discord;
 using Discord.WebSocket;
-
+using Microsoft.Extensions.DependencyInjection;
 using Modix.Common.Messaging;
 
 namespace Modix.Services.Core

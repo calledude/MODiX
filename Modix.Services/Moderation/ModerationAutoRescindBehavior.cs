@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Timers;
-
 using Discord.WebSocket;
-
-using Modix.Data.Repositories;
 using Modix.Data.Models.Moderation;
+using Modix.Data.Repositories;
 
 namespace Modix.Services.Moderation
 {

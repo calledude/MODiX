@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.Extensions.Logging;
+using Modix.Common.Messaging;
 using Moq;
 using NUnit.Framework;
 using Shouldly;
-
-using Modix.Common.Messaging;
-using System.Collections.Immutable;
-using Microsoft.Extensions.Logging;
 
 namespace Modix.Common.Test.Messaging
 {

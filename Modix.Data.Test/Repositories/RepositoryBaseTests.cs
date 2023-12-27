@@ -1,8 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Modix.Data.Repositories;
 using NSubstitute;
+using NUnit.Framework;
 using Shouldly;
-
-using Modix.Data.Repositories;
 
 namespace Modix.Data.Test.Repositories
 {

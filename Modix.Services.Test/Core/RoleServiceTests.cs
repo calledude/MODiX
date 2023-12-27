@@ -3,18 +3,14 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Discord;
-
-using Moq;
-using NUnit.Framework;
-using Shouldly;
-
+using Modix.Common.Test;
 using Modix.Data.Models.Core;
 using Modix.Data.Repositories;
 using Modix.Services.Core;
-
-using Modix.Common.Test;
+using Moq;
+using NUnit.Framework;
+using Shouldly;
 
 namespace Modix.Services.Test.Core
 {

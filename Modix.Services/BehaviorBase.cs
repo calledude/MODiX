@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Threading;
-
+using System.Threading.Tasks;
+using Discord;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using Serilog;
-
-using Discord;
-
 using Modix.Services.Core;
+using Serilog;
 
 namespace Modix.Services
 {

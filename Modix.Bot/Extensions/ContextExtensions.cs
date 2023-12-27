@@ -67,7 +67,7 @@ namespace Modix.Bot.Extensions
                 mainMessage += Environment.NewLine;
 
             var confirmationMessage = await context.Channel.SendMessageAsync(mainMessage +
-                $"React with {_checkmarkEmoji} or {_xEmoji} in the next {ConfirmationTimeoutSeconds} seconds to finalize or cancel the operation.");
+                $"React with {_checkmarkEmoji} or {_xEmoji} in the next {ConfirmationTimeoutSeconds} seconds to finalize or cancel the operation.", allowedMentions: AllowedMentions.None);
 
             await confirmationMessage.AddReactionAsync(_checkmarkEmoji);
             await confirmationMessage.AddReactionAsync(_xEmoji);

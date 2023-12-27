@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
@@ -12,7 +13,6 @@ using Modix.Data.Repositories;
 using Modix.Services.Core;
 using Modix.Services.Utilities;
 using Serilog;
-using System.Threading;
 
 namespace Modix.Services.Moderation
 {

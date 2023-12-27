@@ -1,6 +1,6 @@
-﻿using Discord;
+﻿using System.Threading.Tasks;
+using Discord;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace Modix
 {

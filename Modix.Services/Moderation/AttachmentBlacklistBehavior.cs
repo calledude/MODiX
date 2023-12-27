@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
 using Discord;
 using Discord.WebSocket;
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Modix.Common.Messaging;
-using Modix.Services.Core;
 using Modix.Data.Models.Core;
+using Modix.Services.Core;
 
 namespace Modix.Services.Moderation
 {

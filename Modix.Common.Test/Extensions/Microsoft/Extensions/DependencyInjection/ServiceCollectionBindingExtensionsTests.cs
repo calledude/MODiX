@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Immutable;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-using NUnit.Framework;
 using Moq;
+using NUnit.Framework;
 using Shouldly;
 
 namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection

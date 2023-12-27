@@ -2,17 +2,14 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Discord;
+using Modix.Data.Models.Core;
+using Modix.Data.Repositories;
+using Modix.Services.Core;
 using Moq;
 using Moq.AutoMock;
 using NUnit.Framework;
 using Shouldly;
-
-using Discord;
-
-using Modix.Data.Models.Core;
-using Modix.Data.Repositories;
-using Modix.Services.Core;
 
 namespace Modix.Services.Test.Core
 {

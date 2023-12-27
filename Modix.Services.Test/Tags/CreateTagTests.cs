@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Modix.Data;
+using Modix.Data.Models.Tags;
 using Modix.Services.Tags;
 using Moq.AutoMock;
 using NUnit.Framework;
 using Shouldly;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Modix.Data.Models.Tags;
 
 namespace Modix.Services.Test.Tags
 {

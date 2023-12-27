@@ -1,14 +1,11 @@
-﻿using Discord;
+﻿using System;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Discord.Rest;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using Modix.Services.Core;
 using Modix.Services.Utilities;
-
-using System;
-using System.Threading.Tasks;
 
 namespace Modix
 {

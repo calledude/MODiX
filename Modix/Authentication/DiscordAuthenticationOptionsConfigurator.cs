@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AspNet.Security.OAuth.Discord;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
-using AspNet.Security.OAuth.Discord;
-
 using Modix.Data.Models.Core;
 
 namespace Modix.Authentication

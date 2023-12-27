@@ -1,12 +1,9 @@
 ﻿
 using System.Threading;
 using System.Threading.Tasks;
-
+using Discord;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-using Discord;
-
 using Modix.Data.Models.Core;
 using Modix.Data.Repositories;
 

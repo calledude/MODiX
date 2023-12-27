@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Modix.Data.Models;
 using Modix.Data.Models.Moderation;
-using NUnit.Framework;
-using NSubstitute;
-using Shouldly;
-
 using Modix.Data.Repositories;
 using Modix.Data.Utilities;
+using NSubstitute;
+using NUnit.Framework;
+using Shouldly;
 
 namespace Modix.Data.Test.Repositories
 {

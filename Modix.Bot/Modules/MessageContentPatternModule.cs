@@ -67,7 +67,7 @@ namespace Modix.Bot.Modules
 
             if (response.Failure)
             {
-                await ReplyAsync(response.ErrorMessage);
+                await ReplyAsync(response.ErrorMessage, allowedMentions: AllowedMentions.None);
                 return;
             }
 
@@ -82,7 +82,7 @@ namespace Modix.Bot.Modules
 
             if (response.Failure)
             {
-                await ReplyAsync(response.ErrorMessage);
+                await ReplyAsync(response.ErrorMessage, allowedMentions: AllowedMentions.None);
                 return;
             }
 
@@ -98,7 +98,7 @@ namespace Modix.Bot.Modules
 
             if (response.Failure)
             {
-                await ReplyAsync(response.ErrorMessage);
+                await ReplyAsync(response.ErrorMessage, allowedMentions: AllowedMentions.None);
                 return;
             }
 

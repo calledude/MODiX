@@ -1,12 +1,10 @@
-﻿using Discord;
-using Discord.WebSocket;
-
-using Modix.Data.Models.Emoji;
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Discord;
+using Discord.WebSocket;
+using Modix.Data.Models.Emoji;
 
 namespace Modix.Services.Utilities
 {
