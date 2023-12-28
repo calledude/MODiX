@@ -36,7 +36,7 @@ namespace Modix.Bot.Modules
 
             var patterns = await _messageContentPatternService.GetPatterns(Context.Guild.Id);
 
-            if (!patterns.Any())
+            if (patterns.Count == 0)
             {
                 await ReplyAsync("This guild does not have any patterns set up, get started with `!pattern block` or `!pattern allow`");
                 return;

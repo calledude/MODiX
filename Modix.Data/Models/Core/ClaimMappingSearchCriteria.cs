@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 using Modix.Data.Repositories;
 using Modix.Data.Utilities;
@@ -61,22 +60,22 @@ namespace Modix.Data.Models.Core
             => query
                 .FilterBy(
                     x => criteria.Types!.Contains(x.Type),
-                    criteria?.Types?.Any() ?? false)
+                    criteria?.Types?.Length > 0)
                 .FilterBy(
                     x => x.GuildId == criteria!.GuildId,
                     criteria?.GuildId != null)
                 .FilterBy(
                     x => ((x.RoleId != null) && criteria!.RoleIds!.Contains(x.RoleId.Value)) || (x.UserId == criteria!.UserId),
-                    (criteria?.RoleIds?.Any() ?? false) && (criteria?.UserId != null))
+                    (criteria?.RoleIds?.Length > 0) && (criteria?.UserId != null))
                 .FilterBy(
                     x => (x.RoleId != null) && criteria!.RoleIds!.Contains(x.RoleId.Value),
-                    (criteria?.RoleIds?.Any() ?? false) && (criteria?.UserId == null))
+                    (criteria?.RoleIds?.Length > 0) && (criteria?.UserId == null))
                 .FilterBy(
                     x => x.UserId == criteria!.UserId,
-                    ((criteria?.RoleIds == null) || !criteria.RoleIds.Any()) && (criteria?.UserId != null))
+                    ((criteria?.RoleIds == null) || criteria.RoleIds.Length == 0) && (criteria?.UserId != null))
                 .FilterBy(
                     x => criteria!.Claims!.Contains(x.Claim),
-                    criteria?.Claims?.Any() ?? false)
+                    criteria?.Claims?.Length > 0)
                 .FilterBy(
                     x => x.CreateAction.Created >= criteria!.CreatedRange!.Value.From!.Value,
                     criteria?.CreatedRange?.From != null)

@@ -433,19 +433,19 @@ namespace Modix.Data.Test.Repositories
 
         public static readonly IEnumerable<TestCaseData> ValidSearchCriteriaTestCases
             = ClaimMappings.Searches
-                .Where(x => x.resultIds.Any())
+                .Where(x => x.resultIds.Length != 0)
                 .Select(x => new TestCaseData(x.criteria)
                     .SetName($"{{m}}({x.name})"));
 
         public static readonly IEnumerable<TestCaseData> ValidSearchCriteriaAndResultIdsTestCases
             = ClaimMappings.Searches
-                .Where(x => x.resultIds.Any())
+                .Where(x => x.resultIds.Length != 0)
                 .Select(x => new TestCaseData(x.criteria, x.resultIds)
                     .SetName($"{{m}}({x.name})"));
 
         public static readonly IEnumerable<TestCaseData> InvalidSearchCriteriaTestCases
             = ClaimMappings.Searches
-                .Where(x => !x.resultIds.Any())
+                .Where(x => x.resultIds.Length == 0)
                 .Select(x => new TestCaseData(x.criteria)
                     .SetName($"{{m}}({x.name})"));
 

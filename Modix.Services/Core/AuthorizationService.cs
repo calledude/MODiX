@@ -370,7 +370,7 @@ namespace Modix.Services.Core
                 IsDeleted = false,
             });
 
-            if (!mappingIds.Any())
+            if (mappingIds.Count == 0)
                 throw new InvalidOperationException($"A claim mapping of type {type} to claim {claim} for role {role.Name} does not exist");
 
             await ClaimMappingRepository.TryDeleteAsync(mappingIds.First(), CurrentUserId.Value);
@@ -395,7 +395,7 @@ namespace Modix.Services.Core
                 IsDeleted = false,
             });
 
-            if (!mappingIds.Any())
+            if (mappingIds.Count == 0)
                 throw new InvalidOperationException($"A claim mapping of type {type} to claim {claim} for user {user.GetDisplayName()} does not exist");
 
             await ClaimMappingRepository.TryDeleteAsync(mappingIds.First(), CurrentUserId.Value);
@@ -459,7 +459,7 @@ namespace Modix.Services.Core
 
         /// <inheritdoc />
         public async Task<bool> HasClaimsAsync(ulong user, ulong guild, IReadOnlyList<ulong>? roles, params AuthorizationClaim[] claims)
-            => !(await GetGuildUserMissingClaimsAsync(user, guild, roles, claims)).Any();
+            => (await GetGuildUserMissingClaimsAsync(user, guild, roles, claims)).Count == 0;
 
         /// <inheritdoc />
         public async Task OnAuthenticatedAsync(ulong user, ulong guild, IReadOnlyList<ulong> roles)

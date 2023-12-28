@@ -108,7 +108,7 @@ namespace Modix.Services.Moderation
 
                 var allowedPatterns = patterns.Where(x => x.Type == MessageContentPatternType.Allowed).ToList();
 
-                if (!allowedPatterns.Any())
+                if (allowedPatterns.Count == 0)
                 {
                     return true;
                 }
@@ -132,7 +132,7 @@ namespace Modix.Services.Moderation
                 static (bool, MatchCollection) GetContentMatches(string content, MessageContentPatternDto pattern)
                 {
                     var matches = pattern.Regex.Matches(content);
-                    return (matches.Any(), matches);
+                    return (matches.Count != 0, matches);
                 }
             }
 

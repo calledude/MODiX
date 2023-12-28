@@ -44,7 +44,7 @@ namespace Modix.Services.Quote
             }
 
             if (message.Attachments.Any(x => x.IsSpoiler())
-                || message.Embeds.Any() && FormatUtilities.ContainsSpoiler(message.Content))
+                || message.Embeds.Count != 0 && FormatUtilities.ContainsSpoiler(message.Content))
             {
                 embed.AddField("Spoiler warning", "The quoted message contains spoilered content.");
             }

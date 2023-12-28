@@ -521,19 +521,19 @@ namespace Modix.Data.Test.Repositories
 
         public static readonly IEnumerable<TestCaseData> ValidSearchCriteriaTestCases
             = DesignatedChannelMappings.Searches
-                .Where(x => x.resultIds.Any())
+                .Where(x => x.resultIds.Length != 0)
                 .Select(x => new TestCaseData(x.criteria)
                     .SetName($"{{m}}({x.name})"));
 
         public static readonly IEnumerable<TestCaseData> ValidSearchCriteriaAndResultIdsTestCases
             = DesignatedChannelMappings.Searches
-                .Where(x => x.resultIds.Any())
+                .Where(x => x.resultIds.Length != 0)
                 .Select(x => new TestCaseData(x.criteria, x.resultIds)
                     .SetName($"{{m}}({x.name})"));
 
         public static readonly IEnumerable<TestCaseData> ValidSearchCriteriaAndValidUserIdAndResultIdsTestCases
             = DesignatedChannelMappings.Searches
-                .Where(x => x.resultIds.Any())
+                .Where(x => x.resultIds.Length != 0)
                 .SelectMany(x => Users.Entities
                     .Where(y => DesignatedChannelMappings.Entities
                         .Where(z => x.resultIds.Contains(z.Id))
@@ -546,13 +546,13 @@ namespace Modix.Data.Test.Repositories
 
         public static readonly IEnumerable<TestCaseData> InvalidSearchCriteriaTestCases
             = DesignatedChannelMappings.Searches
-                .Where(x => !x.resultIds.Any())
+                .Where(x => x.resultIds.Length == 0)
                 .Select(x => new TestCaseData(x.criteria)
                     .SetName($"{{m}}({x.name})"));
 
         public static readonly IEnumerable<TestCaseData> InvalidSearchCriteriaAndValidUserIdTestCases
             = DesignatedChannelMappings.Searches
-                .Where(x => !x.resultIds.Any())
+                .Where(x => x.resultIds.Length == 0)
                 .SelectMany(x => Users.Entities
                     .Select(y => new TestCaseData(x.criteria, y.Id)
                         .SetName($"{{m}}(\"{x.name}\", {y.Id})")));

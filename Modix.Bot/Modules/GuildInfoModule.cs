@@ -125,7 +125,7 @@ namespace Modix.Modules
 
             var emojiCounts = await _emojiRepository.GetEmojiStatsAsync(guild.Id, SortDirection.Ascending, 1);
 
-            if (emojiCounts.Any())
+            if (emojiCounts.Count != 0)
             {
                 var favoriteEmoji = emojiCounts.First();
 

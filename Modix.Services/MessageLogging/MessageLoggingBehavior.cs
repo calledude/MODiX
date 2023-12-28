@@ -71,7 +71,7 @@ namespace Modix.Services.MessageLogging
                         embedBuilder = embedBuilder
                             .WithUserAsAuthor(notification.Message.Value.Author, notification.Message.Value.Author.Id.ToString());
 
-                        if (notification.Message.Value.Attachments.Any())
+                        if (notification.Message.Value.Attachments.Count != 0)
                             fields = fields
                                 .Append(new EmbedFieldBuilder()
                                     .WithName("Attachments")

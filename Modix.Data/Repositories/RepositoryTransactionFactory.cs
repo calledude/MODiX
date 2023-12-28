@@ -80,7 +80,7 @@ namespace Modix.Data.Repositories
                 asyncLock);
         }
 
-        private readonly AsyncLock _lockProvider = new AsyncLock();
+        private readonly AsyncLock _lockProvider = new();
 
         private class RepositoryTransaction : IRepositoryTransaction
         {

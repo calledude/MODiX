@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using LinqKit;
 using Modix.Data.Models.Core;
@@ -89,7 +88,7 @@ namespace Modix.Data.Models.Moderation
                     criteria?.GuildId != null)
                 .FilterBy(
                     x => criteria!.Types!.Contains(x.Type),
-                    criteria?.Types?.Any() ?? false)
+                    criteria?.Types?.Length > 0)
                 .FilterBy(
                     x => ReusableQueries.StringContainsUser.Invoke(x.Subject, criteria!.Subject!),
                     !string.IsNullOrWhiteSpace(criteria?.Subject))

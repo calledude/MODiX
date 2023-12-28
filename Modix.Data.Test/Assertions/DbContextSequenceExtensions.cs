@@ -52,7 +52,7 @@ namespace Microsoft.EntityFrameworkCore
 
             var table = tableSelector.Compile().Invoke(context).Local;
 
-            valueGenerator.SetValue(table.Any()
+            valueGenerator.SetValue(table.Count != 0
                 ? table.Max(propertySelector.Compile())
                 : default!);
         }

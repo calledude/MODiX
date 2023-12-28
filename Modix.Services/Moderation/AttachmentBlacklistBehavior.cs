@@ -113,7 +113,7 @@ namespace Modix.Services.Moderation
 
             using var logScope = AttachmentBlacklistLogMessages.BeginMessageScope(_logger, guild?.Id, channel.Id, author.Id, message.Id);
 
-            if (!message.Attachments.Any())
+            if (message.Attachments.Count == 0)
             {
                 AttachmentBlacklistLogMessages.IgnoringMessageWithNoAttachments(_logger);
                 return;
@@ -151,7 +151,7 @@ namespace Modix.Services.Moderation
                     .Any(extension => filename.EndsWith(extension)))
                 .ToArray();
 
-            if (!blacklistedFilenames.Any())
+            if (blacklistedFilenames.Length == 0)
             {
                 AttachmentBlacklistLogMessages.SuspiciousAttachmentsNotFound(_logger);
                 return;

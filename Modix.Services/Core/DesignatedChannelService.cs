@@ -209,7 +209,7 @@ namespace Modix.Services.Core
         {
             var channelIds = await GetDesignatedChannelIdsAsync(guild.Id, type);
 
-            if (!channelIds.Any())
+            if (channelIds.Count == 0)
                 throw new InvalidOperationException($"{guild.Name} has no channels assigned to {type}");
 
             return (await Task.WhenAll(channelIds.Select(d => guild.GetChannelAsync(d))))
@@ -222,7 +222,7 @@ namespace Modix.Services.Core
         {
             var channels = await GetDesignatedChannelsAsync(guild, designation);
 
-            if (!channels.Any())
+            if (channels.Count == 0)
             {
                 Log.Warning("Warning: Tried to send to channels assigned to designation {designation}, but none were assigned.", new { designation });
             }

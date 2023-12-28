@@ -27,7 +27,7 @@ namespace Modix.Bot.Preconditions
 
             var missingClaims = Claims.Where(x => !authorizationService.HasClaim(x)).ToArray();
 
-            return missingClaims.Any()
+            return missingClaims.Length != 0
                 ? Task.FromResult(PreconditionResult.FromError($"Missing the following claims: {string.Join(", ", missingClaims)}"))
                 : Task.FromResult(PreconditionResult.FromSuccess());
         }

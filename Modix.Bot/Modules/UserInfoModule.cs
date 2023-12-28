@@ -315,7 +315,7 @@ namespace Modix.Modules
                 }
             }
 
-            if (emojiCounts.Any())
+            if (emojiCounts.Count != 0)
             {
                 var favoriteEmoji = emojiCounts.First();
 

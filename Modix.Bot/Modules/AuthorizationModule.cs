@@ -106,7 +106,7 @@ namespace Modix.Modules
 
         private async Task ReplyWithClaimsAsync(IReadOnlyCollection<AuthorizationClaim> claims)
         {
-            if (!claims.Any())
+            if (claims.Count == 0)
             {
                 await FollowupAsync("No claims assigned.");
                 return;
