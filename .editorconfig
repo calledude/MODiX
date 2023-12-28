@@ -200,3 +200,6 @@ csharp_style_conditional_delegate_call = true:suggestion
 
 # Blocks are allowed
 csharp_prefer_braces = false:silent
+
+# IDE0290: Use primary constructor
+dotnet_diagnostic.IDE0290.severity = none
