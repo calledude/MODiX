@@ -34,5 +34,4 @@ namespace Modix.Data.Models.Core
                 Type = entity.Type,
             };
     }
-
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-
 namespace Modix.Data.Migrations
 {
     /// <inheritdoc />

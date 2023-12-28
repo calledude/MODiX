@@ -8,7 +8,6 @@ namespace Modix.Common.Test
     public sealed class TestLoggerFactory
         : IDisposable
     {
-
         public TestLoggerFactory()
         {
             _serviceProvider = new ServiceCollection()

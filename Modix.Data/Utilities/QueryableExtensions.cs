@@ -65,7 +65,6 @@ namespace Modix.Data.Utilities
                 ? ((IOrderedQueryable<TRecord>)query).ThenBy(keySelector, direction)
                 : query.OrderBy(keySelector, direction);
 
-
         /// <summary>
         /// Filters a query by attaching a <see cref="Queryable.Where{TSource}(IQueryable{TSource}, Expression{Func{TSource, bool}})"/> clause
         /// to it, based on a given set of criteria.

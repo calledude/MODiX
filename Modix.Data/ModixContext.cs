@@ -2,7 +2,6 @@
 
 namespace Modix.Data
 {
-
     public class ModixContext : DbContext
     {
         public ModixContext(

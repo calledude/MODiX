@@ -6,5 +6,4 @@ namespace Microsoft.EntityFrameworkCore.ValueGeneration
     {
         public abstract void SetValue([AllowNull] T value);
     }
-
 }

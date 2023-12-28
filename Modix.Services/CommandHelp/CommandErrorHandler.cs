@@ -73,7 +73,6 @@ namespace Modix.Services.CommandHelp
             //with the error message then add that to the replies collection
             if (AssociatedErrors.TryGetValue(cachedMessage.Id, out var value))
             {
-
                 var channel = await cachedChannel.GetOrDownloadAsync();
                 var msg = await channel.SendMessageAsync("", false, new EmbedBuilder()
                 {

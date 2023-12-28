@@ -8,6 +8,5 @@ namespace Modix.Services.CommandHelp
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class HiddenFromHelpAttribute : Attribute
     {
-
     }
 }

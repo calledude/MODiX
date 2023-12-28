@@ -145,7 +145,6 @@ namespace Modix.Services.Starboard
                 await _messageRepository.UpdateStarboardColumn(messageBrief.Id, null);
             }
             transaction.Commit();
-
         }
 
         /// <inheritdoc />

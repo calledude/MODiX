@@ -12,5 +12,4 @@ namespace Modix.Services.Core
             IUserMessage message,
             CancellationToken cancellationToken);
     }
-
 }
