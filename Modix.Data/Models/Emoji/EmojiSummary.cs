@@ -32,7 +32,7 @@ namespace Modix.Data.Models.Emoji
         /// <summary>
         /// The emoji that was used.
         /// </summary>
-        public EphemeralEmoji Emoji { get; set; } = null!;
+        public required EphemeralEmoji Emoji { get; set; }
 
         /// <summary>
         /// A timestamp indicating when the emoji was used.

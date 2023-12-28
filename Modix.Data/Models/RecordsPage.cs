@@ -11,16 +11,16 @@ namespace Modix.Data.Models
         /// <summary>
         /// The total number of records in the recordset.
         /// </summary>
-        public long TotalRecordCount { get; set; }
+        public required long TotalRecordCount { get; set; }
 
         /// <summary>
         /// The number of records in the recordset, after applying an optional set of filtering criteria.
         /// </summary>
-        public long FilteredRecordCount { get; set; }
+        public required long FilteredRecordCount { get; set; }
 
         /// <summary>
         /// The current page of records, selected from the larger recordset.
         /// </summary>
-        public IReadOnlyCollection<T> Records { get; set; } = null!;
+        public required IReadOnlyCollection<T> Records { get; set; }
     }
 }

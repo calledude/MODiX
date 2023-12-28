@@ -157,7 +157,7 @@
 
 @code {
     [Inject]
-    public ICommandHelpService CommandHelpService { get; set; } = null!;
+    public required ICommandHelpService CommandHelpService { get; set; }
 
     private IReadOnlyCollection<Module>? Modules;
 

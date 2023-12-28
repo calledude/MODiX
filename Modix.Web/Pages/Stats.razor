@@ -8,7 +8,7 @@
 
 <PageTitle>Modix - Stats</PageTitle>
 
-@if (Data is not null)
+@if (Data is not null && GuildRoleCountView is not null)
 {
     <MudContainer MaxWidth="MaxWidth.False">
         <MudText Typo="Typo.h3">Statistics for C#</MudText>
@@ -83,14 +83,14 @@
 }
 
 @code {
-    GuildStatData Data { get; set; } = null!;
-    List<GuildRoleCount> GuildRoleCountView { get; set; } = null!;
+    private GuildStatData? Data { get; set; }
+    private List<GuildRoleCount>? GuildRoleCountView { get; set; }
 
     [Inject]
-    IGuildStatService GuildStatService { get; set; } = null!;
+    public required IGuildStatService GuildStatService { get; set; }
 
     [Inject]
-    DiscordHelper DiscordHelper { get; set; } = null!;
+    public required DiscordHelper DiscordHelper { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -111,6 +111,6 @@
     private void SelectedChannelsChanged(MudChip[] chips)
     {
         var roles = chips.Select(x => x.Value).Cast<string>();
-        GuildRoleCountView = Data.GuildRoleCounts.Where(x => roles.Contains(x.Name)).ToList();
+        GuildRoleCountView = Data!.GuildRoleCounts.Where(x => roles.Contains(x.Name)).ToList();
     }
 }

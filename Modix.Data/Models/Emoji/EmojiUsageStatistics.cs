@@ -2,7 +2,7 @@
 {
     public class EmojiUsageStatistics
     {
-        public EphemeralEmoji Emoji { get; set; } = null!;
+        public required EphemeralEmoji Emoji { get; set; }
 
         public int Rank { get; set; }
 

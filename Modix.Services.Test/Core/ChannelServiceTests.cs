@@ -73,7 +73,7 @@ namespace Modix.Services.Test.Core
                     .First(x => x.Method.Name == nameof(IGuildChannelRepository.TryUpdateAsync))
                     .Arguments[1] as Action<GuildChannelMutationData>;
 
-                var mutationData = new GuildChannelMutationData();
+                var mutationData = new GuildChannelMutationData { Name = "test" };
                 updateAction?.Invoke(mutationData);
 
                 mutationData.Name.ShouldBe(channelName);

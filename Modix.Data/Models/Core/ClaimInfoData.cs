@@ -8,9 +8,9 @@ namespace Modix.Models.Core
 {
     public class ClaimInfoData
     {
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
-        public AuthorizationClaimCategory Category { get; set; }
+        public required string Name { get; init; }
+        public required string Description { get; init; }
+        public required AuthorizationClaimCategory Category { get; init; }
 
         private static Dictionary<AuthorizationClaim, ClaimInfoData>? _cachedClaimData;
 

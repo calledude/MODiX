@@ -41,16 +41,16 @@
     public string? ShowInactivePromotions { get; set; }
 
     [Inject]
-    public SessionState SessionState { get; set; } = null!;
+    public required SessionState SessionState { get; set; }
 
     [Inject]
-    public DiscordHelper DiscordHelper { get; set; } = null!;
+    public required DiscordHelper DiscordHelper { get; set; }
 
     [Inject]
-    public AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
+    public required AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
     [Inject]
-    public Modix.Services.Core.IAuthorizationService AuthorizationService { get; set; } = null!;
+    public required Modix.Services.Core.IAuthorizationService AuthorizationService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

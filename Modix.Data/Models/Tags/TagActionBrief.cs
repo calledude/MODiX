@@ -24,7 +24,7 @@ namespace Modix.Data.Models.Tags
         /// <summary>
         /// See <see cref="TagActionEntity.CreatedBy"/>.
         /// </summary>
-        public GuildUserBrief? CreatedBy { get; set; } = null!;
+        public GuildUserBrief? CreatedBy { get; set; }
 
         [ExpansionExpression]
         internal static Expression<Func<TagActionEntity, TagActionBrief>> FromEntityProjection

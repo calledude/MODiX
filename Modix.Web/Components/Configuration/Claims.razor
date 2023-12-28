@@ -76,16 +76,16 @@
 
 @code {
     [Inject]
-    public IClaimMappingRepository ClaimMappingRepository { get; set; } = null!;
+    public required IClaimMappingRepository ClaimMappingRepository { get; set; }
 
     [Inject]
-    public DiscordHelper DiscordHelper { get; set; } = null!;
+    public required DiscordHelper DiscordHelper { get; set; }
 
     [Inject]
-    public Modix.Services.Core.IAuthorizationService AuthorizationService { get; set; } = null!;
+    public required Modix.Services.Core.IAuthorizationService AuthorizationService { get; set; }
 
     [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
+    public required ISnackbar Snackbar { get; set; }
 
     private Dictionary<AuthorizationClaim, ClaimInfoData>? ClaimData { get; set; }
     private Dictionary<(ulong?, AuthorizationClaim), ClaimMappingBrief>? MappedClaims { get; set; }

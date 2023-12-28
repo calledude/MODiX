@@ -78,6 +78,8 @@ namespace Modix.Data.Test.TestData
             {
                 new GuildUserCreationData()
                 {
+                    Username = "Username",
+                    Discriminator = "Discriminator",
                     UserId = 1,
                     GuildId = 1,
                     Nickname = "ExistingNickname1",
@@ -86,6 +88,8 @@ namespace Modix.Data.Test.TestData
                 },
                 new GuildUserCreationData()
                 {
+                    Username = "Username",
+                    Discriminator = "Discriminator",
                     UserId = 2,
                     GuildId = 1,
                     Nickname = "ExistingNickname2",
@@ -94,6 +98,8 @@ namespace Modix.Data.Test.TestData
                 },
                 new GuildUserCreationData()
                 {
+                    Username = "Username",
+                    Discriminator = "Discriminator",
                     UserId = 3,
                     GuildId = 1,
                     Nickname = "ExistingNickname3",
@@ -102,6 +108,8 @@ namespace Modix.Data.Test.TestData
                 },
                 new GuildUserCreationData()
                 {
+                    Username = "Username",
+                    Discriminator = "Discriminator",
                     UserId = 3,
                     GuildId = 2,
                     Nickname = "ExistingNickname4",

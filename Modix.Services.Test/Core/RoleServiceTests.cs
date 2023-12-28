@@ -25,7 +25,10 @@ namespace Modix.Services.Test.Core
             public TestContext(
                 bool roleExists)
             {
-                GuildRoleMutationData = new GuildRoleMutationData();
+                GuildRoleMutationData = new GuildRoleMutationData()
+                {
+                    Name = "test"
+                };
 
                 MockCreateTransaction = new Mock<IRepositoryTransaction>();
 

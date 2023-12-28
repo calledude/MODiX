@@ -30,7 +30,7 @@ namespace Modix.Data.Models.Moderation
         /// <summary>
         /// See <see cref="InfractionEntity.Reason"/>.
         /// </summary>
-        public string Reason { get; set; } = null!;
+        public required string Reason { get; set; }
 
         /// <summary>
         /// See <see cref="InfractionEntity.Duration"/>.
@@ -40,13 +40,13 @@ namespace Modix.Data.Models.Moderation
         /// <summary>
         /// See <see cref="InfractionEntity.Subject"/>.
         /// </summary>
-        public GuildUserBrief Subject { get; set; } = null!;
+        public required GuildUserBrief Subject { get; set; }
 
         /// <summary>
         /// The associated <see cref="ModerationActionEntity"/> from <see cref="InfractionEntity.ModerationActions"/>,
         /// whose <see cref="ModerationActionEntity.Type"/> is <see cref="ModerationActionType.InfractionCreated"/>.
         /// </summary>
-        public ModerationActionBrief CreateAction { get; set; } = null!;
+        public required ModerationActionBrief CreateAction { get; set; }
 
         /// <summary>
         /// The associated <see cref="ModerationActionEntity"/> from <see cref="InfractionEntity.ModerationActions"/>,

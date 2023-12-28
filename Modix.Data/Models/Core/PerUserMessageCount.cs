@@ -2,9 +2,9 @@
 {
     public class PerUserMessageCount
     {
-        public string Username { get; set; } = null!;
+        public required string Username { get; set; }
 
-        public string Discriminator { get; set; } = null!;
+        public required string Discriminator { get; set; }
 
         public int Rank { get; set; }
 

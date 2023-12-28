@@ -25,12 +25,12 @@ namespace Modix.Data.Models.Moderation
         /// <summary>
         /// See <see cref="DeletedMessageEntity.Channel"/>.
         /// </summary>
-        public GuildChannelBrief Channel { get; set; } = null!;
+        public required GuildChannelBrief Channel { get; set; }
 
         /// <summary>
         /// See <see cref="DeletedMessageEntity.Author"/>.
         /// </summary>
-        public GuildUserBrief Author { get; set; } = null!;
+        public required GuildUserBrief Author { get; set; }
 
         /// <summary>
         /// See <see cref="DeletedMessageEntity.CreateAction.Created"/>.
@@ -40,27 +40,22 @@ namespace Modix.Data.Models.Moderation
         /// <summary>
         /// See <see cref="DeletedMessageEntity.CreateAction.CreatedBy"/>.
         /// </summary>
-        public GuildUserBrief CreatedBy { get; set; } = null!;
+        public required GuildUserBrief CreatedBy { get; set; }
 
         /// <summary>
         /// See <see cref="DeletedMessageEntity.Content"/>.
         /// </summary>
-        public string Content { get; set; } = null!;
+        public required string Content { get; set; }
 
         /// <summary>
         /// See <see cref="DeletedMessageEntity.Reason"/>.
         /// </summary>
-        public string Reason { get; set; } = null!;
+        public required string Reason { get; set; }
 
         /// <summary>
         /// See <see cref="DeletedMessageEntity.BatchId"/>.
         /// </summary>
         public long? BatchId { get; set; }
-
-        /// <summary>
-        /// See <see cref="DeletedMessageEntity.Batch"/>.
-        /// </summary>
-        public DeletedMessageBatchBrief Batch { get; set; } = null!;
 
         /// <summary>
         /// Defines the sortable properties of a <see cref="DeletedMessageSummary"/>

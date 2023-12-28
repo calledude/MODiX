@@ -69,16 +69,16 @@
 @code {
 
     [Inject]
-    public IPromotionsService PromotionsService { get; set; } = null!;
+    public required IPromotionsService PromotionsService { get; set; }
 
     [Inject]
-    public DiscordHelper DiscordHelper { get; set; } = null!;
+    public required DiscordHelper DiscordHelper { get; set; }
 
     [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
+    public required ISnackbar Snackbar { get; set; }
 
     [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
+    public required NavigationManager NavigationManager { get; set; }
 
     private ModixUser? _selectedUser;
     private string? _promotionComment;

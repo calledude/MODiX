@@ -10,12 +10,12 @@ namespace Modix.Data.Models.Core
         /// <summary>
         /// See <see cref="UserEntity.Username"/>.
         /// </summary>
-        public string Username { get; set; } = null!;
+        public required string Username { get; set; }
 
         /// <summary>
         /// See <see cref="UserEntity.Discriminator"/>.
         /// </summary>
-        public string Discriminator { get; set; } = null!;
+        public required string Discriminator { get; set; }
 
         /// <summary>
         /// See <see cref="GuildUserEntity.Nickname"/>.

@@ -18,7 +18,7 @@ namespace Modix.Data.Models.Promotions
         /// <summary>
         /// See <see cref="PromotionCommentEntity.Campaign"/>.
         /// </summary>
-        public PromotionCampaignBrief Campaign { get; set; } = null!;
+        public required PromotionCampaignBrief Campaign { get; set; }
 
         /// <summary>
         /// See <see cref="PromotionCommentEntity.Sentiment"/>.

@@ -33,7 +33,7 @@ namespace Modix.Data.Models.Core
         /// <summary>
         /// See <see cref="ConfigurationActionEntity.CreatedBy"/>.
         /// </summary>
-        public virtual GuildUserBrief CreatedBy { get; set; } = null!;
+        public virtual required GuildUserBrief CreatedBy { get; set; }
 
         /// <summary>
         /// See <see cref="ConfigurationActionEntity.ClaimMapping"/>.

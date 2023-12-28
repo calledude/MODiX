@@ -25,17 +25,17 @@ namespace Modix.Data.Models.Promotions
         /// <summary>
         /// See <see cref="PromotionCampaignEntity.Subject"/>.
         /// </summary>
-        public GuildUserBrief Subject { get; set; } = null!;
+        public required GuildUserBrief Subject { get; set; }
 
         /// <summary>
         /// See <see cref="PromotionCampaignEntity.TargetRole"/>.
         /// </summary>
-        public GuildRoleBrief TargetRole { get; set; } = null!;
+        public required GuildRoleBrief TargetRole { get; set; }
 
         /// <summary>
         /// See <see cref="PromotionCampaignEntity.CreateAction"/>.
         /// </summary>
-        public PromotionActionBrief CreateAction { get; set; } = null!;
+        public required PromotionActionBrief CreateAction { get; set; }
 
         /// <summary>
         /// See <see cref="PromotionCampaignEntity.Outcome"/>.

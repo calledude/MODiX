@@ -30,12 +30,12 @@ namespace Modix.Data.Models.Moderation
         /// <summary>
         /// See <see cref="DeletedMessageEntity.Content"/>
         /// </summary>
-        public string Content { get; set; } = null!;
+        public required string Content { get; set; }
 
         /// <summary>
         /// See <see cref="DeletedMessageEntity.Reason"/>
         /// </summary>
-        public string Reason { get; set; } = null!;
+        public required string Reason { get; set; }
 
         /// <summary>
         /// See <see cref="ModerationActionEntity.CreatedById"/>.

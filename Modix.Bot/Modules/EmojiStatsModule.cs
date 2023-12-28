@@ -99,7 +99,7 @@ namespace Modix.Modules
 
             var emojiStats = await _emojiRepository.GetEmojiStatsAsync(guildId, ephemeralEmoji);
 
-            if (emojiStats.Uses == 0)
+            if (emojiStats is null || emojiStats.Uses == 0)
             {
                 await FollowupAsync(embed: new EmbedBuilder()
                     .WithTitle("Unknown Emoji")

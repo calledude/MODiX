@@ -90,13 +90,13 @@
 
 @code {
     [Inject]
-    public DiscordHelper DiscordHelper { get; set; } = null!;
+    public required DiscordHelper DiscordHelper { get; set; }
 
     [Inject]
-    public IDesignatedChannelService DesignatedChannelService { get; set; } = null!;
+    public required IDesignatedChannelService DesignatedChannelService { get; set; }
 
     [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
+    public required ISnackbar Snackbar { get; set; }
 
     private Dictionary<DesignatedChannelType, List<DesignatedChannelData>>? DesignatedChannelMappings { get; set; }
     private DesignatedChannelType[]? DesignatedChannelTypes { get; set; }

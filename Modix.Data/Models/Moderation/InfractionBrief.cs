@@ -24,12 +24,12 @@ namespace Modix.Data.Models.Moderation
         /// <summary>
         /// See <see cref="InfractionEntity.Reason"/>.
         /// </summary>
-        public string Reason { get; set; } = null!;
+        public required string Reason { get; set; }
 
         /// <summary>
         /// See <see cref="InfractionEntity.RescindReason"/>.
         /// </summary>
-        public string? RescindReason { get; set; } = null!;
+        public string? RescindReason { get; set; }
 
         /// <summary>
         /// See <see cref="InfractionEntity.Duration"/>.
@@ -39,7 +39,7 @@ namespace Modix.Data.Models.Moderation
         /// <summary>
         /// See <see cref="InfractionEntity.Subject"/>.
         /// </summary>
-        public GuildUserBrief Subject { get; set; } = null!;
+        public required GuildUserBrief Subject { get; set; }
 
         [ExpansionExpression]
         internal static Expression<Func<InfractionEntity, InfractionBrief>> FromEntityProjection

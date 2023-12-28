@@ -11,7 +11,7 @@ namespace Modix.Data.Models.Moderation
         /// <summary>
         /// See <see cref="DeletedMessageBatchEntity.DeletedMessages"/>.
         /// </summary>
-        public IEnumerable<DeletedMessageCreationData> Data { get; set; } = null!;
+        public required IEnumerable<DeletedMessageCreationData> Data { get; set; }
 
         /// <summary>
         /// See <see cref="ModerationActionEntity.CreatedById"/>.

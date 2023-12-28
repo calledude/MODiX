@@ -137,13 +137,13 @@
 @code {
 
     [Inject]
-    public IModerationService ModerationService { get; set; } = null!;
+    public required IModerationService ModerationService { get; set; }
 
     [Inject]
-    public DiscordHelper DiscordHelper { get; set; } = null!;
+    public required DiscordHelper DiscordHelper { get; set; }
 
     [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
+    public required ISnackbar Snackbar { get; set; }
 
     private MudTable<DeletedMessageSummary>? TableRef;
     private Dictionary<long, List<DeletedMessageInformation>> DeletedMessagesContext { get; } = new Dictionary<long, List<DeletedMessageInformation>>();

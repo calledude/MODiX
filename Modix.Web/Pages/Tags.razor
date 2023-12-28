@@ -87,16 +87,16 @@
 
 @code {
     [Inject]
-    private ITagService TagService { get; set; } = null!;
+    public required ITagService TagService { get; set; }
 
     [Inject]
-    private DiscordHelper DiscordHelper { get; set; } = null!;
+    public required DiscordHelper DiscordHelper { get; set; }
 
     [Inject]
-    private IDialogService DialogService { get; set; } = null!;
+    public required IDialogService DialogService { get; set; }
 
     [Inject]
-    private ISnackbar Snackbar { get; set; } = null!;
+    public required ISnackbar Snackbar { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery]

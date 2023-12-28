@@ -120,13 +120,13 @@
     UserInformation? userInformation = null;
 
     [Inject]
-    public DiscordHelper DiscordHelper { get; set; } = null!;
+    public required DiscordHelper DiscordHelper { get; set; }
 
     [Inject]
-    public IUserService UserService { get; set; } = null!;
+    public required IUserService UserService { get; set; }
 
     [Inject]
-    public IMessageRepository MessageRepository { get; set; } = null!;
+    public required IMessageRepository MessageRepository { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

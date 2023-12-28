@@ -3,7 +3,7 @@
     public class MessageCountPerChannel
     {
         public ulong ChannelId { get; set; }
-        public string ChannelName { get; set; } = null!;
+        public required string ChannelName { get; set; }
         public int MessageCount { get; set; }
     }
 }

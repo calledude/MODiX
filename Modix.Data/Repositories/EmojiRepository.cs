@@ -89,7 +89,7 @@ namespace Modix.Data.Repositories
         /// A <see cref="Task"/> that will complete when the operation is complete,
         /// containing statistical information about the emoji.
         /// </returns>
-        Task<SingleEmojiUsageStatistics> GetEmojiStatsAsync(ulong guildId, EphemeralEmoji emoji, TimeSpan? dateFilter = null);
+        Task<SingleEmojiUsageStatistics?> GetEmojiStatsAsync(ulong guildId, EphemeralEmoji emoji, TimeSpan? dateFilter = null);
 
         /// <summary>
         /// Retrieves statistics for emojis within a guild.
@@ -220,7 +220,7 @@ namespace Modix.Data.Repositories
         }
 
         /// <inheritdoc />
-        public async Task<SingleEmojiUsageStatistics> GetEmojiStatsAsync(ulong guildId, EphemeralEmoji emoji, TimeSpan? dateFilter = null)
+        public async Task<SingleEmojiUsageStatistics?> GetEmojiStatsAsync(ulong guildId, EphemeralEmoji emoji, TimeSpan? dateFilter = null)
         {
             var query = GetQuery();
             var parameters = GetParameters();
@@ -229,7 +229,10 @@ namespace Modix.Data.Repositories
                 .SqlQueryRaw<SingleEmojiStatsDto>(query, parameters)
                 .FirstOrDefaultAsync();
 
-            return SingleEmojiUsageStatistics.FromDto(stats ?? new SingleEmojiStatsDto());
+            if (stats is null)
+                return null;
+
+            return SingleEmojiUsageStatistics.FromDto(stats);
 
             NpgsqlParameter[] GetParameters() =>
                 new[]
@@ -290,7 +293,10 @@ namespace Modix.Data.Repositories
                 .SqlQueryRaw<EmojiStatsDto>(query, parameters)
                 .ToArrayAsync();
 
-            return stats.Select(x => EmojiUsageStatistics.FromDto(x ?? new EmojiStatsDto())).ToArray();
+            return stats
+                .Where(x => x is not null)
+                .Select(EmojiUsageStatistics.FromDto)
+                .ToArray();
 
             NpgsqlParameter[] GetParameters()
             {

@@ -17,11 +17,11 @@
         /// <summary>
         /// The name of the property to be sorted.
         /// </summary>
-        public string PropertyName { get; set; } = null!;
+        public required string PropertyName { get; set; }
 
         /// <summary>
         /// The direction of the sort to be applied.
         /// </summary>
-        public SortDirection Direction { get; set; }
+        public required SortDirection Direction { get; set; }
     }
 }

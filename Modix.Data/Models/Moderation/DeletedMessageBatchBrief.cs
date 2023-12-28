@@ -18,7 +18,7 @@ namespace Modix.Data.Models.Moderation
         /// <summary>
         /// See <see cref="DeletedMessageBatchEntity.CreateAction"/>.
         /// </summary>
-        public ModerationActionBrief CreateAction { get; set; } = null!;
+        public required ModerationActionBrief CreateAction { get; set; }
 
         [ExpansionExpression]
         internal static Expression<Func<DeletedMessageBatchEntity, DeletedMessageBatchBrief>> FromEntityProjection

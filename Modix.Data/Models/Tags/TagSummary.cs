@@ -24,7 +24,7 @@ namespace Modix.Data.Models.Tags
         /// <summary>
         /// See <see cref="TagEntity.CreateAction"/>.
         /// </summary>
-        public TagActionBrief CreateAction { get; set; } = null!;
+        public required TagActionBrief CreateAction { get; set; }
 
         /// <summary>
         /// See <see cref="TagEntity.DeleteAction"/>.
@@ -34,12 +34,12 @@ namespace Modix.Data.Models.Tags
         /// <summary>
         /// See <see cref="TagEntity.Name"/>.
         /// </summary>
-        public string Name { get; set; } = null!;
+        public required string Name { get; set; }
 
         /// <summary>
         /// See <see cref="TagEntity.Content"/>.
         /// </summary>
-        public string Content { get; set; } = null!;
+        public required string Content { get; set; }
 
         /// <summary>
         /// See <see cref="TagEntity.Uses"/>.

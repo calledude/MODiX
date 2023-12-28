@@ -158,22 +158,22 @@
 
 @code {
     [Inject]
-    public SessionState SessionState { get; set; } = null!;
+    public required SessionState SessionState { get; set; }
 
     [Inject]
-    public CookieService CookieService { get; set; } = null!;
+    public required CookieService CookieService { get; set; }
 
     [Inject]
-    public DiscordHelper DiscordHelper { get; set; } = null!;
+    public required DiscordHelper DiscordHelper { get; set; }
 
     [Inject]
-    public IPromotionsService PromotionsService { get; set; } = null!;
+    public required IPromotionsService PromotionsService { get; set; }
 
     [Inject]
-    public IDialogService DialogService { get; set; } = null!;
+    public required IDialogService DialogService { get; set; }
 
     [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
+    public required ISnackbar Snackbar { get; set; }
 
     private ulong CurrentUserId { get; set; }
 

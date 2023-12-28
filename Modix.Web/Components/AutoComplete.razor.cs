@@ -21,5 +21,5 @@ public partial class AutoComplete<T> where T : IAutoCompleteItem
     public string? Title { get; set; }
 
     [Parameter, EditorRequired]
-    public Func<string, Task<IEnumerable<T>>> SearchFunc { get; set; } = null!;
+    public required Func<string, Task<IEnumerable<T>>> SearchFunc { get; set; }
 }

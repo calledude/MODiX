@@ -91,13 +91,13 @@
 
 @code {
     [Inject]
-    public DiscordHelper DiscordHelper { get; set; } = null!;
+    public required DiscordHelper DiscordHelper { get; set; }
 
     [Inject]
-    public IDesignatedRoleService DesignatedRoleService { get; set; } = null!;
+    public required IDesignatedRoleService DesignatedRoleService { get; set; }
 
     [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
+    public required ISnackbar Snackbar { get; set; }
 
     private Dictionary<DesignatedRoleType, List<DesignatedRoleData>>? DesignatedRoleMappings { get; set; }
     private DesignatedRoleType[]? DesignatedRoleTypes { get; set; }

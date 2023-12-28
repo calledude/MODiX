@@ -49,22 +49,22 @@
 
 @code {
     [CascadingParameter]
-    public Task<AuthenticationState>? AuthenticationState { get; set; } = null!;
+    public required Task<AuthenticationState>? AuthenticationState { get; set; }
 
     [Inject]
-    public DiscordHelper DiscordHelper { get; set; } = null!;
+    public required DiscordHelper DiscordHelper { get; set; }
+
+    [Inject]
+    public required CookieService CookieService { get; set; }
+
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
 
     private string? AvatarUrl { get; set; }
     private string? Username { get; set; }
 
     private IEnumerable<GuildOption> GuildOptions { get; set; } = Array.Empty<GuildOption>();
     private SocketGuild? SelectedGuild { get; set; }
-
-    [Inject]
-    public CookieService CookieService { get; set; } = null!;
-
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {

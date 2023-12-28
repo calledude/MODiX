@@ -34,7 +34,7 @@ namespace Modix.Data.Models.Promotions
         /// <summary>
         /// See <see cref="PromotionActionEntity.CreatedBy"/>.
         /// </summary>
-        public GuildUserBrief CreatedBy { get; set; } = null!;
+        public required GuildUserBrief CreatedBy { get; set; }
 
         /// <summary>
         /// See <see cref="PromotionActionEntity.Campaign"/>.

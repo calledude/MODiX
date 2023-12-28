@@ -18,7 +18,7 @@ namespace Modix.Data.Models.Core
         /// <summary>
         /// See <see cref="DesignatedChannelMappingEntity.Channel"/>.
         /// </summary>
-        public GuildChannelBrief Channel { get; set; } = null!;
+        public required GuildChannelBrief Channel { get; set; }
 
         /// <summary>
         /// See <see cref="DesignatedChannelMappingEntity.Type"/>

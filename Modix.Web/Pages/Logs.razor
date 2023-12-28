@@ -40,11 +40,11 @@
 </CascadingAuthenticationState>
 
 @code {
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
+
     [Parameter]
     public string? SubPage { get; set; }
-
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
 
     [Parameter]
     [SupplyParameterFromQuery]

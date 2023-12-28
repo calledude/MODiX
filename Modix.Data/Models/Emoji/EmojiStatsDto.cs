@@ -4,7 +4,7 @@
     {
         public ulong? EmojiId { get; set; }
 
-        public string EmojiName { get; set; } = null!;
+        public required string EmojiName { get; set; }
 
         public bool IsAnimated { get; set; }
 

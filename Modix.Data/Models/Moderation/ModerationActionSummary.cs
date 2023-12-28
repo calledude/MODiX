@@ -36,7 +36,7 @@ namespace Modix.Data.Models.Moderation
         /// <summary>
         /// See <see cref="ModerationActionEntity.CreatedBy"/>.
         /// </summary>
-        public GuildUserBrief CreatedBy { get; set; } = null!;
+        public required GuildUserBrief CreatedBy { get; set; }
 
         /// <summary>
         /// See <see cref="ModerationActionEntity.Infraction"/>.

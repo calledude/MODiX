@@ -53,7 +53,7 @@ namespace Modix.Data.Models.Tags
         // TODO: There are some tests that have null CreatedBy's. We should
         // update the tests to have valid elements here.
         [Required]
-        public virtual GuildUserEntity? CreatedBy { get; set; } = null!;
+        public virtual GuildUserEntity? CreatedBy { get; set; }
 
         /// <summary>
         /// The unique identifier of the tag that was created by the action.

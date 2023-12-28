@@ -43,7 +43,7 @@ namespace Modix.Data.Models.Core
         /// <summary>
         /// See <see cref="ClaimMappingEntity.CreateAction"/>.
         /// </summary>
-        public ConfigurationActionBrief CreateAction { get; set; } = null!;
+        public required ConfigurationActionBrief CreateAction { get; set; }
 
         /// <summary>
         /// See <see cref="ClaimMappingEntity.DeleteAction"/>.
