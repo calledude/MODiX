@@ -115,7 +115,7 @@ namespace Modix
             builder.Services.Configure<ModixConfig>(configuration);
 
             builder.Services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(@"dataprotection"));
+                .PersistKeysToFileSystem(new DirectoryInfo("dataprotection"));
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

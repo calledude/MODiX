@@ -79,7 +79,7 @@ namespace Modix.Data.Migrations
                 .Replace('`', '"'));
 
             migrationBuilder.Sql(
-                @"select setval('`DesignatedChannelMappings_Id_seq`', (SELECT MAX(`Id`) FROM `DesignatedChannelMappings`))"
+                "select setval('`DesignatedChannelMappings_Id_seq`', (SELECT MAX(`Id`) FROM `DesignatedChannelMappings`))"
                 .Replace('`', '"'));
 
             migrationBuilder.DropTable(
@@ -192,7 +192,7 @@ namespace Modix.Data.Migrations
                 name: "DesignatedChannelMappings");
 
             migrationBuilder.Sql(
-                @"select setval('`ModerationLogChannelMappings_Id_seq`', (SELECT MAX(`Id`) FROM `ModerationLogChannelMappings`))"
+                "select setval('`ModerationLogChannelMappings_Id_seq`', (SELECT MAX(`Id`) FROM `ModerationLogChannelMappings`))"
                 .Replace('`', '"'));
 
             migrationBuilder.AddForeignKey(
