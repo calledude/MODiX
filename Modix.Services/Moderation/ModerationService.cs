@@ -589,7 +589,7 @@ namespace Modix.Services.Moderation
         public async Task<bool> DoesModeratorOutrankUserAsync(ulong guildId, ulong moderatorId, ulong subjectId)
         {
             //If the user doesn't exist in the guild, we outrank them
-            if (await _userService.GuildUserExistsAsync(guildId, subjectId) == false)
+            if (!await _userService.GuildUserExistsAsync(guildId, subjectId))
                 return true;
 
             var subject = await _userService.GetGuildUserAsync(guildId, subjectId);

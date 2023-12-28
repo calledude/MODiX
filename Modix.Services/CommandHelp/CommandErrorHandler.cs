@@ -85,7 +85,7 @@ namespace Modix.Services.CommandHelp
                     Footer = new EmbedFooterBuilder { Text = "Remove your reaction to delete this message" }
                 }.Build());
 
-                if (ErrorReplies.TryAdd(cachedMessage.Id, msg.Id) == false)
+                if (!ErrorReplies.TryAdd(cachedMessage.Id, msg.Id))
                 {
                     await msg.DeleteAsync();
                 }
@@ -117,7 +117,7 @@ namespace Modix.Services.CommandHelp
             //If there's an error reply when the reaction is removed, delete that reply,
             //remove the cached error, remove it from the cached replies, and remove
             //the reactions from the original message
-            if (ErrorReplies.TryGetValue(cachedMessage.Id, out var botReplyId) == false)
+            if (!ErrorReplies.TryGetValue(cachedMessage.Id, out var botReplyId))
             { return; }
 
             var channel = await cachedChannel.GetOrDownloadAsync();

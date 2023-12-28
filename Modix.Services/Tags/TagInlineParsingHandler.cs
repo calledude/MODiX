@@ -57,9 +57,9 @@ namespace Modix.Services.Tags
             if (string.IsNullOrWhiteSpace(tagName))
             { return; }
 
-            if (await AuthorizationService.HasClaimsAsync(guildUser.Id, guildUser.Guild.Id, guildUser.Roles.Select(x => x.Id).ToList(), AuthorizationClaim.UseTag) == false)
+            if (!await AuthorizationService.HasClaimsAsync(guildUser.Id, guildUser.Guild.Id, guildUser.Roles.Select(x => x.Id).ToList(), AuthorizationClaim.UseTag))
             { return; }
-            if (await TagService.TagExistsAsync(guildUser.Guild.Id, tagName) == false)
+            if (!await TagService.TagExistsAsync(guildUser.Guild.Id, tagName))
             { return; }
 
             try
