@@ -33,8 +33,8 @@ namespace Modix.Modules
             [Summary(description: "The phrase to search Stack Exchange for.")]
                 string phrase)
         {
-            var startLocation = phrase.IndexOf("[");
-            var endLocation = phrase.IndexOf("]");
+            var startLocation = phrase.IndexOf('[');
+            var endLocation = phrase.IndexOf(']');
 
             string? site = null;
             string? tags = null;
