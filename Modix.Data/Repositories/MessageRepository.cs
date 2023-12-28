@@ -134,7 +134,7 @@ namespace Modix.Data.Repositories
             : base(context) { }
 
         private static readonly RepositoryTransactionFactory _maintainTransactionFactory
-            = new RepositoryTransactionFactory();
+            = new();
 
         /// <inheritdoc />
         public Task<IRepositoryTransaction> BeginMaintainTransactionAsync()

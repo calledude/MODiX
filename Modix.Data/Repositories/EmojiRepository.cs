@@ -302,11 +302,11 @@ namespace Modix.Data.Repositories
             {
                 var paramList = new List<NpgsqlParameter>(3)
                 {
-                    new NpgsqlParameter(":GuildId", NpgsqlDbType.Bigint)
+                    new(":GuildId", NpgsqlDbType.Bigint)
                     {
                         Value = unchecked((long)guildId),
                     },
-                    new NpgsqlParameter(":StartTimestamp", NpgsqlDbType.TimestampTz)
+                    new(":StartTimestamp", NpgsqlDbType.TimestampTz)
                     {
                         Value = dateFilter is null
                             ? DateTimeOffset.MinValue
@@ -367,7 +367,7 @@ namespace Modix.Data.Repositories
             {
                 var paramList = new List<NpgsqlParameter>(3)
                 {
-                    new NpgsqlParameter(":GuildId", NpgsqlDbType.Bigint)
+                    new(":GuildId", NpgsqlDbType.Bigint)
                     {
                         Value = unchecked((long)guildId),
                     },
@@ -407,6 +407,6 @@ namespace Modix.Data.Repositories
         }
 
         private static readonly RepositoryTransactionFactory _maintainTransactionFactory
-            = new RepositoryTransactionFactory();
+            = new();
     }
 }

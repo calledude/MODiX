@@ -28,7 +28,7 @@ namespace Modix.Data.Models.Promotions
         public ulong CreatedById { get; set; }
 
         internal PromotionCampaignEntity ToEntity()
-            => new PromotionCampaignEntity()
+            => new()
             {
                 GuildId = GuildId,
                 SubjectId = SubjectId,

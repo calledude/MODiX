@@ -48,7 +48,7 @@ namespace Modix.Data.Models.Emoji
         public EmojiUsageType UsageType { get; set; }
 
         internal EmojiEntity ToEntity()
-            => new EmojiEntity()
+            => new()
             {
                 GuildId = GuildId,
                 ChannelId = ChannelId,
@@ -62,7 +62,7 @@ namespace Modix.Data.Models.Emoji
             };
 
         internal EmojiEntity ToEntity(DateTimeOffset timestamp)
-            => new EmojiEntity()
+            => new()
             {
                 GuildId = GuildId,
                 ChannelId = ChannelId,

@@ -11,19 +11,19 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<UserEntity> Entities
             = new UserEntity[]
             {
-                new UserEntity()
+                new()
                 {
                     Id = 1,
                     Username = "Username1",
                     Discriminator = "Discriminator1"
                 },
-                new UserEntity()
+                new()
                 {
                     Id = 2,
                     Username = "Username2",
                     Discriminator = "Discriminator2"
                 },
-                new UserEntity()
+                new()
                 {
                     Id = 3,
                     Username = "Username3",
@@ -32,7 +32,7 @@ namespace Modix.Data.Test.TestData
             };
 
         public static UserEntity Clone(this UserEntity entity)
-            => new UserEntity()
+            => new()
             {
                 Id = entity.Id,
                 Username = entity.Username,
@@ -45,7 +45,7 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<GuildUserCreationData> NewCreations
             = new GuildUserCreationData[]
             {
-                new GuildUserCreationData()
+                new()
                 {
                     UserId = 4,
                     GuildId = 1,
@@ -60,7 +60,7 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<GuildUserCreationData> ExistingCreations
             = new GuildUserCreationData[]
             {
-                new GuildUserCreationData()
+                new()
                 {
                     UserId = 1,
                     GuildId = 2,

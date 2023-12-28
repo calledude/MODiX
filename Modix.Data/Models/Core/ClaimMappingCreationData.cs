@@ -38,7 +38,7 @@ namespace Modix.Data.Models.Core
         public ulong CreatedById { get; set; }
 
         internal ClaimMappingEntity ToEntity()
-            => new ClaimMappingEntity()
+            => new()
             {
                 Type = Type,
                 GuildId = GuildId,

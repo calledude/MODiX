@@ -33,7 +33,7 @@ namespace Modix.Data.Models.Promotions
         public ulong CreatedById { get; set; }
 
         public PromotionCommentEntity ToEntity()
-            => new PromotionCommentEntity()
+            => new()
             {
                 CampaignId = CampaignId,
                 Sentiment = Sentiment,

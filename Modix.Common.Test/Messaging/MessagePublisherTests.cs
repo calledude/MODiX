@@ -27,7 +27,7 @@ namespace Modix.Common.Test.Messaging
             }
 
             public MessagePublisher BuildUut()
-                => new MessagePublisher(
+                => new(
                     Logger,
                     MockServiceProvider.Object);
 

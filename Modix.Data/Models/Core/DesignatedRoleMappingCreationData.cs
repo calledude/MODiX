@@ -28,7 +28,7 @@ namespace Modix.Data.Models.Core
         public ulong CreatedById { get; set; }
 
         internal DesignatedRoleMappingEntity ToEntity()
-            => new DesignatedRoleMappingEntity()
+            => new()
             {
                 GuildId = GuildId,
                 RoleId = RoleId,

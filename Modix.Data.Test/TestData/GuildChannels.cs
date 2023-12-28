@@ -10,19 +10,19 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<GuildChannelEntity> Entities
             = new GuildChannelEntity[]
             {
-                new GuildChannelEntity()
+                new()
                 {
                     ChannelId = 1,
                     GuildId = 1,
                     Name = "GuildChannel1"
                 },
-                new GuildChannelEntity()
+                new()
                 {
                     ChannelId = 2,
                     GuildId = 1,
                     Name = "GuildChannel2"
                 },
-                new GuildChannelEntity()
+                new()
                 {
                     ChannelId = 3,
                     GuildId = 2,
@@ -31,7 +31,7 @@ namespace Modix.Data.Test.TestData
             };
 
         public static GuildChannelEntity Clone(this GuildChannelEntity entity)
-            => new GuildChannelEntity()
+            => new()
             {
                 ChannelId = entity.ChannelId,
                 GuildId = entity.GuildId,
@@ -44,7 +44,7 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<GuildChannelCreationData> NewCreations
             = new GuildChannelCreationData[]
             {
-                new GuildChannelCreationData()
+                new()
                 {
                     ChannelId = 4,
                     GuildId = 3,
@@ -55,25 +55,25 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<GuildChannelCreationData> ExistingCreations
             = new GuildChannelCreationData[]
             {
-                new GuildChannelCreationData()
+                new()
                 {
                     ChannelId = 1,
                     GuildId = 1,
                     Name = "ExistingGuildChannel1"
                 },
-                new GuildChannelCreationData()
+                new()
                 {
                     ChannelId = 2,
                     GuildId = 1,
                     Name = "ExistingGuildChannel2"
                 },
-                new GuildChannelCreationData()
+                new()
                 {
                     ChannelId = 3,
                     GuildId = 2,
                     Name = "ExistingGuildChannel3"
                 },
-                new GuildChannelCreationData()
+                new()
                 {
                     ChannelId = 3,
                     GuildId = 3,

@@ -185,9 +185,9 @@ namespace Modix.Data.Repositories
                 .ToArrayAsync();
 
         private static readonly RepositoryTransactionFactory _createTransactionFactory
-            = new RepositoryTransactionFactory();
+            = new();
 
         private static readonly RepositoryTransactionFactory _updateTransactionFactory
-            = new RepositoryTransactionFactory();
+            = new();
     }
 }

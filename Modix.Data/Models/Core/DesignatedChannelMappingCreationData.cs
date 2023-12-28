@@ -28,7 +28,7 @@ namespace Modix.Data.Models.Core
         public ulong CreatedById { get; set; }
 
         internal DesignatedChannelMappingEntity ToEntity()
-            => new DesignatedChannelMappingEntity()
+            => new()
             {
                 GuildId = GuildId,
                 ChannelId = ChannelId,

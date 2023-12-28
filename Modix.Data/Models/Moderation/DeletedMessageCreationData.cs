@@ -48,7 +48,7 @@ namespace Modix.Data.Models.Moderation
         public long BatchId { get; set; }
 
         internal DeletedMessageEntity ToEntity()
-            => new DeletedMessageEntity()
+            => new()
             {
                 MessageId = MessageId,
                 GuildId = GuildId,
@@ -66,7 +66,7 @@ namespace Modix.Data.Models.Moderation
             };
 
         internal DeletedMessageEntity ToBatchEntity()
-            => new DeletedMessageEntity()
+            => new()
             {
                 MessageId = MessageId,
                 GuildId = GuildId,

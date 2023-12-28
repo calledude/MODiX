@@ -38,7 +38,7 @@ namespace Modix.Data.Models.Moderation
         public ulong CreatedById { get; set; }
 
         internal InfractionEntity ToEntity()
-            => new InfractionEntity()
+            => new()
             {
                 GuildId = GuildId,
                 Type = Type,

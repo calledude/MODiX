@@ -10,21 +10,21 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<GuildRoleEntity> Entities
             = new GuildRoleEntity[]
             {
-                new GuildRoleEntity()
+                new()
                 {
                     RoleId = 1,
                     GuildId = 1,
                     Name = "GuildRole1",
                     Position = 10
                 },
-                new GuildRoleEntity()
+                new()
                 {
                     RoleId = 2,
                     GuildId = 1,
                     Name = "GuildRole2",
                     Position = 11
                 },
-                new GuildRoleEntity()
+                new()
                 {
                     RoleId = 3,
                     GuildId = 2,
@@ -34,7 +34,7 @@ namespace Modix.Data.Test.TestData
             };
 
         public static GuildRoleEntity Clone(this GuildRoleEntity entity)
-            => new GuildRoleEntity()
+            => new()
             {
                 RoleId = entity.RoleId,
                 GuildId = entity.GuildId,
@@ -48,7 +48,7 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<GuildRoleCreationData> NewCreations
             = new GuildRoleCreationData[]
             {
-                new GuildRoleCreationData()
+                new()
                 {
                     RoleId = 4,
                     GuildId = 3,
@@ -60,28 +60,28 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<GuildRoleCreationData> ExistingCreations
             = new GuildRoleCreationData[]
             {
-                new GuildRoleCreationData()
+                new()
                 {
                     RoleId = 1,
                     GuildId = 1,
                     Name = "ExistingGuildRole1",
                     Position = 14
                 },
-                new GuildRoleCreationData()
+                new()
                 {
                     RoleId = 2,
                     GuildId = 1,
                     Name = "ExistingGuildRole2",
                     Position = 15
                 },
-                new GuildRoleCreationData()
+                new()
                 {
                     RoleId = 3,
                     GuildId = 2,
                     Name = "ExistingGuildRole3",
                     Position = 16
                 },
-                new GuildRoleCreationData()
+                new()
                 {
                     RoleId = 3,
                     GuildId = 3,

@@ -11,7 +11,7 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<GuildUserEntity> Entities
             = new GuildUserEntity[]
             {
-                new GuildUserEntity()
+                new()
                 {
                     UserId = 1,
                     GuildId = 1,
@@ -19,7 +19,7 @@ namespace Modix.Data.Test.TestData
                     FirstSeen = DateTimeOffset.Parse("2018-01-01T00:00:00Z"),
                     LastSeen = DateTimeOffset.Parse("2018-01-02T00:00:00Z")
                 },
-                new GuildUserEntity()
+                new()
                 {
                     UserId = 2,
                     GuildId = 1,
@@ -27,7 +27,7 @@ namespace Modix.Data.Test.TestData
                     FirstSeen = DateTimeOffset.Parse("2018-01-03T00:00:00Z"),
                     LastSeen = DateTimeOffset.Parse("2018-01-04T00:00:00Z")
                 },
-                new GuildUserEntity()
+                new()
                 {
                     UserId = 3,
                     GuildId = 1,
@@ -35,7 +35,7 @@ namespace Modix.Data.Test.TestData
                     FirstSeen = DateTimeOffset.Parse("2018-01-05T00:00:00Z"),
                     LastSeen = DateTimeOffset.Parse("2018-01-06T00:00:00Z")
                 },
-                new GuildUserEntity()
+                new()
                 {
                     UserId = 3,
                     GuildId = 2,
@@ -46,7 +46,7 @@ namespace Modix.Data.Test.TestData
             };
 
         public static GuildUserEntity Clone(this GuildUserEntity entity)
-            => new GuildUserEntity()
+            => new()
             {
                 UserId = entity.UserId,
                 GuildId = entity.GuildId,
@@ -61,7 +61,7 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<GuildUserCreationData> NewCreations
             = new GuildUserCreationData[]
             {
-                new GuildUserCreationData()
+                new()
                 {
                     UserId = 4,
                     GuildId = 1,
@@ -76,7 +76,7 @@ namespace Modix.Data.Test.TestData
         public static readonly IEnumerable<GuildUserCreationData> ExistingCreations
             = new GuildUserCreationData[]
             {
-                new GuildUserCreationData()
+                new()
                 {
                     Username = "Username",
                     Discriminator = "Discriminator",
@@ -86,7 +86,7 @@ namespace Modix.Data.Test.TestData
                     FirstSeen = DateTimeOffset.Parse("2018-03-01T00:00:00Z"),
                     LastSeen = DateTimeOffset.Parse("2018-03-02T00:00:00Z")
                 },
-                new GuildUserCreationData()
+                new()
                 {
                     Username = "Username",
                     Discriminator = "Discriminator",
@@ -96,7 +96,7 @@ namespace Modix.Data.Test.TestData
                     FirstSeen = DateTimeOffset.Parse("2018-03-03T00:00:00Z"),
                     LastSeen = DateTimeOffset.Parse("2018-03-04T00:00:00Z")
                 },
-                new GuildUserCreationData()
+                new()
                 {
                     Username = "Username",
                     Discriminator = "Discriminator",
@@ -106,7 +106,7 @@ namespace Modix.Data.Test.TestData
                     FirstSeen = DateTimeOffset.Parse("2018-03-05T00:00:00Z"),
                     LastSeen = DateTimeOffset.Parse("2018-03-06T00:00:00Z")
                 },
-                new GuildUserCreationData()
+                new()
                 {
                     Username = "Username",
                     Discriminator = "Discriminator",

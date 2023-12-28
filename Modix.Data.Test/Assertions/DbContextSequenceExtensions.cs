@@ -87,7 +87,7 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         private static readonly Dictionary<Type, Func<IProperty, ITypeBase, ValueGenerator>> _valueGeneratorConstructorsByValueType
-            = new Dictionary<Type, Func<IProperty, ITypeBase, ValueGenerator>>()
+            = new()
             {
                 [typeof(long)] = (p, e) => new ResettableInt64SequenceValueGenerator()
             };
