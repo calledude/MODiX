@@ -168,10 +168,7 @@ namespace Modix.Services.Tags
                 .Where(x => x.GuildId == guildId)
                 .Where(x => x.DeleteActionId == null)
                 .Where(x => x.Name == name)
-                .SingleOrDefaultAsync();
-
-            if (tag is null)
-                throw new ArgumentException("The tag provided was not found.");
+                .SingleOrDefaultAsync() ?? throw new ArgumentException("The tag provided was not found.");
 
             await EnsureUserCanMaintainTagAsync(tag, modifierId);
 
@@ -194,10 +191,7 @@ namespace Modix.Services.Tags
                 .Where(x => x.GuildId == guildId)
                 .Where(x => x.DeleteActionId == null)
                 .Where(x => x.Name == name)
-                .SingleOrDefaultAsync();
-
-            if (tag is null)
-                throw new ArgumentException("The tag provided was not found.");
+                .SingleOrDefaultAsync() ?? throw new ArgumentException("The tag provided was not found.");
 
             await EnsureUserCanMaintainTagAsync(tag, deleterId);
 

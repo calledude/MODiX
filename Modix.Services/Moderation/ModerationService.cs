@@ -385,10 +385,7 @@ namespace Modix.Services.Moderation
             _authorizationService.RequireAuthenticatedUser();
             _authorizationService.RequireClaims(AuthorizationClaim.ModerationDeleteInfraction);
 
-            var infraction = await _infractionRepository.ReadSummaryAsync(infractionId);
-
-            if (infraction == null)
-                throw new InvalidOperationException($"Infraction {infractionId} does not exist");
+            var infraction = await _infractionRepository.ReadSummaryAsync(infractionId) ?? throw new InvalidOperationException($"Infraction {infractionId} does not exist");
 
             await RequireSubjectRankLowerThanModeratorRankAsync(infraction.GuildId,
                 _authorizationService.CurrentUserId.Value, infraction.Subject.Id);
@@ -761,10 +758,7 @@ namespace Modix.Services.Moderation
                     GuildId = guild.Id,
                     Type = DesignatedRoleType.ModerationMute,
                     IsDeleted = false
-                })).FirstOrDefault();
-
-            if (mapping == null)
-                throw new InvalidOperationException(
+                })).FirstOrDefault() ?? throw new InvalidOperationException(
                     $"There are currently no designated mute roles within guild {guild.Id}");
 
             return guild.Roles.First(x => x.Id == mapping.Role.Id);

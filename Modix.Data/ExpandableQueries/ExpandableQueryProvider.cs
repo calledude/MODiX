@@ -29,7 +29,7 @@ namespace Modix.Data.ExpandableQueries
             }
             catch (TargetInvocationException ex)
             {
-                if (ex.InnerException is object)
+                if (ex.InnerException is not null)
                 {
                     throw ex.InnerException;
                 }

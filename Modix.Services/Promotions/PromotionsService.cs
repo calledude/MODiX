@@ -200,10 +200,7 @@ namespace Modix.Services.Promotions
             }))
                 throw new InvalidOperationException("Only one comment can be made per user, per campaign.");
 
-            var campaign = await PromotionCampaignRepository.ReadDetailsAsync(campaignId);
-
-            if (campaign is null)
-                throw new InvalidOperationException($"Campaign {campaignId} could not be found.");
+            var campaign = await PromotionCampaignRepository.ReadDetailsAsync(campaignId) ?? throw new InvalidOperationException($"Campaign {campaignId} could not be found.");
 
             if (campaign.Subject.Id == AuthorizationService.CurrentUserId)
                 throw new InvalidOperationException("You aren't allowed to comment on your own campaign.");
@@ -355,9 +352,7 @@ namespace Modix.Services.Promotions
 
             using (var transaction = await PromotionCampaignRepository.BeginCloseTransactionAsync())
             {
-                var campaign = await PromotionCampaignRepository.ReadDetailsAsync(campaignId);
-                if (campaign is null)
-                    throw new InvalidOperationException($"Campaign {campaignId} does not exist.");
+                var campaign = await PromotionCampaignRepository.ReadDetailsAsync(campaignId) ?? throw new InvalidOperationException($"Campaign {campaignId} does not exist.");
 
                 if (campaign.CloseAction is not null)
                     throw new InvalidOperationException($"Campaign {campaignId} is already closed.");
@@ -374,9 +369,7 @@ namespace Modix.Services.Promotions
                         throw new InvalidOperationException($"User {subject.GetDisplayName()} is already a member of role {campaign.TargetRole.Name}.");
 
                     var guild = await DiscordClient.GetGuildAsync(campaign.GuildId);
-                    var targetRole = guild.GetRole(campaign.TargetRole.Id);
-                    if (targetRole is null)
-                        throw new InvalidOperationException($"Role {campaign.TargetRole.Name} no longer exists.");
+                    var targetRole = guild.GetRole(campaign.TargetRole.Id) ?? throw new InvalidOperationException($"Role {campaign.TargetRole.Name} no longer exists.");
 
                     await subject.AddRoleAsync(targetRole);
 
