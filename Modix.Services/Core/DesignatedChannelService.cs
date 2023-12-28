@@ -119,31 +119,29 @@ namespace Modix.Services.Core
             AuthorizationService.RequireAuthenticatedUser();
             AuthorizationService.RequireClaims(AuthorizationClaim.DesignatedChannelMappingCreate);
 
-            using (var transaction = await DesignatedChannelMappingRepository.BeginCreateTransactionAsync())
+            using var transaction = await DesignatedChannelMappingRepository.BeginCreateTransactionAsync();
+            if (await DesignatedChannelMappingRepository.AnyAsync(new DesignatedChannelMappingSearchCriteria()
             {
-                if (await DesignatedChannelMappingRepository.AnyAsync(new DesignatedChannelMappingSearchCriteria()
-                {
-                    GuildId = guild.Id,
-                    ChannelId = logChannel.Id,
-                    IsDeleted = false,
-                    Type = type
-                }, default))
-                {
-                    throw new InvalidOperationException($"{logChannel.Name} in {guild.Name} is already assigned to {type}");
-                }
-
-                var id = await DesignatedChannelMappingRepository.CreateAsync(new DesignatedChannelMappingCreationData()
-                {
-                    GuildId = guild.Id,
-                    ChannelId = logChannel.Id,
-                    CreatedById = AuthorizationService.CurrentUserId.Value,
-                    Type = type
-                });
-
-                transaction.Commit();
-
-                return id;
+                GuildId = guild.Id,
+                ChannelId = logChannel.Id,
+                IsDeleted = false,
+                Type = type
+            }, default))
+            {
+                throw new InvalidOperationException($"{logChannel.Name} in {guild.Name} is already assigned to {type}");
             }
+
+            var id = await DesignatedChannelMappingRepository.CreateAsync(new DesignatedChannelMappingCreationData()
+            {
+                GuildId = guild.Id,
+                ChannelId = logChannel.Id,
+                CreatedById = AuthorizationService.CurrentUserId.Value,
+                Type = type
+            });
+
+            transaction.Commit();
+
+            return id;
         }
 
         /// <inheritdoc />
@@ -152,22 +150,20 @@ namespace Modix.Services.Core
             AuthorizationService.RequireAuthenticatedUser();
             AuthorizationService.RequireClaims(AuthorizationClaim.DesignatedChannelMappingDelete);
 
-            using (var transaction = await DesignatedChannelMappingRepository.BeginDeleteTransactionAsync())
+            using var transaction = await DesignatedChannelMappingRepository.BeginDeleteTransactionAsync();
+            var deletedCount = await DesignatedChannelMappingRepository.DeleteAsync(new DesignatedChannelMappingSearchCriteria()
             {
-                var deletedCount = await DesignatedChannelMappingRepository.DeleteAsync(new DesignatedChannelMappingSearchCriteria()
-                {
-                    GuildId = guild.Id,
-                    ChannelId = logChannel.Id,
-                    IsDeleted = false,
-                    Type = type
-                }, AuthorizationService.CurrentUserId.Value);
+                GuildId = guild.Id,
+                ChannelId = logChannel.Id,
+                IsDeleted = false,
+                Type = type
+            }, AuthorizationService.CurrentUserId.Value);
 
-                if (deletedCount == 0)
-                    throw new InvalidOperationException($"{logChannel.Name} in {guild.Name} is not assigned to {type}");
+            if (deletedCount == 0)
+                throw new InvalidOperationException($"{logChannel.Name} in {guild.Name} is not assigned to {type}");
 
-                transaction.Commit();
-                return deletedCount;
-            }
+            transaction.Commit();
+            return deletedCount;
         }
 
         /// <inheritdoc />
@@ -176,20 +172,18 @@ namespace Modix.Services.Core
             AuthorizationService.RequireAuthenticatedUser();
             AuthorizationService.RequireClaims(AuthorizationClaim.DesignatedChannelMappingDelete);
 
-            using (var transaction = await DesignatedChannelMappingRepository.BeginDeleteTransactionAsync())
+            using var transaction = await DesignatedChannelMappingRepository.BeginDeleteTransactionAsync();
+            var deletedCount = await DesignatedChannelMappingRepository.DeleteAsync(new DesignatedChannelMappingSearchCriteria()
             {
-                var deletedCount = await DesignatedChannelMappingRepository.DeleteAsync(new DesignatedChannelMappingSearchCriteria()
-                {
-                    Id = designationId,
-                    IsDeleted = false
-                }, AuthorizationService.CurrentUserId.Value);
+                Id = designationId,
+                IsDeleted = false
+            }, AuthorizationService.CurrentUserId.Value);
 
-                if (deletedCount == 0)
-                    throw new InvalidOperationException($"No designations with id {designationId} found.");
+            if (deletedCount == 0)
+                throw new InvalidOperationException($"No designations with id {designationId} found.");
 
-                transaction.Commit();
-                return deletedCount;
-            }
+            transaction.Commit();
+            return deletedCount;
         }
 
         /// <inheritdoc />

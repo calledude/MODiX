@@ -42,42 +42,40 @@ namespace Modix.Services.Test.Core
                 .InSequence(sequence)
                 .Setup(x => x.Commit());
 
-            using (var cancellationTokenSource = new CancellationTokenSource())
-            {
-                var uut = autoMocker.CreateInstance<ChannelService>();
+            using var cancellationTokenSource = new CancellationTokenSource();
+            var uut = autoMocker.CreateInstance<ChannelService>();
 
-                var mockChannel = new Mock<IGuildChannel>();
-                mockChannel
-                    .Setup(x => x.Id)
-                    .Returns(channelId);
-                mockChannel
-                    .Setup(x => x.Name)
-                    .Returns(channelName);
+            var mockChannel = new Mock<IGuildChannel>();
+            mockChannel
+                .Setup(x => x.Id)
+                .Returns(channelId);
+            mockChannel
+                .Setup(x => x.Name)
+                .Returns(channelName);
 
-                await uut.TrackChannelAsync(mockChannel.Object.Name, mockChannel.Object.Id, mockChannel.Object.GuildId, null, cancellationTokenSource.Token);
+            await uut.TrackChannelAsync(mockChannel.Object.Name, mockChannel.Object.Id, mockChannel.Object.GuildId, null, cancellationTokenSource.Token);
 
-                mockGuildChannelRepository
-                    .ShouldHaveReceived(x => x.BeginCreateTransactionAsync(cancellationTokenSource.Token), Times.Once());
+            mockGuildChannelRepository
+                .ShouldHaveReceived(x => x.BeginCreateTransactionAsync(cancellationTokenSource.Token), Times.Once());
 
-                mockGuildChannelRepository
-                    .ShouldHaveReceived(x => x.TryUpdateAsync(channelId, It.IsNotNull<Action<GuildChannelMutationData>>(), cancellationTokenSource.Token), Times.Once());
+            mockGuildChannelRepository
+                .ShouldHaveReceived(x => x.TryUpdateAsync(channelId, It.IsNotNull<Action<GuildChannelMutationData>>(), cancellationTokenSource.Token), Times.Once());
 
-                mockGuildChannelRepository
-                    .ShouldNotHaveReceived(x => x.CreateAsync(It.IsAny<GuildChannelCreationData>(), cancellationTokenSource.Token));
+            mockGuildChannelRepository
+                .ShouldNotHaveReceived(x => x.CreateAsync(It.IsAny<GuildChannelCreationData>(), cancellationTokenSource.Token));
 
-                mockCreateTransaction
-                    .ShouldHaveReceived(x => x.Commit(), Times.Once());
+            mockCreateTransaction
+                .ShouldHaveReceived(x => x.Commit(), Times.Once());
 
-                var updateAction = mockGuildChannelRepository
-                    .Invocations
-                    .First(x => x.Method.Name == nameof(IGuildChannelRepository.TryUpdateAsync))
-                    .Arguments[1] as Action<GuildChannelMutationData>;
+            var updateAction = mockGuildChannelRepository
+                .Invocations
+                .First(x => x.Method.Name == nameof(IGuildChannelRepository.TryUpdateAsync))
+                .Arguments[1] as Action<GuildChannelMutationData>;
 
-                var mutationData = new GuildChannelMutationData { Name = "test" };
-                updateAction?.Invoke(mutationData);
+            var mutationData = new GuildChannelMutationData { Name = "test" };
+            updateAction?.Invoke(mutationData);
 
-                mutationData.Name.ShouldBe(channelName);
-            }
+            mutationData.Name.ShouldBe(channelName);
         }
 
         [TestCase(1UL, 2UL, "NewChannelName")]
@@ -109,40 +107,38 @@ namespace Modix.Services.Test.Core
                 .InSequence(sequence)
                 .Setup(x => x.Commit());
 
-            using (var cancellationTokenSource = new CancellationTokenSource())
-            {
-                var uut = autoMocker.CreateInstance<ChannelService>();
+            using var cancellationTokenSource = new CancellationTokenSource();
+            var uut = autoMocker.CreateInstance<ChannelService>();
 
-                var mockChannel = new Mock<IGuildChannel>();
-                mockChannel
-                    .Setup(x => x.Id)
-                    .Returns(channelId);
-                mockChannel
-                    .Setup(x => x.GuildId)
-                    .Returns(guildId);
-                mockChannel
-                    .Setup(x => x.Name)
-                    .Returns(channelName);
+            var mockChannel = new Mock<IGuildChannel>();
+            mockChannel
+                .Setup(x => x.Id)
+                .Returns(channelId);
+            mockChannel
+                .Setup(x => x.GuildId)
+                .Returns(guildId);
+            mockChannel
+                .Setup(x => x.Name)
+                .Returns(channelName);
 
-                await uut.TrackChannelAsync(mockChannel.Object.Name, mockChannel.Object.Id, mockChannel.Object.GuildId, null, cancellationTokenSource.Token);
+            await uut.TrackChannelAsync(mockChannel.Object.Name, mockChannel.Object.Id, mockChannel.Object.GuildId, null, cancellationTokenSource.Token);
 
-                mockGuildChannelRepository
-                    .ShouldHaveReceived(x => x.BeginCreateTransactionAsync(cancellationTokenSource.Token), Times.Once());
+            mockGuildChannelRepository
+                .ShouldHaveReceived(x => x.BeginCreateTransactionAsync(cancellationTokenSource.Token), Times.Once());
 
-                mockGuildChannelRepository
-                    .ShouldHaveReceived(x => x.TryUpdateAsync(channelId, It.IsNotNull<Action<GuildChannelMutationData>>(), cancellationTokenSource.Token), Times.Once());
+            mockGuildChannelRepository
+                .ShouldHaveReceived(x => x.TryUpdateAsync(channelId, It.IsNotNull<Action<GuildChannelMutationData>>(), cancellationTokenSource.Token), Times.Once());
 
-                mockGuildChannelRepository
-                    .ShouldHaveReceived(x => x.CreateAsync(It.Is<GuildChannelCreationData>(y =>
-                                (y.ChannelId == channelId)
-                                && (y.GuildId == guildId)
-                                && (y.Name == channelName)),
-                            cancellationTokenSource.Token),
-                        Times.Once());
+            mockGuildChannelRepository
+                .ShouldHaveReceived(x => x.CreateAsync(It.Is<GuildChannelCreationData>(y =>
+                            (y.ChannelId == channelId)
+                            && (y.GuildId == guildId)
+                            && (y.Name == channelName)),
+                        cancellationTokenSource.Token),
+                    Times.Once());
 
-                mockCreateTransaction
-                    .ShouldHaveReceived(x => x.Commit(), Times.Once());
-            }
+            mockCreateTransaction
+                .ShouldHaveReceived(x => x.Commit(), Times.Once());
         }
 
         #endregion TrackChannelAsync() Tests

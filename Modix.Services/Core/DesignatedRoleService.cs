@@ -100,29 +100,27 @@ namespace Modix.Services.Core
             AuthorizationService.RequireAuthenticatedUser();
             AuthorizationService.RequireClaims(AuthorizationClaim.DesignatedRoleMappingCreate);
 
-            using (var transaction = await DesignatedRoleMappingRepository.BeginCreateTransactionAsync())
+            using var transaction = await DesignatedRoleMappingRepository.BeginCreateTransactionAsync();
+            if (await DesignatedRoleMappingRepository.AnyAsync(new DesignatedRoleMappingSearchCriteria()
             {
-                if (await DesignatedRoleMappingRepository.AnyAsync(new DesignatedRoleMappingSearchCriteria()
-                {
-                    GuildId = guildId,
-                    RoleId = roleId,
-                    Type = type,
-                    IsDeleted = false
-                }, default))
-                    throw new InvalidOperationException($"Role {roleId} already has a {type} designation");
+                GuildId = guildId,
+                RoleId = roleId,
+                Type = type,
+                IsDeleted = false
+            }, default))
+                throw new InvalidOperationException($"Role {roleId} already has a {type} designation");
 
-                var entityId = await DesignatedRoleMappingRepository.CreateAsync(new DesignatedRoleMappingCreationData()
-                {
-                    GuildId = guildId,
-                    RoleId = roleId,
-                    Type = type,
-                    CreatedById = AuthorizationService.CurrentUserId.Value
-                });
+            var entityId = await DesignatedRoleMappingRepository.CreateAsync(new DesignatedRoleMappingCreationData()
+            {
+                GuildId = guildId,
+                RoleId = roleId,
+                Type = type,
+                CreatedById = AuthorizationService.CurrentUserId.Value
+            });
 
-                transaction.Commit();
+            transaction.Commit();
 
-                return entityId;
-            }
+            return entityId;
         }
 
         /// <inheritdoc />
@@ -131,21 +129,19 @@ namespace Modix.Services.Core
             AuthorizationService.RequireAuthenticatedUser();
             AuthorizationService.RequireClaims(AuthorizationClaim.DesignatedRoleMappingDelete);
 
-            using (var transaction = await DesignatedRoleMappingRepository.BeginDeleteTransactionAsync())
+            using var transaction = await DesignatedRoleMappingRepository.BeginDeleteTransactionAsync();
+            var deletedCount = await DesignatedRoleMappingRepository.DeleteAsync(new DesignatedRoleMappingSearchCriteria()
             {
-                var deletedCount = await DesignatedRoleMappingRepository.DeleteAsync(new DesignatedRoleMappingSearchCriteria()
-                {
-                    GuildId = guildId,
-                    RoleId = roleId,
-                    Type = type,
-                    IsDeleted = false
-                }, AuthorizationService.CurrentUserId.Value);
+                GuildId = guildId,
+                RoleId = roleId,
+                Type = type,
+                IsDeleted = false
+            }, AuthorizationService.CurrentUserId.Value);
 
-                if (deletedCount == 0)
-                    throw new InvalidOperationException($"Role {roleId} does not have a {type} designation");
+            if (deletedCount == 0)
+                throw new InvalidOperationException($"Role {roleId} does not have a {type} designation");
 
-                transaction.Commit();
-            }
+            transaction.Commit();
         }
 
         /// <inheritdoc />
@@ -154,19 +150,17 @@ namespace Modix.Services.Core
             AuthorizationService.RequireAuthenticatedUser();
             AuthorizationService.RequireClaims(AuthorizationClaim.DesignatedRoleMappingDelete);
 
-            using (var transaction = await DesignatedRoleMappingRepository.BeginDeleteTransactionAsync())
+            using var transaction = await DesignatedRoleMappingRepository.BeginDeleteTransactionAsync();
+            var deletedCount = await DesignatedRoleMappingRepository.DeleteAsync(new DesignatedRoleMappingSearchCriteria()
             {
-                var deletedCount = await DesignatedRoleMappingRepository.DeleteAsync(new DesignatedRoleMappingSearchCriteria()
-                {
-                    Id = id,
-                    IsDeleted = false
-                }, AuthorizationService.CurrentUserId.Value);
+                Id = id,
+                IsDeleted = false
+            }, AuthorizationService.CurrentUserId.Value);
 
-                if (deletedCount == 0)
-                    throw new InvalidOperationException($"No role assignment exists with id {id}");
+            if (deletedCount == 0)
+                throw new InvalidOperationException($"No role assignment exists with id {id}");
 
-                transaction.Commit();
-            }
+            transaction.Commit();
         }
 
         /// <inheritdoc />

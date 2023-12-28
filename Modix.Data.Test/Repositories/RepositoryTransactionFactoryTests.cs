@@ -55,11 +55,9 @@ namespace Modix.Data.Test.Repositories
 
             database.CurrentTransaction.Returns(null as IDbContextTransaction);
 
-            using (var transaction = await uut.BeginTransactionAsync(database))
-            {
-                await database.ShouldHaveReceived(1)
-                    .BeginTransactionAsync();
-            }
+            using var transaction = await uut.BeginTransactionAsync(database);
+            await database.ShouldHaveReceived(1)
+                .BeginTransactionAsync();
         }
 
         [Test]
@@ -70,11 +68,9 @@ namespace Modix.Data.Test.Repositories
 
             database.CurrentTransaction.Returns(Substitute.For<IDbContextTransaction>());
 
-            using (var transaction = await uut.BeginTransactionAsync(database))
-            {
-                await database.ShouldNotHaveReceived()
-                    .BeginTransactionAsync();
-            }
+            using var transaction = await uut.BeginTransactionAsync(database);
+            await database.ShouldNotHaveReceived()
+                .BeginTransactionAsync();
         }
 
         #endregion BeginTransactionAsync(database) Tests
@@ -121,11 +117,9 @@ namespace Modix.Data.Test.Repositories
 
             database.CurrentTransaction.Returns(null as IDbContextTransaction);
 
-            using (var transaction = await uut.BeginTransactionAsync(database, cancellationTokenSource.Token))
-            {
-                await database.ShouldHaveReceived(1)
-                    .BeginTransactionAsync(cancellationTokenSource.Token);
-            }
+            using var transaction = await uut.BeginTransactionAsync(database, cancellationTokenSource.Token);
+            await database.ShouldHaveReceived(1)
+                .BeginTransactionAsync(cancellationTokenSource.Token);
         }
 
         [Test]
@@ -137,11 +131,9 @@ namespace Modix.Data.Test.Repositories
 
             database.CurrentTransaction.Returns(Substitute.For<IDbContextTransaction>());
 
-            using (var transaction = await uut.BeginTransactionAsync(database, cancellationTokenSource.Token))
-            {
-                await database.ShouldNotHaveReceived()
-                    .BeginTransactionAsync(cancellationTokenSource.Token);
-            }
+            using var transaction = await uut.BeginTransactionAsync(database, cancellationTokenSource.Token);
+            await database.ShouldNotHaveReceived()
+                .BeginTransactionAsync(cancellationTokenSource.Token);
         }
 
         [Test]
@@ -151,14 +143,12 @@ namespace Modix.Data.Test.Repositories
             var database = Substitute.For<DatabaseFacade>(Substitute.For<DbContext>());
             var cancellationTokenSource = new CancellationTokenSource();
 
-            using (var existingTransaction = await uut.BeginTransactionAsync(database))
-            {
-                var result = uut.BeginTransactionAsync(database, cancellationTokenSource.Token);
+            using var existingTransaction = await uut.BeginTransactionAsync(database);
+            var result = uut.BeginTransactionAsync(database, cancellationTokenSource.Token);
 
-                cancellationTokenSource.Cancel();
+            cancellationTokenSource.Cancel();
 
-                Should.Throw<TaskCanceledException>(result);
-            }
+            Should.Throw<TaskCanceledException>(result);
         }
 
         [Test]
@@ -199,13 +189,11 @@ namespace Modix.Data.Test.Repositories
             var databaseTransaction = Substitute.For<IDbContextTransaction>();
             database.BeginTransactionAsync().Returns(databaseTransaction);
 
-            using (var transaction = await uut.BeginTransactionAsync(database))
-            {
-                transaction.Commit();
+            using var transaction = await uut.BeginTransactionAsync(database);
+            transaction.Commit();
 
-                databaseTransaction.ShouldHaveReceived(1)
-                    .Commit();
-            }
+            databaseTransaction.ShouldHaveReceived(1)
+                .Commit();
         }
 
         [Test]
@@ -216,13 +204,11 @@ namespace Modix.Data.Test.Repositories
 
             database.CurrentTransaction.Returns(Substitute.For<IDbContextTransaction>());
 
-            using (var transaction = await uut.BeginTransactionAsync(database))
+            using var transaction = await uut.BeginTransactionAsync(database);
+            Should.NotThrow(() =>
             {
-                Should.NotThrow(() =>
-                {
-                    transaction.Commit();
-                });
-            }
+                transaction.Commit();
+            });
         }
 
         [Test]
@@ -269,16 +255,14 @@ namespace Modix.Data.Test.Repositories
             var databaseTransaction = Substitute.For<IDbContextTransaction>();
             database.BeginTransactionAsync().Returns(databaseTransaction);
 
-            using (var transaction = await uut.BeginTransactionAsync(database))
-            {
-                transaction.Commit();
-                databaseTransaction.ClearReceivedCalls();
+            using var transaction = await uut.BeginTransactionAsync(database);
+            transaction.Commit();
+            databaseTransaction.ClearReceivedCalls();
 
-                transaction.Commit();
+            transaction.Commit();
 
-                databaseTransaction.ShouldNotHaveReceived()
-                    .Commit();
-            }
+            databaseTransaction.ShouldNotHaveReceived()
+                .Commit();
         }
 
         [Test]

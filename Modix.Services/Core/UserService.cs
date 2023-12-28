@@ -234,33 +234,31 @@ namespace Modix.Services.Core
         {
             var now = _systemClock.UtcNow;
 
-            using (var transaction = await GuildUserRepository.BeginCreateTransactionAsync(cancellationToken))
+            using var transaction = await GuildUserRepository.BeginCreateTransactionAsync(cancellationToken);
+            if (!await GuildUserRepository.TryUpdateAsync(user.Id, user.GuildId, data =>
             {
-                if (!await GuildUserRepository.TryUpdateAsync(user.Id, user.GuildId, data =>
+                // Only update properties that we were given. Updates can be triggered from several different sources, not all of which have all the user's info.
+                if (user.Username != null)
+                    data.Username = user.Username;
+                data.Discriminator = user.Discriminator;
+                if (user.Username != null)
+                    data.Nickname = user.Nickname;
+                data.LastSeen = now;
+            }, cancellationToken))
+            {
+                await GuildUserRepository.CreateAsync(new GuildUserCreationData()
                 {
-                    // Only update properties that we were given. Updates can be triggered from several different sources, not all of which have all the user's info.
-                    if (user.Username != null)
-                        data.Username = user.Username;
-                    data.Discriminator = user.Discriminator;
-                    if (user.Username != null)
-                        data.Nickname = user.Nickname;
-                    data.LastSeen = now;
-                }, cancellationToken))
-                {
-                    await GuildUserRepository.CreateAsync(new GuildUserCreationData()
-                    {
-                        UserId = user.Id,
-                        GuildId = user.GuildId,
-                        Username = user.Username ?? "[UNKNOWN USERNAME]",
-                        Discriminator = user.Discriminator,
-                        Nickname = user.Nickname,
-                        FirstSeen = now,
-                        LastSeen = now
-                    }, cancellationToken);
-                }
-
-                transaction.Commit();
+                    UserId = user.Id,
+                    GuildId = user.GuildId,
+                    Username = user.Username ?? "[UNKNOWN USERNAME]",
+                    Discriminator = user.Discriminator,
+                    Nickname = user.Nickname,
+                    FirstSeen = now,
+                    LastSeen = now
+                }, cancellationToken);
             }
+
+            transaction.Commit();
         }
 
         /// <inheritdoc />

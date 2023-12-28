@@ -129,24 +129,22 @@ namespace Modix.Services.Starboard
         /// <inheritdoc />
         public async Task RemoveFromStarboard(IGuild guild, IMessage message)
         {
-            using (var transaction = await _messageRepository.BeginMaintainTransactionAsync())
+            using var transaction = await _messageRepository.BeginMaintainTransactionAsync();
+            var messageBrief = await _messageRepository.GetMessage(message.Id);
+            if (messageBrief?.StarboardEntryId is null)
+                return;
+
+            var channel = await GetStarboardChannel(guild);
+            if (channel is null)
+                return;
+
+            var msg = await channel.GetMessageAsync(messageBrief.StarboardEntryId.Value);
+            if (msg != default)
             {
-                var messageBrief = await _messageRepository.GetMessage(message.Id);
-                if (messageBrief?.StarboardEntryId is null)
-                    return;
-
-                var channel = await GetStarboardChannel(guild);
-                if (channel is null)
-                    return;
-
-                var msg = await channel.GetMessageAsync(messageBrief.StarboardEntryId.Value);
-                if (msg != default)
-                {
-                    await channel.DeleteMessageAsync(messageBrief.StarboardEntryId.Value);
-                    await _messageRepository.UpdateStarboardColumn(messageBrief.Id, null);
-                }
-                transaction.Commit();
+                await channel.DeleteMessageAsync(messageBrief.StarboardEntryId.Value);
+                await _messageRepository.UpdateStarboardColumn(messageBrief.Id, null);
             }
+            transaction.Commit();
 
         }
 
@@ -184,24 +182,22 @@ namespace Modix.Services.Starboard
 
             var starEntry = await starChannel.SendMessageAsync(content, false, embed);
 
-            using (var transaction = await _messageRepository.BeginMaintainTransactionAsync())
+            using var transaction = await _messageRepository.BeginMaintainTransactionAsync();
+            if (await _messageRepository.GetMessage(message.Id) == null)
             {
-                if (await _messageRepository.GetMessage(message.Id) == null)
+                var creationData = new MessageCreationData
                 {
-                    var creationData = new MessageCreationData
-                    {
-                        Id = message.Id,
-                        GuildId = guild.Id,
-                        ChannelId = message.Channel.Id,
-                        AuthorId = message.Author.Id,
-                        Timestamp = message.Timestamp,
-                    };
-                    await _messageRepository.CreateAsync(creationData);
-                }
-
-                await _messageRepository.UpdateStarboardColumn(message.Id, starEntry.Id);
-                transaction.Commit();
+                    Id = message.Id,
+                    GuildId = guild.Id,
+                    ChannelId = message.Channel.Id,
+                    AuthorId = message.Author.Id,
+                    Timestamp = message.Timestamp,
+                };
+                await _messageRepository.CreateAsync(creationData);
             }
+
+            await _messageRepository.UpdateStarboardColumn(message.Id, starEntry.Id);
+            transaction.Commit();
         }
 
         /// <inheritdoc />

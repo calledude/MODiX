@@ -65,10 +65,8 @@ namespace Modix.Modules
             {
                 var client = _httpClientFactory.CreateClient();
 
-                using (var tokenSrc = new CancellationTokenSource(30000))
-                {
-                    res = await client.PostAsync(_ilUrl, content, tokenSrc.Token);
-                }
+                using var tokenSrc = new CancellationTokenSource(30000);
+                res = await client.PostAsync(_ilUrl, content, tokenSrc.Token);
             }
             catch (TaskCanceledException)
             {

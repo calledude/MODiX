@@ -90,21 +90,19 @@ namespace Modix.Services
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
 
-            using (var serviceScope = ServiceProvider.CreateScope())
-            {
-                await serviceScope.ServiceProvider.GetRequiredService<IAuthorizationService>()
-                    .OnAuthenticatedAsync(serviceScope.ServiceProvider.GetRequiredService<IDiscordClient>()
-                        .CurrentUser);
+            using var serviceScope = ServiceProvider.CreateScope();
+            await serviceScope.ServiceProvider.GetRequiredService<IAuthorizationService>()
+                .OnAuthenticatedAsync(serviceScope.ServiceProvider.GetRequiredService<IDiscordClient>()
+                    .CurrentUser);
 
-                try
-                {
-                    await action.Invoke(serviceScope.ServiceProvider);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, $"An error occurred executing {action.Method.Name} upon {action.Target?.GetType().FullName}");
-                    throw;
-                }
+            try
+            {
+                await action.Invoke(serviceScope.ServiceProvider);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"An error occurred executing {action.Method.Name} upon {action.Target?.GetType().FullName}");
+                throw;
             }
         }
 

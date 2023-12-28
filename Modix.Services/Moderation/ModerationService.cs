@@ -245,26 +245,24 @@ namespace Modix.Services.Moderation
             _authorizationService.RequireAuthenticatedUser();
             _authorizationService.RequireClaims(AuthorizationClaim.DesignatedRoleMappingDelete);
 
-            using (var transaction = await _designatedRoleMappingRepository.BeginDeleteTransactionAsync())
-            {
-                foreach (var mapping in await _designatedRoleMappingRepository
-                    .SearchBriefsAsync(new DesignatedRoleMappingSearchCriteria()
-                    {
-                        GuildId = guild.Id,
-                        Type = DesignatedRoleType.ModerationMute,
-                        IsDeleted = false,
-                    }))
+            using var transaction = await _designatedRoleMappingRepository.BeginDeleteTransactionAsync();
+            foreach (var mapping in await _designatedRoleMappingRepository
+                .SearchBriefsAsync(new DesignatedRoleMappingSearchCriteria()
                 {
-                    await _designatedRoleMappingRepository.TryDeleteAsync(mapping.Id,
-                        _authorizationService.CurrentUserId.Value);
+                    GuildId = guild.Id,
+                    Type = DesignatedRoleType.ModerationMute,
+                    IsDeleted = false,
+                }))
+            {
+                await _designatedRoleMappingRepository.TryDeleteAsync(mapping.Id,
+                    _authorizationService.CurrentUserId.Value);
 
-                    var role = guild.Roles.FirstOrDefault(x => x.Id == mapping.Role.Id);
-                    if ((role != null) && (role.Name == MuteRoleName) && (role is IDeletable deletable))
-                        await deletable.DeleteAsync();
-                }
-
-                transaction.Commit();
+                var role = guild.Roles.FirstOrDefault(x => x.Id == mapping.Role.Id);
+                if ((role != null) && (role.Name == MuteRoleName) && (role is IDeletable deletable))
+                    await deletable.DeleteAsync();
             }
+
+            transaction.Commit();
         }
 
         public async Task CreateInfractionAsync(ulong guildId, ulong moderatorId, InfractionType type, ulong subjectId,
