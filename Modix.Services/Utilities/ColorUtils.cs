@@ -4,7 +4,7 @@ using Discord;
 
 namespace Modix.Services.Utilities
 {
-    public class ColorUtils
+    public static class ColorUtils
     {
         /// <summary>
         /// Returns rainbow table of <see cref="colorCount"/> colors

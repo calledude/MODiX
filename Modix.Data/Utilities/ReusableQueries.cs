@@ -6,7 +6,7 @@ using Modix.Data.Models.Core;
 
 namespace Modix.Data.Utilities
 {
-    public class ReusableQueries
+    public static class ReusableQueries
     {
         public static readonly Expression<Func<GuildUserEntity, string, bool>> StringContainsUser =
             (entity, str) => DbCaseInsensitiveEquals.Invoke(str, FormatUserName.Invoke(entity));
