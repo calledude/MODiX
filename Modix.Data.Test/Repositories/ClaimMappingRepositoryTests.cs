@@ -421,7 +421,7 @@ namespace Modix.Data.Test.Repositories
         public static readonly IEnumerable<TestCaseData> ClaimMappingCreationTestCases
             = ClaimMappings.Creations
                 .Select(x => new TestCaseData(x)
-                    .SetName($"{{m}}({x.GuildId}, {x.Type.ToString()}, {x.RoleId?.ToString() ?? "null"}, {x.UserId?.ToString() ?? "null"}, {x.Claim.ToString()})"));
+                    .SetName($"{{m}}({x.GuildId}, {x.Type}, {x.RoleId?.ToString() ?? "null"}, {x.UserId?.ToString() ?? "null"}, {x.Claim})"));
 
         public static readonly IEnumerable<long> ValidClaimMappingIds
             = ClaimMappings.Entities

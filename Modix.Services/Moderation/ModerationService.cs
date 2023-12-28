@@ -278,7 +278,7 @@ namespace Modix.Services.Moderation
 
             if (((type == InfractionType.Notice) || (type == InfractionType.Warning))
                 && string.IsNullOrWhiteSpace(reason))
-                throw new InvalidOperationException($"{type.ToString()} infractions require a reason to be given");
+                throw new InvalidOperationException($"{type} infractions require a reason to be given");
 
             var guild = await _discordClient.GetGuildAsync(guildId);
             var subject = await _userService.TryGetGuildUserAsync(guild, subjectId, default);
