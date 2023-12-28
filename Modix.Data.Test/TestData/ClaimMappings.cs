@@ -116,8 +116,8 @@ namespace Modix.Data.Test.TestData
                 ),
                 (
                     "Types Invalid",
-                    new ClaimMappingSearchCriteria() { Types = new[] { (ClaimMappingType)(-1) } },
-                    new long [] { }
+                    new ClaimMappingSearchCriteria() { Types = [(ClaimMappingType)(-1)] },
+                    Array.Empty<long>()
                 ),
                 (
                     "GuildId Valid(1)",
@@ -132,7 +132,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "GuildId Invalid",
                     new ClaimMappingSearchCriteria() { GuildId = 3 },
-                    new long [] { }
+                    Array.Empty<long>()
                 ),
                 (
                     "RoleIds Valid(1)",
@@ -151,8 +151,8 @@ namespace Modix.Data.Test.TestData
                 ),
                 (
                     "RoleIds Invalid",
-                    new ClaimMappingSearchCriteria() { RoleIds = new ulong[] { 3 } },
-                    new long [] { }
+                    new ClaimMappingSearchCriteria() { RoleIds = [3] },
+                    Array.Empty<long>()
                 ),
                 (
                     "UserId Valid(1)",
@@ -167,7 +167,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "UserId Invalid",
                     new ClaimMappingSearchCriteria() { UserId = 3 },
-                    new long [] { }
+                    Array.Empty<long>()
                 ),
                 (
                     "RoleIds and UserId valid",
@@ -191,8 +191,8 @@ namespace Modix.Data.Test.TestData
                 ),
                 (
                     "Claims Invalid",
-                    new ClaimMappingSearchCriteria() { Claims = new [] { AuthorizationClaim.PromotionsCreateCampaign } },
-                    new long [] { }
+                    new ClaimMappingSearchCriteria() { Claims = [AuthorizationClaim.PromotionsCreateCampaign] },
+                    Array.Empty<long>()
                 ),
                 (
                     "CreatedRange.From Valid",
@@ -212,12 +212,12 @@ namespace Modix.Data.Test.TestData
                 (
                     "CreatedRange.From Invalid",
                     new ClaimMappingSearchCriteria() { CreatedRange = new DateTimeOffsetRange() { From = DateTimeOffset.Parse("2019-01-01T00:00:00Z") } },
-                    new long [] { }
+                    Array.Empty<long>()
                 ),
                 (
                     "CreatedRange.To Invalid",
                     new ClaimMappingSearchCriteria() { CreatedRange = new DateTimeOffsetRange() { To = DateTimeOffset.Parse("2017-01-01T00:00:00Z") } },
-                    new long [] { }
+                    Array.Empty<long>()
                 ),
                 (
                     "CreatedById Valid(1)",
@@ -232,7 +232,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "CreatedById Invalid",
                     new ClaimMappingSearchCriteria() { CreatedById = 4 },
-                    new long [] { }
+                    Array.Empty<long>()
                 ),
                 (
                     "IsDeleted Valid(1)",

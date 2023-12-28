@@ -92,7 +92,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "Id Invalid",
                     new DesignatedChannelMappingSearchCriteria() { Id = 5 },
-                    new long[] { }
+                    System.Array.Empty<long>()
                 ),
                 (
                     "GuildId Valid(1)",
@@ -107,7 +107,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "GuildId Invalid",
                     new DesignatedChannelMappingSearchCriteria() { GuildId = 3 },
-                    new long[] { }
+                    System.Array.Empty<long>()
                 ),
                 (
                     "ChannelId Valid(1)",
@@ -122,7 +122,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "ChannelId Invalid",
                     new DesignatedChannelMappingSearchCriteria() { ChannelId = 4 },
-                    new long[] { }
+                    System.Array.Empty<long>()
                 ),
                 (
                     "Type Valid(1)",
@@ -137,7 +137,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "Type Invalid",
                     new DesignatedChannelMappingSearchCriteria() { Type = DesignatedChannelType.Unmoderated },
-                    new long[] { }
+                    System.Array.Empty<long>()
                 ),
                 (
                     "CreatedById Valid(1)",
@@ -152,7 +152,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "CreatedById Invalid",
                     new DesignatedChannelMappingSearchCriteria() { CreatedById = 4 },
-                    new long[] { }
+                    System.Array.Empty<long>()
                 ),
                 (
                     "IsDeleted Valid(1)",

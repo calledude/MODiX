@@ -92,7 +92,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "Id Invalid",
                     new DesignatedRoleMappingSearchCriteria() { Id = 5 },
-                    new long[] { }
+                    System.Array.Empty<long>()
                 ),
                 (
                     "GuildId Valid(1)",
@@ -107,7 +107,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "GuildId Invalid",
                     new DesignatedRoleMappingSearchCriteria() { GuildId = 3 },
-                    new long[] { }
+                    System.Array.Empty<long>()
                 ),
                 (
                     "RoleId Valid(1)",
@@ -122,7 +122,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "RoleId Invalid",
                     new DesignatedRoleMappingSearchCriteria() { RoleId = 4 },
-                    new long[] { }
+                    System.Array.Empty<long>()
                 ),
                 (
                     "RoleIds Valid(1)",
@@ -142,12 +142,12 @@ namespace Modix.Data.Test.TestData
                 (
                     "RoleIds Invalid(1)",
                     new DesignatedRoleMappingSearchCriteria() { RoleIds = [] },
-                    new long[] { }
+                    System.Array.Empty<long>()
                 ),
                 (
                     "RoleIds Invalid(2)",
-                    new DesignatedRoleMappingSearchCriteria() { RoleIds = new[] { 4UL } },
-                    new long[] { }
+                    new DesignatedRoleMappingSearchCriteria() { RoleIds = [4UL] },
+                    System.Array.Empty<long>()
                 ),
                 (
                     "Type Valid(1)",
@@ -162,7 +162,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "Type Invalid",
                     new DesignatedRoleMappingSearchCriteria() { Type = (DesignatedRoleType)(-1) },
-                    new long[] { }
+                    System.Array.Empty<long>()
                 ),
                 (
                     "CreatedById Valid(1)",
@@ -177,7 +177,7 @@ namespace Modix.Data.Test.TestData
                 (
                     "CreatedById Invalid",
                     new DesignatedRoleMappingSearchCriteria() { CreatedById = 4 },
-                    new long[] { }
+                    System.Array.Empty<long>()
                 ),
                 (
                     "IsDeleted Valid(1)",
