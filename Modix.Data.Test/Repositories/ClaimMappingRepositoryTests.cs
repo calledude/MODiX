@@ -54,7 +54,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginCreateTransactionAsync_CreateTransactionIsInProgress_WaitsForCompletion()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var existingTransaction = await uut.BeginCreateTransactionAsync();
 
@@ -70,7 +70,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginCreateTransactionAsync_CreateTransactionIsNotInProgress_ReturnsImmediately()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = uut.BeginCreateTransactionAsync();
 
@@ -103,7 +103,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginDeleteTransactionAsync_DeleteTransactionIsInProgress_WaitsForCompletion()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var existingTransaction = await uut.BeginDeleteTransactionAsync();
 
@@ -119,7 +119,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginDeleteTransactionAsync_DeleteTransactionIsNotInProgress_ReturnsImmediately()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = uut.BeginDeleteTransactionAsync();
 
@@ -132,7 +132,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginDeleteTransactionAsync_CreateTransactionIsInProgress_ReturnsImmediately()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var createTransaction = await uut.BeginCreateTransactionAsync();
 
@@ -217,7 +217,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(ValidClaimMappingIds))]
         public async Task ReadAsync_ClaimMappingExists_ReturnsMatchingClaimMappingSummary(long claimMappingId)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.ReadAsync(claimMappingId);
 
@@ -227,7 +227,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(InvalidClaimMappingIds))]
         public async Task ReadAsync_ClaimMappingDoesNotExist_ReturnsNull(long claimMappingId)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.ReadAsync(claimMappingId);
 
@@ -241,7 +241,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(ValidSearchCriteriaTestCases))]
         public async Task AnyAsync_ClaimMappingsExist_ReturnsTrue(ClaimMappingSearchCriteria criteria)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.AnyAsync(criteria);
 
@@ -251,7 +251,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(InvalidSearchCriteriaTestCases))]
         public async Task AnyAsync_ClaimMappingsDoNotExist_ReturnsFalse(ClaimMappingSearchCriteria criteria)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.AnyAsync(criteria);
 
@@ -265,7 +265,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(ValidSearchCriteriaAndResultIdsTestCases))]
         public async Task SearchIdsAsync_ClaimMappingsExist_ReturnsMatchingIds(ClaimMappingSearchCriteria criteria, long[] resultIds)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.SearchIdsAsync(criteria);
 
@@ -276,7 +276,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(InvalidSearchCriteriaTestCases))]
         public async Task SearchIdsAsync_ClaimMappingsDoNotExist_ReturnsEmpty(ClaimMappingSearchCriteria criteria)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.SearchIdsAsync(criteria);
 
@@ -303,7 +303,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(InvalidSearchCriteriaTestCases))]
         public async Task SearchBriefsAsync_ClaimMappingsDoNotExist_ReturnsEmpty(ClaimMappingSearchCriteria criteria)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.SearchBriefsAsync(criteria);
 

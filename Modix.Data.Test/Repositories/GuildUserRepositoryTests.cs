@@ -53,7 +53,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginCreateTransactionAsync_CreateTransactionIsInProgress_WaitsForCompletion()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var existingTransaction = await uut.BeginCreateTransactionAsync(default);
 
@@ -69,7 +69,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginCreateTransactionAsync_CreateTransactionIsNotInProgress_ReturnsImmediately()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = uut.BeginCreateTransactionAsync(default);
 
@@ -311,7 +311,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(ExistingGuildUserIds))]
         public async Task ReadSummaryAsync_GuildUserExists_ReturnsGuildUser(ulong userId, ulong guildId)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.ReadSummaryAsync(userId, guildId);
 
@@ -324,7 +324,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(NewGuildUserIds))]
         public async Task ReadSummaryAsync_GuildUserDoesNotExist_ReturnsNull(ulong userId, ulong guildId)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.ReadSummaryAsync(userId, guildId);
 

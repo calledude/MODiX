@@ -56,7 +56,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginCreateTransactionAsync_CreateTransactionIsInProgress_WaitsForCompletion()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var existingTransaction = await uut.BeginCreateTransactionAsync();
 
@@ -72,7 +72,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginCreateTransactionAsync_CreateTransactionIsNotInProgress_ReturnsImmediately()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = uut.BeginCreateTransactionAsync();
 
@@ -85,7 +85,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginCreateTransactionAsync_DeleteTransactionIsInProgress_ReturnsImmediately()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var deleteTransaction = await uut.BeginDeleteTransactionAsync();
 
@@ -121,7 +121,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginDeleteTransactionAsync_DeleteTransactionIsInProgress_WaitsForCompletion()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var existingTransaction = await uut.BeginDeleteTransactionAsync();
 
@@ -137,7 +137,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginDeleteTransactionAsync_DeleteTransactionIsNotInProgress_ReturnsImmediately()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = uut.BeginDeleteTransactionAsync();
 
@@ -150,7 +150,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginDeleteTransactionAsync_CreateTransactionIsInProgress_ReturnsImmediately()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var createTransaction = await uut.BeginCreateTransactionAsync();
 
@@ -242,7 +242,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(ValidSearchCriteriaTestCases))]
         public async Task AnyAsync_DesignatedRoleMappingsExist_ReturnsTrue(DesignatedRoleMappingSearchCriteria criteria)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.AnyAsync(criteria, default);
 
@@ -252,7 +252,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(InvalidSearchCriteriaTestCases))]
         public async Task AnyAsync_DesignatedRoleMappingsDoNotExist_ReturnsFalse(DesignatedRoleMappingSearchCriteria criteria)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.AnyAsync(criteria, default);
 
@@ -278,7 +278,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(InvalidSearchCriteriaTestCases))]
         public async Task SearchBriefsAsync_DesignatedRoleMappingsDoNotExist_ReturnsEmpty(DesignatedRoleMappingSearchCriteria criteria)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.SearchBriefsAsync(criteria);
 

@@ -52,7 +52,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginCreateTransactionAsync_CreateTransactionIsInProgress_WaitsForCompletion()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var existingTransaction = await uut.BeginCreateTransactionAsync();
 
@@ -68,7 +68,7 @@ namespace Modix.Data.Test.Repositories
         [NonParallelizable]
         public async Task BeginCreateTransactionAsync_CreateTransactionIsNotInProgress_ReturnsImmediately()
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = uut.BeginCreateTransactionAsync();
 

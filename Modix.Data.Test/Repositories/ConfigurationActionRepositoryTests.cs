@@ -56,7 +56,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(ValidConfigurationActionIds))]
         public async Task ReadAsync_ConfigurationActionExists_ReturnsMatchingConfigurationActionSummary(long actionId)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.ReadAsync(actionId);
 
@@ -66,7 +66,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(InvalidConfigurationActionIds))]
         public async Task ReadAsync_ConfigurationActionDoesNotExist_ReturnsNull(long actionId)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (_, var uut) = BuildTestContext();
 
             var result = await uut.ReadAsync(actionId);
 

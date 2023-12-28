@@ -21,7 +21,7 @@ namespace Microsoft.EntityFrameworkCore
         {
             var valueGenerator = GetGetResettableSequenceValueGenerator(context, tableSelector, propertySelector);
 
-            var table = tableSelector.Compile().Invoke(context).Local;
+            _ = tableSelector.Compile().Invoke(context).Local;
 
             valueGenerator.SetValue(default);
         }
@@ -36,7 +36,7 @@ namespace Microsoft.EntityFrameworkCore
         {
             var valueGenerator = GetGetResettableSequenceValueGenerator(context, tableSelector, propertySelector);
 
-            var table = tableSelector.Compile().Invoke(context).Local;
+            _ = tableSelector.Compile().Invoke(context).Local;
 
             valueGenerator.SetValue(value);
         }
