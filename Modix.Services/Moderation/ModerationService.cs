@@ -153,12 +153,12 @@ namespace Modix.Services.Moderation
             }
             catch (HttpException ex)
             {
-                const string errorTemplate =
+                const string ErrorTemplate =
                     "An exception was thrown when attempting to set up mention-restricted roles for {Guild}. " +
                     "This is likely due to Modix not having the \"Manage Roles\" permission, or Modix's role being below one of " +
                     "the mention-restricted roles in your server's Role list - please check your server settings.";
 
-                Log.Error(ex, errorTemplate, guild.Name);
+                Log.Error(ex, ErrorTemplate, guild.Name);
             }
         }
 
@@ -189,11 +189,11 @@ namespace Modix.Services.Moderation
             }
             catch (HttpException ex)
             {
-                const string errorTemplate =
+                const string ErrorTemplate =
                     "An exception was thrown when attempting to set up the mute role {Role} for guild {Guild}, channel #{Channel}. " +
                     "This is likely due to Modix not having the \"Manage Permissions\" permission - please check your server settings.";
 
-                Log.Error(ex, errorTemplate, muteRole.Name, guild.Name, setUpChannels.Last().Name);
+                Log.Error(ex, ErrorTemplate, muteRole.Name, guild.Name, setUpChannels.Last().Name);
 
                 return;
             }

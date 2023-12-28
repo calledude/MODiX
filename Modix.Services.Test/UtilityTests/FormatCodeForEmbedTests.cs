@@ -10,7 +10,7 @@ namespace Modix.Services.Test.UtilityTests
         [Test]
         public void TestCSharp()
         {
-            const string source =
+            const string Source =
 @"#nullable enable
 
 var c = new C();
@@ -29,7 +29,7 @@ struct CustomHandler
 }
 ";
 
-            const string expected =
+            const string Expected =
 @"```cs
 #nullable enable
 var c = new C();
@@ -44,13 +44,13 @@ struct CustomHandler {
 }
 ```";
 
-            Verify("cs", source, expected);
+            Verify("cs", Source, Expected);
         }
 
         [Test]
         public void TestVisualBasic()
         {
-            const string source =
+            const string Source =
 @"Imports System
 Imports System.Threading.Tasks
 Public Class C
@@ -69,7 +69,7 @@ Public Class C
 End Class
 ";
 
-            const string expected =
+            const string Expected =
 @"```vb
 Imports System
 Imports System.Threading.Tasks
@@ -84,13 +84,13 @@ Public Class C
 ' 4 more lines. Follow the link to view.
 ```";
 
-            Verify("vb", source, expected);
+            Verify("vb", Source, Expected);
         }
 
         [Test]
         public void TestFSharp()
         {
-            const string source =
+            const string Source =
 @"open System
 
 let printMessage name =
@@ -104,7 +104,7 @@ let names = [ ""Ana""; ""Felipe""; ""Emillia"" ]
 printNames names
 ";
 
-            const string expected =
+            const string Expected =
 @"```fs
 open System
 let printMessage name =
@@ -116,13 +116,13 @@ let names = [ ""Ana""; ""Felipe""; ""Emillia"" ]
 printNames names
 ```";
 
-            Verify("fs", source, expected);
+            Verify("fs", Source, Expected);
         }
 
         [Test]
         public void TestIL()
         {
-            const string source =
+            const string Source =
 @".assembly A
 {
 }
@@ -140,7 +140,7 @@ printNames names
 }
 ";
 
-            const string expected =
+            const string Expected =
 @"```il
 .assembly A {
 }
@@ -154,13 +154,13 @@ printNames names
 }
 ```";
 
-            Verify("il", source, expected);
+            Verify("il", Source, Expected);
         }
 
         [Test]
         public void TestCSharpWithMaxLength()
         {
-            const string source =
+            const string Source =
 @"
 public class C {
     uint[] s_crcTable = new uint[256];
@@ -253,7 +253,7 @@ public class C {
 }
 ";
 
-            const string expected =
+            const string Expected =
 @"```cs
 public class C {
     uint[] s_crcTable = new uint[256];
@@ -263,7 +263,7 @@ public class C {
 // 63 more lines. Follow the link to view.
 ```";
 
-            VerifyWithLength("cs", 293, source, expected);
+            VerifyWithLength("cs", 293, Source, Expected);
         }
 
         private static void Verify(string language, string source, string expected)

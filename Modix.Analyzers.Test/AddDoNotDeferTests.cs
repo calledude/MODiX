@@ -14,7 +14,7 @@ namespace Modix.Analyzers.Test
         [Test]
         public async Task SlashCommand_NeedsDoNotDefer_HasDiagnosticAsync()
         {
-            const string source = @"
+            const string Source = @"
 using System;
 using System.Threading.Tasks;
 
@@ -37,7 +37,7 @@ public class SlashCommandAttribute : Attribute
 }
 ";
 
-            const string fixedSource = @"
+            const string FixedSource = @"
 using System;
 using System.Threading.Tasks;
 
@@ -66,7 +66,7 @@ public class SlashCommandAttribute : Attribute
                 .WithLocation(0)
                 .WithArguments("CommandAsync");
 
-            await VerifyCodeFix.VerifyCodeFixAsync(source, expected, fixedSource);
+            await VerifyCodeFix.VerifyCodeFixAsync(Source, expected, FixedSource);
         }
     }
 }

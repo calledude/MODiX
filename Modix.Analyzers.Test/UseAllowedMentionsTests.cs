@@ -14,7 +14,7 @@ namespace Modix.Analyzers.Test
         [Test]
         public async Task FollowupAsync_NeedsAllowedMentions_HasDiagnosticAsync()
         {
-            const string source = @"
+            const string Source = @"
 using System;
 using System.Threading.Tasks;
 
@@ -40,7 +40,7 @@ public class AllowedMentions
 }
 ";
 
-            const string fixedSource = @"
+            const string FixedSource = @"
 using System;
 using System.Threading.Tasks;
 
@@ -71,7 +71,7 @@ public class AllowedMentions
                 .WithLocation(0)
                 .WithArguments("FollowupAsync");
 
-            await VerifyCodeFix.VerifyCodeFixAsync(source, expected, fixedSource);
+            await VerifyCodeFix.VerifyCodeFixAsync(Source, expected, FixedSource);
         }
     }
 }
