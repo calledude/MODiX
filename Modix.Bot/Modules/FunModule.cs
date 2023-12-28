@@ -16,7 +16,7 @@ namespace Modix.Modules
 {
     [ModuleHelp("Fun", "A bunch of miscellaneous, fun commands.")]
     [HelpTags("jumbo")]
-    public class FunModule : InteractionModuleBase
+    public partial class FunModule : InteractionModuleBase
     {
         private static readonly string[] _owoFaces = { "(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^" };
 
@@ -143,17 +143,32 @@ namespace Modix.Modules
         {
             var owoMessage = message;
 
-            owoMessage = Regex.Replace(owoMessage, "(?:r|l)", "w");
-            owoMessage = Regex.Replace(owoMessage, "(?:R|L)", "W");
-            owoMessage = Regex.Replace(owoMessage, "n([aeiou])", "ny$1");
-            owoMessage = Regex.Replace(owoMessage, "N([aeiou])", "Ny$1");
-            owoMessage = Regex.Replace(owoMessage, "N([AEIOU])", "Ny$1");
-            owoMessage = Regex.Replace(owoMessage, "ove", "uv");
-            owoMessage = Regex.Replace(owoMessage, "(?<!\\@)\\!+", " " + _owoFaces[new Random().Next(_owoFaces.Length)] + " ");
+            owoMessage = OwORegex().Replace(owoMessage, "w");
+            owoMessage = OwORegex2().Replace(owoMessage, "W");
+            owoMessage = OwORegex3().Replace(owoMessage, "ny$1");
+            owoMessage = OwORegex4().Replace(owoMessage, "Ny$1");
+            owoMessage = OwORegex5().Replace(owoMessage, "Ny$1");
+            owoMessage = OwORegex6().Replace(owoMessage, "uv");
+            owoMessage = OwORegex7().Replace(owoMessage, " " + _owoFaces[new Random().Next(_owoFaces.Length)] + " ");
 
             await FollowupAsync(owoMessage, allowedMentions: AllowedMentions.None);
         }
 
         protected IHttpClientFactory HttpClientFactory { get; }
+
+        [GeneratedRegex("(?:r|l)")]
+        private static partial Regex OwORegex();
+        [GeneratedRegex("(?:R|L)")]
+        private static partial Regex OwORegex2();
+        [GeneratedRegex("n([aeiou])")]
+        private static partial Regex OwORegex3();
+        [GeneratedRegex("N([aeiou])")]
+        private static partial Regex OwORegex4();
+        [GeneratedRegex("N([AEIOU])")]
+        private static partial Regex OwORegex5();
+        [GeneratedRegex("ove")]
+        private static partial Regex OwORegex6();
+        [GeneratedRegex("(?<!\\@)\\!+")]
+        private static partial Regex OwORegex7();
     }
 }

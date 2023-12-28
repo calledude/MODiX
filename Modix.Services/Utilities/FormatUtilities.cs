@@ -19,9 +19,9 @@ using Modix.Services.CodePaste;
 
 namespace Modix.Services.Utilities
 {
-    public static class FormatUtilities
+    public static partial class FormatUtilities
     {
-        private static readonly Regex _buildContentRegex = new(@"```([^\s]*)", RegexOptions.Compiled);
+        private static readonly Regex _buildContentRegex = CodeMarkdownRegex();
 
         /// <summary>
         /// Prepares a piece of input code for use in HTTP operations
@@ -158,7 +158,7 @@ namespace Modix.Services.Utilities
             => _containsSpoilerRegex.IsMatch(text);
 
         private static readonly Regex _containsSpoilerRegex
-            = new(@"\|\|.+\|\|", RegexOptions.Compiled);
+            = SpoilerRegex();
 
         public static string FormatCodeForEmbed(string language, string sourceCode, int maxLength)
         {
@@ -293,5 +293,10 @@ namespace Modix.Services.Utilities
                 processedLines.Add(GetRemainingLineCountComment(GetRemainingLineCount()));
             }
         }
+
+        [GeneratedRegex(@"```([^\s]*)", RegexOptions.Compiled)]
+        private static partial Regex CodeMarkdownRegex();
+        [GeneratedRegex(@"\|\|.+\|\|", RegexOptions.Compiled)]
+        private static partial Regex SpoilerRegex();
     }
 }

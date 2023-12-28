@@ -42,7 +42,7 @@ namespace Modix.Services.Tags
         Task RefreshCache(ulong guildId);
     }
 
-    internal class TagService : ITagService
+    internal partial class TagService : ITagService
     {
         private readonly IDiscordClient _discordClient;
         private readonly IAuthorizationService _authorizationService;
@@ -51,7 +51,7 @@ namespace Modix.Services.Tags
         private readonly ITagCache _tagCache;
         private readonly ModixContext _modixContext;
 
-        private static readonly Regex _tagNameRegex = new(@"^\S+\b$");
+        private static readonly Regex _tagNameRegex = TagNameRegex();
 
         public TagService(
             IDiscordClient discordClient,
@@ -412,5 +412,7 @@ namespace Modix.Services.Tags
                     IsDeleted = false,
                 }))
                 .Select(r => r.Role);
+        [GeneratedRegex(@"^\S+\b$")]
+        private static partial Regex TagNameRegex();
     }
 }

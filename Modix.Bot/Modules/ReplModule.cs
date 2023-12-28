@@ -31,7 +31,7 @@ namespace Modix.Bot.Modules
     [Name("Repl")]
     [Summary("Execute & demonstrate code snippets.")]
     [HelpTags("eval", "exec")]
-    public class ReplModule : ModuleBase
+    public partial class ReplModule : ModuleBase
     {
         private const int MaxFormattedFieldSize = 1000;
         private const string DefaultReplRemoteUrl = "http://csdiscord-repl-service:31337/Eval";
@@ -186,7 +186,7 @@ namespace Modix.Bot.Modules
 
             if (hasException)
             {
-                var diffFormatted = Regex.Replace(parsedResult.Exception!, "^", "- ", RegexOptions.Multiline);
+                var diffFormatted = DiffRegex().Replace(parsedResult.Exception, "- ");
                 embed.AddField(a => a.WithName($"Exception: {parsedResult.ExceptionType}".TruncateTo(EmbedFieldBuilder.MaxFieldNameLength))
                                      .WithValue(Format.Code(diffFormatted.TruncateTo(MaxFormattedFieldSize), "diff")));
                 await embed.UploadToServiceIfBiggerThan(diffFormatted, MaxFormattedFieldSize, _pasteService);
@@ -202,5 +202,8 @@ namespace Modix.Bot.Modules
 
             return Format.Code(input, language);
         }
+
+        [GeneratedRegex("^", RegexOptions.Multiline)]
+        private static partial Regex DiffRegex();
     }
 }

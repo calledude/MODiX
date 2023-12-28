@@ -13,7 +13,7 @@ namespace Modix.Bot.Modules
 {
     [Name("Link")]
     [Summary("Commands for working with links.")]
-    public class LegacyLinkModule : ModuleBase
+    public partial class LegacyLinkModule : ModuleBase
     {
         private readonly IAutoRemoveMessageService _autoRemoveMessageService;
 
@@ -79,8 +79,8 @@ namespace Modix.Bot.Modules
                 var plainText = LZString.DecompressFromBase64(base64Text);
 
                 // Extract the option and get the target language
-                var textParts = Regex.Match(plainText, @"([^|]*)\|([\s\S]*)$");
-                var languageOption = Regex.Match(textParts.Groups[1].Value, @"l:(\w+)");
+                var textParts = LanguageRegex().Match(plainText);
+                var languageOption = LanguageOptionRegex().Match(textParts.Groups[1].Value);
                 var language = languageOption.Success ? languageOption.Groups[1].Value : "cs";
                 var sourceCode = textParts.Groups[2].Value;
 
@@ -90,7 +90,7 @@ namespace Modix.Bot.Modules
                     sourceCode = ReplaceTokens(sourceCode, _sharplabCSTokens);
 
                     // Strip using directives
-                    sourceCode = Regex.Replace(sourceCode, @"using \w+(?:\.\w+)*;", string.Empty);
+                    sourceCode = UsingDirectiveRegex().Replace(sourceCode, string.Empty);
                 }
                 else if (language is "il")
                     sourceCode = ReplaceTokens(sourceCode, _sharplabILTokens);
@@ -112,7 +112,7 @@ namespace Modix.Bot.Modules
 
         private static string ReplaceTokens(string sourceCode, ImmutableArray<string> tokens)
         {
-            return Regex.Replace(sourceCode, @"@(\d+|@)", match =>
+            return TokenRegex().Replace(sourceCode, match =>
             {
                 if (match.Value is "@@")
                     return "@";
@@ -122,7 +122,9 @@ namespace Modix.Bot.Modules
         }
 
         private static readonly ImmutableArray<string> _allowedHosts
-            = ["sharplab.io", "docs.microsoft.com", "www.docs.microsoft.com"
+            = ["sharplab.io",
+                "docs.microsoft.com",
+                "www.docs.microsoft.com"
 ];
 
         private static readonly ImmutableArray<string> _sharplabCSTokens
@@ -173,5 +175,14 @@ namespace Modix.Bot.Modules
                 "call void [System.Console]System.Console::WriteLine("
 ,
             ];
+
+        [GeneratedRegex(@"([^|]*)\|([\s\S]*)$")]
+        private static partial Regex LanguageRegex();
+        [GeneratedRegex(@"l:(\w+)")]
+        private static partial Regex LanguageOptionRegex();
+        [GeneratedRegex(@"using \w+(?:\.\w+)*;")]
+        private static partial Regex UsingDirectiveRegex();
+        [GeneratedRegex(@"@(\d+|@)")]
+        private static partial Regex TokenRegex();
     }
 }

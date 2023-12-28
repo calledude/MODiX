@@ -13,9 +13,9 @@ using Modix.Services.Core;
 
 namespace Modix.Services.Tags
 {
-    public class TagInlineParsingHandler : INotificationHandler<MessageReceivedNotification>
+    public partial class TagInlineParsingHandler : INotificationHandler<MessageReceivedNotification>
     {
-        private static readonly Regex _inlineTagRegex = new(@"\$(\S+)\b");
+        private static readonly Regex _inlineTagRegex = InlineTagRegex();
 
         public DiscordSocketClient DiscordClient { get; }
         public IAuthorizationService AuthorizationService { get; }
@@ -42,9 +42,9 @@ namespace Modix.Services.Tags
             { return; }
 
             //Remove code blocks from the message we are processing
-            var content = Regex.Replace(message.Content, @"(`{1,3}).*?(.\1)", string.Empty, RegexOptions.Singleline);
+            var content = CodeBlockRegex().Replace(message.Content, string.Empty);
             //Remove quotes from the message we are processing
-            content = Regex.Replace(content, "^>.*$", string.Empty, RegexOptions.Multiline);
+            content = QuoteRegex().Replace(content, string.Empty);
 
             if (string.IsNullOrWhiteSpace(content))
             { return; }
@@ -77,5 +77,12 @@ namespace Modix.Services.Tags
                 await userMessage.Channel.SendMessageAsync(embed: embed.Build());
             }
         }
+
+        [GeneratedRegex(@"\$(\S+)\b")]
+        private static partial Regex InlineTagRegex();
+        [GeneratedRegex(@"(`{1,3}).*?(.\1)", RegexOptions.Singleline)]
+        private static partial Regex CodeBlockRegex();
+        [GeneratedRegex("^>.*$", RegexOptions.Multiline)]
+        private static partial Regex QuoteRegex();
     }
 }

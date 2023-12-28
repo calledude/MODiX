@@ -8,11 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Modix.Services.Quote
 {
-    public class MessageLinkBehavior : BehaviorBase
+    public partial class MessageLinkBehavior : BehaviorBase
     {
-        private static readonly Regex _pattern = new(
-            @"^(?<Prelink>[\s\S]*?)?(?<OpenBrace><)?https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(?<GuildId>\d+)/(?<ChannelId>\d+)/(?<MessageId>\d+)/?(?<CloseBrace>>)?(?<Postlink>[\s\S]*)?$",
-            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex _pattern = DiscordMessageUrlRegex();
 
         public MessageLinkBehavior(DiscordSocketClient discordClient, IServiceProvider serviceProvider)
             : base(serviceProvider)
@@ -143,5 +141,8 @@ namespace Modix.Services.Quote
 
             return success;
         }
+
+        [GeneratedRegex(@"^(?<Prelink>[\s\S]*?)?(?<OpenBrace><)?https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(?<GuildId>\d+)/(?<ChannelId>\d+)/(?<MessageId>\d+)/?(?<CloseBrace>>)?(?<Postlink>[\s\S]*)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant)]
+        private static partial Regex DiscordMessageUrlRegex();
     }
 }
