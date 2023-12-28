@@ -46,7 +46,7 @@ namespace Modix.Services.EmojiStats
                 return;
 
             var message = await notification.Message.GetOrDownloadAsync();
-            if (message is not { Author: { IsBot: false } })
+            if (message is not { Author.IsBot: false })
                 return;
 
             var reaction = notification.Reaction;
@@ -97,7 +97,7 @@ namespace Modix.Services.EmojiStats
                 return;
 
             var message = await notification.Message.GetOrDownloadAsync();
-            if (message is not { Author: { IsBot: false } })
+            if (message is not { Author.IsBot: false })
                 return;
 
             var reaction = notification.Reaction;
@@ -147,7 +147,7 @@ namespace Modix.Services.EmojiStats
             if (notification.Message.Channel is not ITextChannel channel)
                 return;
 
-            if (notification.Message is not { Author: { IsBot: false }, Content: not null } message)
+            if (notification.Message is not { Author.IsBot: false, Content: not null } message)
                 return;
 
             var newEmoji = EmojiRegex.Matches(message.Content);
@@ -176,7 +176,7 @@ namespace Modix.Services.EmojiStats
 
             await UnlogMessageContentEmojiAsync(channel, notification.OldMessage.Id);
 
-            if (notification.NewMessage is not { Author: { IsBot: false }, Content: not null } newMessage)
+            if (notification.NewMessage is not { Author.IsBot: false, Content: not null } newMessage)
                 return;
 
             var newEmoji = EmojiRegex.Matches(newMessage.Content);
@@ -198,7 +198,7 @@ namespace Modix.Services.EmojiStats
                 return;
 
             var message = await notification.Message.GetOrDownloadAsync();
-            if (message is not { Author: { IsBot: false } })
+            if (message is not { Author.IsBot: false })
                 return;
 
             var channel = (ITextChannel)await notification.Channel.GetOrDownloadAsync();
