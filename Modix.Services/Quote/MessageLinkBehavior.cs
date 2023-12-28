@@ -25,7 +25,7 @@ namespace Modix.Services.Quote
 
         private ILogger<MessageLinkBehavior> Log { get; }
 
-        protected internal override Task OnStartingAsync()
+        internal protected override Task OnStartingAsync()
         {
             DiscordClient.MessageReceived += OnMessageReceivedAsync;
             DiscordClient.MessageUpdated += OnMessageUpdatedAsync;
@@ -33,7 +33,7 @@ namespace Modix.Services.Quote
             return Task.CompletedTask;
         }
 
-        protected internal override Task OnStoppedAsync()
+        internal protected override Task OnStoppedAsync()
         {
             DiscordClient.MessageReceived -= OnMessageReceivedAsync;
             DiscordClient.MessageUpdated -= OnMessageUpdatedAsync;
