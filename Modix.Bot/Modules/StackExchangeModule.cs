@@ -42,17 +42,17 @@ namespace Modix.Modules
             if (startLocation > 0 && endLocation > 0)
             {
                 var query = phrase.Substring(startLocation, endLocation - (startLocation - 1));
-                var parts = query.Replace("[", "").Replace("]", "").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                var parts = query.Replace("[", "").Replace("]", "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (var part in parts)
                 {
                     if (part.Contains("site=", StringComparison.OrdinalIgnoreCase))
                     {
-                        site = part.Split(new[] { "site=" }, StringSplitOptions.None)[1];
+                        site = part.Split("site=", StringSplitOptions.None)[1];
                     }
                     else if (part.Contains("tags=", StringComparison.OrdinalIgnoreCase))
                     {
-                        tags = part.Split(new[] { "tags=" }, StringSplitOptions.None)[1];
+                        tags = part.Split("tags=", StringSplitOptions.None)[1];
                     }
                 }
 

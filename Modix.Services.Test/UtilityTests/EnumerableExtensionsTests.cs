@@ -29,6 +29,8 @@ namespace Modix.Services.Test.UtilityTests
             result.ShouldBeEmpty();
         }
 
+        private static readonly int[] expected = [1, 2, 3, 4, 5];
+
         [Test]
         public void SkipLast_GivenMatchingPredicate_ReturnsEnumerableWithoutTrailingMatches()
         {
@@ -36,7 +38,7 @@ namespace Modix.Services.Test.UtilityTests
 
             var result = enumerable.SkipLast(x => x % 2 == 0);
 
-            result.ShouldBe(new[] { 1, 2, 3, 4, 5 });
+            result.ShouldBe(expected);
         }
 
         [Test]
