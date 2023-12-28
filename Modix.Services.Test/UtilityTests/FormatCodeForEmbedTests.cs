@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Humanizer;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Modix.Services.Utilities;
+﻿using Modix.Services.Utilities;
 using NUnit.Framework;
 using Shouldly;
 
@@ -38,6 +31,7 @@ struct CustomHandler
 
             var expected =
 @"```cs
+#nullable enable
 var c = new C();
 c.M(c = null, $"");
 c.ToString();
