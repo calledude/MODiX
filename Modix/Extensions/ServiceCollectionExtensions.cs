@@ -54,16 +54,10 @@ namespace Microsoft.Extensions.DependencyInjection
                     .WaitAndRetryAsync(2, retryAttempt => TimeSpan.FromSeconds(5)));
 
             services.AddHttpClient(HttpClientNames.TimeoutFiveSeconds)
-                .ConfigureHttpClient(client =>
-                {
-                    client.Timeout = TimeSpan.FromSeconds(5);
-                });
+                .ConfigureHttpClient(client => client.Timeout = TimeSpan.FromSeconds(5));
 
             services.AddHttpClient(HttpClientNames.Timeout300ms)
-                .ConfigureHttpClient(client =>
-                {
-                    client.Timeout = TimeSpan.FromMilliseconds(300);
-                });
+                .ConfigureHttpClient(client => client.Timeout = TimeSpan.FromMilliseconds(300));
 
             services.AddHttpClient(HttpClientNames.AutomaticGZipDecompression)
                 .ConfigurePrimaryHttpMessageHandler(() =>

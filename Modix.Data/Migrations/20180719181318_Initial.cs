@@ -37,10 +37,7 @@ namespace Modix.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     MuteRoleId = table.Column<long>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ModerationConfigs", x => x.GuildId);
-                });
+                constraints: table => table.PrimaryKey("PK_ModerationConfigs", x => x.GuildId));
 
             migrationBuilder.CreateTable(
                 name: "Users",
@@ -55,10 +52,7 @@ namespace Modix.Data.Migrations
                     FirstSeen = table.Column<DateTimeOffset>(nullable: false),
                     LastSeen = table.Column<DateTimeOffset>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                });
+                constraints: table => table.PrimaryKey("PK_Users", x => x.Id));
 
             migrationBuilder.CreateTable(
                 name: "PromotionCampaigns",
@@ -115,10 +109,7 @@ namespace Modix.Data.Migrations
                     CreateActionId = table.Column<long>(nullable: false),
                     RescindActionId = table.Column<long>(nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RoleClaims", x => x.Id);
-                });
+                constraints: table => table.PrimaryKey("PK_RoleClaims", x => x.Id));
 
             migrationBuilder.CreateTable(
                 name: "ConfigurationActions",

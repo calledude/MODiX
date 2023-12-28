@@ -24,10 +24,7 @@ namespace Modix.Data.Migrations
                     Timestamp = table.Column<DateTimeOffset>(nullable: false),
                     UsageType = table.Column<string>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Emoji", x => x.Id);
-                });
+                constraints: table => table.PrimaryKey("PK_Emoji", x => x.Id));
 
             migrationBuilder.CreateIndex(
                 name: "IX_Emoji_EmojiId",

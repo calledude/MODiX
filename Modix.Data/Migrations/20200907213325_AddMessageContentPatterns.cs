@@ -17,10 +17,7 @@ namespace Modix.Data.Migrations
                     PatternType = table.Column<string>(nullable: false),
                     GuildId = table.Column<long>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MessageContentPatterns", x => x.Id);
-                });
+                constraints: table => table.PrimaryKey("PK_MessageContentPatterns", x => x.Id));
 
             migrationBuilder.CreateIndex(
                 name: "IX_MessageContentPatterns_GuildId_Pattern",

@@ -23,10 +23,7 @@ namespace Modix.Data.Migrations
                     Key = table.Column<string>(type: "text", nullable: false),
                     Value = table.Column<string>(type: "text", nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BehaviourConfigurations", x => x.Id);
-                });
+                constraints: table => table.PrimaryKey("PK_BehaviourConfigurations", x => x.Id));
         }
     }
 }

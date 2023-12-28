@@ -22,10 +22,7 @@ namespace Modix.Data.Test.Repositories
 
         private static (ModixContext, GuildRoleRepository) BuildTestContext()
         {
-            var modixContext = TestDataContextFactory.BuildTestDataContext(x =>
-            {
-                x.Set<GuildRoleEntity>().AddRange(GuildRoles.Entities.Clone());
-            });
+            var modixContext = TestDataContextFactory.BuildTestDataContext(x => x.Set<GuildRoleEntity>().AddRange(GuildRoles.Entities.Clone()));
 
             var uut = new GuildRoleRepository(modixContext);
 

@@ -22,10 +22,7 @@ namespace Modix.Data.Migrations
                     Name = table.Column<string>(nullable: false),
                     Position = table.Column<int>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GuildRoles", x => x.RoleId);
-                });
+                constraints: table => table.PrimaryKey("PK_GuildRoles", x => x.RoleId));
 
             migrationBuilder.CreateTable(
                 name: "DesignatedRoleMappings",

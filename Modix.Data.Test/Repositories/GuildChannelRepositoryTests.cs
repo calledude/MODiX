@@ -23,10 +23,7 @@ namespace Modix.Data.Test.Repositories
 
         private static (ModixContext, GuildChannelRepository) BuildTestContext()
         {
-            var modixContext = TestDataContextFactory.BuildTestDataContext(x =>
-            {
-                x.Set<GuildChannelEntity>().AddRange(GuildChannels.Entities.Clone());
-            });
+            var modixContext = TestDataContextFactory.BuildTestDataContext(x => x.Set<GuildChannelEntity>().AddRange(GuildChannels.Entities.Clone()));
 
             var uut = new GuildChannelRepository(modixContext);
 

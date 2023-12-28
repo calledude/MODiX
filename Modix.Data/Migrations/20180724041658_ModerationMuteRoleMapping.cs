@@ -96,10 +96,7 @@ namespace Modix.Data.Migrations
                     Created = table.Column<DateTimeOffset>(nullable: false),
                     MuteRoleId = table.Column<long>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ModerationConfigs", x => x.GuildId);
-                });
+                constraints: table => table.PrimaryKey("PK_ModerationConfigs", x => x.GuildId));
         }
     }
 }

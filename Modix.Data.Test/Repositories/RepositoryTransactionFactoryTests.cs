@@ -205,10 +205,7 @@ namespace Modix.Data.Test.Repositories
             database.CurrentTransaction.Returns(Substitute.For<IDbContextTransaction>());
 
             using var transaction = await uut.BeginTransactionAsync(database);
-            Should.NotThrow(() =>
-            {
-                transaction.Commit();
-            });
+            Should.NotThrow(() => transaction.Commit());
         }
 
         [Test]
@@ -240,10 +237,7 @@ namespace Modix.Data.Test.Repositories
 
             var transaction = await uut.BeginTransactionAsync(database);
 
-            Should.NotThrow(() =>
-            {
-                transaction.Dispose();
-            });
+            Should.NotThrow(() => transaction.Dispose());
         }
 
         [Test]

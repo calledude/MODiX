@@ -13,10 +13,7 @@ namespace Modix.Data.Test
         {
             var modixContext = Substitute.ForPartsOf<ModixContext>(new DbContextOptionsBuilder<ModixContext>()
                 .UseInMemoryDatabase((++_databaseName).ToString())
-                .ConfigureWarnings(warnings =>
-                {
-                    warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning);
-                })
+                .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                 .Options);
 
             if (initializeAction is not null)

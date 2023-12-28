@@ -21,10 +21,7 @@ namespace Modix.Data.Migrations
                     Content = table.Column<string>(nullable: false),
                     Uses = table.Column<long>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tags", x => x.Id);
-                });
+                constraints: table => table.PrimaryKey("PK_Tags", x => x.Id));
 
             migrationBuilder.CreateTable(
                 name: "TagActions",

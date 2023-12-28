@@ -21,10 +21,7 @@ namespace Modix.Data.Migrations
                     GuildId = table.Column<long>(nullable: false),
                     Name = table.Column<string>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GuildChannels", x => x.ChannelId);
-                });
+                constraints: table => table.PrimaryKey("PK_GuildChannels", x => x.ChannelId));
 
             migrationBuilder.CreateTable(
                 name: "DeletedMessages",

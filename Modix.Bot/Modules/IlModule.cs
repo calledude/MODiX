@@ -70,19 +70,19 @@ namespace Modix.Modules
             }
             catch (TaskCanceledException)
             {
-                await message.ModifyAsync(a => { a.Content = "Gave up waiting for a response from the Decompile service."; });
+                await message.ModifyAsync(a => a.Content = "Gave up waiting for a response from the Decompile service.");
                 return;
             }
             catch (Exception ex)
             {
-                await message.ModifyAsync(a => { a.Content = $"Decompile failed: {ex.Message}"; });
+                await message.ModifyAsync(a => a.Content = $"Decompile failed: {ex.Message}");
                 Log.Error(ex, "Decompile Failed");
                 return;
             }
 
             if (!res.IsSuccessStatusCode & res.StatusCode != HttpStatusCode.BadRequest)
             {
-                await message.ModifyAsync(a => { a.Content = $"Decompile failed: {res.StatusCode}"; });
+                await message.ModifyAsync(a => a.Content = $"Decompile failed: {res.StatusCode}");
                 return;
             }
 

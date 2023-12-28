@@ -17,10 +17,7 @@ namespace Modix.Data.Migrations
                     AuthorId = table.Column<decimal>(type: "numeric(20)", nullable: false),
                     Timestamp = table.Column<DateTimeOffset>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
-                });
+                constraints: table => table.PrimaryKey("PK_Messages", x => x.Id));
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_GuildId_AuthorId",
