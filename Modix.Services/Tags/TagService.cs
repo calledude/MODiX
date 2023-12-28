@@ -361,7 +361,7 @@ namespace Modix.Services.Tags
             var currentUserRankRoles = rankRoles.Where(r => currentUser.RoleIds.Contains(r.Id));
 
             var currentUserMaxRank = currentUserRankRoles.Any()
-                ? currentUserRankRoles.Select(x => x.Position).Max()
+                ? currentUserRankRoles.Max(x => x.Position)
                 : int.MinValue;
 
             // Only allow maintenance if the user has sufficient rank.

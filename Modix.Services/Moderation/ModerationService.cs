@@ -172,8 +172,9 @@ namespace Modix.Services.Moderation
 
             var nonCategoryChannels =
                 (await guild.GetChannelsAsync())
-                .Where(c => c is (ITextChannel or IVoiceChannel) and not IThreadChannel)
-                .Where(c => !unmoderatedChannels.Contains(c.Id))
+                .Where(c =>
+                    c is (ITextChannel or IVoiceChannel) and not IThreadChannel
+                    && !unmoderatedChannels.Contains(c.Id))
                 .ToList();
 
             var setUpChannels = new List<IGuildChannel>();
@@ -830,10 +831,10 @@ namespace Modix.Services.Moderation
             var moderatorRankRoles = rankRoles.Where(r => moderator.RoleIds.Contains(r.Id));
 
             var greatestSubjectRankPosition = subjectRankRoles.Any()
-                ? subjectRankRoles.Select(r => r.Position).Max()
+                ? subjectRankRoles.Max(r => r.Position)
                 : int.MinValue;
             var greatestModeratorRankPosition = moderatorRankRoles.Any()
-                ? moderatorRankRoles.Select(r => r.Position).Max()
+                ? moderatorRankRoles.Max(r => r.Position)
                 : int.MinValue;
 
             return greatestSubjectRankPosition < greatestModeratorRankPosition;

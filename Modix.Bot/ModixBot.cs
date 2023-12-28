@@ -94,7 +94,7 @@ namespace Modix
                 await _commands.AddModulesAsync(typeof(ModixBot).Assembly, _scope.ServiceProvider);
 
                 Log.LogInformation("{Modules} modules loaded, containing {Commands} commands",
-                    _commands.Modules.Count(), _commands.Modules.SelectMany(d => d.Commands).Count());
+                    _commands.Modules.Count(), _commands.Modules.Sum(d => d.Commands.Count));
 
                 Log.LogInformation("Logging into Discord and starting the client.");
 
@@ -108,14 +108,14 @@ namespace Modix
 
                 foreach (var guild in _client.Guilds)
                 {
-                    var commands = await _interactions.AddModulesToGuildAsync(guild, deleteMissing: true, modules);
+                    _ = await _interactions.AddModulesToGuildAsync(guild, deleteMissing: true, modules);
                 }
 
                 Log.LogInformation("{Modules} interaction modules loaded.", modules.Length);
-                Log.LogInformation("Loaded {SlashCommands} slash commands.", modules.SelectMany(x => x.SlashCommands).Count());
-                Log.LogInformation("Loaded {ContextCommands} context commands.", modules.SelectMany(x => x.ContextCommands).Count());
-                Log.LogInformation("Loaded {ModalCommands} modal commands.", modules.SelectMany(x => x.ModalCommands).Count());
-                Log.LogInformation("Loaded {ComponentCommands} component commands.", modules.SelectMany(x => x.ComponentCommands).Count());
+                Log.LogInformation("Loaded {SlashCommands} slash commands.", modules.Sum(x => x.SlashCommands.Count));
+                Log.LogInformation("Loaded {ContextCommands} context commands.", modules.Sum(x => x.ContextCommands.Count));
+                Log.LogInformation("Loaded {ModalCommands} modal commands.", modules.Sum(x => x.ModalCommands.Count));
+                Log.LogInformation("Loaded {ComponentCommands} component commands.", modules.Sum(x => x.ComponentCommands.Count));
 
                 await Task.Delay(-1);
             }

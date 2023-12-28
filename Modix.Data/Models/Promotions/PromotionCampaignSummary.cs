@@ -84,17 +84,14 @@ namespace Modix.Data.Models.Promotions
                 // https://github.com/dotnet/efcore/issues/15097
                 // https://github.com/dotnet/efcore/issues/10012
                 AbstainCount = entity.Comments
-                    .Where(y => (y.ModifyActionId == null)
-                        && (y.Sentiment == PromotionSentiment.Abstain))
-                    .Count(),
+                    .Count(y => (y.ModifyActionId == null)
+                        && (y.Sentiment == PromotionSentiment.Abstain)),
                 ApproveCount = entity.Comments
-                    .Where(y => (y.ModifyActionId == null)
-                        && (y.Sentiment == PromotionSentiment.Approve))
-                    .Count(),
+                    .Count(y => (y.ModifyActionId == null)
+                        && (y.Sentiment == PromotionSentiment.Approve)),
                 OpposeCount = entity.Comments
-                    .Where(y => (y.ModifyActionId == null)
-                        && (y.Sentiment == PromotionSentiment.Oppose))
-                    .Count(),
+                    .Count(y => (y.ModifyActionId == null)
+                        && (y.Sentiment == PromotionSentiment.Oppose)),
             };
     }
 }

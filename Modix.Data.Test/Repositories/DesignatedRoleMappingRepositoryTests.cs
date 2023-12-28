@@ -298,9 +298,8 @@ namespace Modix.Data.Test.Repositories
             var result = await uut.DeleteAsync(criteria, deletedById);
 
             result.ShouldBe(designatedRoleMappingIds
-                .Where(x => DesignatedRoleMappings.Entities
-                    .Any(y => (y.Id == x) && (y.DeleteActionId == null)))
-                .Count());
+                .Count(x => DesignatedRoleMappings.Entities
+                    .Any(y => y.Id == x && y.DeleteActionId == null)));
 
             modixContext.Set<DesignatedRoleMappingEntity>()
                 .AsQueryable()
@@ -545,8 +544,7 @@ namespace Modix.Data.Test.Repositories
         public static readonly IEnumerable<TestCaseData> InvalidDesignatedRoleMappingAndValidUserIdTestCases
             = Enumerable.Empty<long>()
                 .Append(DesignatedRoleMappings.Entities
-                    .Select(x => x.Id)
-                    .Max() + 1)
+                    .Max(x => x.Id) + 1)
                 .SelectMany(x => Users.Entities
                     .Select(y => new TestCaseData(x, y.Id)));
 
