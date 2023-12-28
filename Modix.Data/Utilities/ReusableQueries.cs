@@ -15,13 +15,13 @@ namespace Modix.Data.Utilities
             entity => entity.Nickname ?? (entity.User.Username + "#" + entity.User.Discriminator);
 
         public static readonly Expression<Func<string, string, bool>> DbCaseInsensitiveEquals =
-            (x, y) => EF.Functions.ILike(x, EscapeLikePattern.Invoke(y));
+            (x, y) => EF.Functions.ILike(x, _escapeLikePattern.Invoke(y));
 
         public static readonly Expression<Func<string, string, bool>> DbCaseInsensitiveContains = (value, search) =>
             // % _ are special characters and need to be escaped
-            EF.Functions.ILike(value, "%" + EscapeLikePattern.Invoke(search) + "%");
+            EF.Functions.ILike(value, "%" + _escapeLikePattern.Invoke(search) + "%");
 
-        private static readonly Expression<Func<string, string>> EscapeLikePattern =
+        private static readonly Expression<Func<string, string>> _escapeLikePattern =
             s => s.Replace("_", "%_").Replace("%", "%%");
     }
 }

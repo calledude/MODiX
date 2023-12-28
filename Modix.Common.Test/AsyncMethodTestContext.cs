@@ -6,11 +6,10 @@ namespace Modix.Common.Test
     public class AsyncMethodTestContext
         : IDisposable
     {
-        public readonly CancellationTokenSource CancellationTokenSource
-            = new();
+        public readonly CancellationTokenSource _cancellationTokenSource = new();
 
         public CancellationToken CancellationToken
-            => CancellationTokenSource.Token;
+            => _cancellationTokenSource.Token;
 
         ~AsyncMethodTestContext()
             => Dispose(false);
@@ -25,7 +24,7 @@ namespace Modix.Common.Test
             bool disposeManaged)
         {
             if (disposeManaged)
-                CancellationTokenSource.Dispose();
+                _cancellationTokenSource.Dispose();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Modix.Services.Quote
 {
     public class MessageLinkBehavior : BehaviorBase
     {
-        private static readonly Regex Pattern = new(
+        private static readonly Regex _pattern = new(
             @"^(?<Prelink>[\s\S]*?)?(?<OpenBrace><)?https?://(?:(?:ptb|canary)\.)?discord(app)?\.com/channels/(?<GuildId>\d+)/(?<ChannelId>\d+)/(?<MessageId>\d+)/?(?<CloseBrace>>)?(?<Postlink>[\s\S]*)?$",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
@@ -45,7 +45,7 @@ namespace Modix.Services.Quote
         {
             var cachedMessage = await cached.GetOrDownloadAsync();
 
-            if (Pattern.IsMatch(cachedMessage.Content))
+            if (_pattern.IsMatch(cachedMessage.Content))
                 return;
 
             await OnMessageReceivedAsync(message);
@@ -61,7 +61,7 @@ namespace Modix.Services.Quote
                 return;
             }
 
-            foreach (Match match in Pattern.Matches(message.Content))
+            foreach (Match match in _pattern.Matches(message.Content))
             {
                 // check if the link is surrounded with < and >. This was too annoying to do in regex
                 if (match.Groups["OpenBrace"].Success && match.Groups["CloseBrace"].Success)

@@ -21,19 +21,19 @@ namespace Modix.Common.Test.Messaging
         {
             public TestContext()
             {
-                Logger = LoggerFactory.CreateLogger<MessagePublisher>();
+                _logger = _loggerFactory.CreateLogger<MessagePublisher>();
 
-                MockServiceProvider = new Mock<IServiceProvider>();
+                _mockServiceProvider = new Mock<IServiceProvider>();
             }
 
             public MessagePublisher BuildUut()
                 => new(
-                    Logger,
-                    MockServiceProvider.Object);
+                    _logger,
+                    _mockServiceProvider.Object);
 
-            public readonly ILogger<MessagePublisher> Logger;
+            public readonly ILogger<MessagePublisher> _logger;
 
-            public readonly Mock<IServiceProvider> MockServiceProvider;
+            public readonly Mock<IServiceProvider> _mockServiceProvider;
         }
 
         #endregion Test Context
@@ -58,7 +58,7 @@ namespace Modix.Common.Test.Messaging
                 .Select(_ => new Mock<INotificationHandler<object>>())
                 .ToArray();
 
-            testContext.MockServiceProvider
+            testContext._mockServiceProvider
                 .Setup(x => x.GetService(typeof(IEnumerable<INotificationHandler<object>>)))
                 .Returns(mockHandlers.Select(x => x.Object));
 
@@ -80,7 +80,7 @@ namespace Modix.Common.Test.Messaging
 
             var mockHandler = new Mock<INotificationHandler<object>>();
 
-            testContext.MockServiceProvider
+            testContext._mockServiceProvider
                 .Setup(x => x.GetService(typeof(IEnumerable<INotificationHandler<object>>)))
                 .Returns(EnumerableEx.From(mockHandler.Object));
 
@@ -96,7 +96,7 @@ namespace Modix.Common.Test.Messaging
             await uut.PublishAsync(mockNotification.Object as object, testContext.CancellationToken);
 
             mockNotification.ShouldHaveReceived(x => x
-                .BeginLogScope(testContext.Logger));
+                .BeginLogScope(testContext._logger));
 
             mockNotificationLogScope.ShouldHaveReceived(x => x
                 .Dispose());

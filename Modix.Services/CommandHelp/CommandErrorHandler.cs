@@ -26,8 +26,8 @@ namespace Modix.Services.CommandHelp
         private ConcurrentDictionary<ulong, ulong> ErrorReplies =>
             _memoryCache.GetOrCreate(ErrorRepliesKey, _ => new ConcurrentDictionary<ulong, ulong>())!;
 
-        private const string _emoji = "⚠";
-        private readonly IEmote _emote = new Emoji(_emoji);
+        private const string Emoji = "⚠";
+        private readonly IEmote _emote = new Emoji(Emoji);
         private readonly DiscordSocketClient _discordSocketClient;
         private readonly IMemoryCache _memoryCache;
 
@@ -47,7 +47,7 @@ namespace Modix.Services.CommandHelp
         {
             if (AssociatedErrors.TryAdd(message.Id, error))
             {
-                await message.AddReactionAsync(new Emoji(_emoji));
+                await message.AddReactionAsync(new Emoji(Emoji));
             }
         }
 
@@ -64,7 +64,7 @@ namespace Modix.Services.CommandHelp
                 return;
             }
 
-            if (reaction.Emote.Name != _emoji || ErrorReplies.ContainsKey(cachedMessage.Id))
+            if (reaction.Emote.Name != Emoji || ErrorReplies.ContainsKey(cachedMessage.Id))
             {
                 return;
             }
@@ -109,7 +109,7 @@ namespace Modix.Services.CommandHelp
                 return;
             }
 
-            if (reaction.Emote.Name != _emoji)
+            if (reaction.Emote.Name != Emoji)
             {
                 return;
             }

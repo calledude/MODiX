@@ -24,49 +24,49 @@ namespace Modix.Common.Test.Messaging
         {
             public TestContext()
             {
-                Logger = LoggerFactory.CreateLogger<MessageDispatcher>();
+                _logger = _loggerFactory.CreateLogger<MessageDispatcher>();
 
-                MockCancellationTokenSource = new Mock<ICancellationTokenSource>();
-                MockCancellationTokenSource
+                _mockCancellationTokenSource = new Mock<ICancellationTokenSource>();
+                _mockCancellationTokenSource
                     .Setup(x => x.Token)
                     .Returns(() => CancellationToken);
 
-                MockCancellationTokenSourceFactory = new Mock<ICancellationTokenSourceFactory>();
-                MockCancellationTokenSourceFactory
+                _mockCancellationTokenSourceFactory = new Mock<ICancellationTokenSourceFactory>();
+                _mockCancellationTokenSourceFactory
                     .Setup(x => x.Create(It.IsAny<TimeSpan>()))
-                    .Returns(() => MockCancellationTokenSource.Object);
+                    .Returns(() => _mockCancellationTokenSource.Object);
 
-                MockServiceProvider = new Mock<IServiceProvider>();
+                _mockServiceProvider = new Mock<IServiceProvider>();
 
-                MockServiceScope = new Mock<IServiceScope>();
-                MockServiceScope
+                _mockServiceScope = new Mock<IServiceScope>();
+                _mockServiceScope
                     .Setup(x => x.ServiceProvider)
-                    .Returns(() => MockServiceProvider.Object);
+                    .Returns(() => _mockServiceProvider.Object);
 
-                MockServiceScopeFactory = new Mock<IServiceScopeFactory>();
-                MockServiceScopeFactory
+                _mockServiceScopeFactory = new Mock<IServiceScopeFactory>();
+                _mockServiceScopeFactory
                     .Setup(x => x.CreateScope())
-                    .Returns(() => MockServiceScope.Object);
+                    .Returns(() => _mockServiceScope.Object);
 
-                Options = Microsoft.Extensions.Options.Options.Create(new MessagingOptions());
+                _options = Microsoft.Extensions.Options.Options.Create(new MessagingOptions());
             }
 
             public MessageDispatcher BuildUut()
                 => new(
-                    MockCancellationTokenSourceFactory.Object,
-                    Logger,
-                    Options,
-                    MockServiceScopeFactory.Object);
+                    _mockCancellationTokenSourceFactory.Object,
+                    _logger,
+                    _options,
+                    _mockServiceScopeFactory.Object);
 
-            public readonly ILogger<MessageDispatcher> Logger;
+            public readonly ILogger<MessageDispatcher> _logger;
 
-            public readonly Mock<ICancellationTokenSource> MockCancellationTokenSource;
-            public readonly Mock<ICancellationTokenSourceFactory> MockCancellationTokenSourceFactory;
-            public readonly Mock<IServiceProvider> MockServiceProvider;
-            public readonly Mock<IServiceScope> MockServiceScope;
-            public readonly Mock<IServiceScopeFactory> MockServiceScopeFactory;
+            public readonly Mock<ICancellationTokenSource> _mockCancellationTokenSource;
+            public readonly Mock<ICancellationTokenSourceFactory> _mockCancellationTokenSourceFactory;
+            public readonly Mock<IServiceProvider> _mockServiceProvider;
+            public readonly Mock<IServiceScope> _mockServiceScope;
+            public readonly Mock<IServiceScopeFactory> _mockServiceScopeFactory;
 
-            public readonly IOptions<MessagingOptions> Options;
+            public readonly IOptions<MessagingOptions> _options;
         }
 
         #endregion Test Context
@@ -91,13 +91,13 @@ namespace Modix.Common.Test.Messaging
             TimeSpan cancellationTokenSourceDelay)
         {
             using var testContext = new TestContext();
-            testContext.Options.Value.DispatchTimeout = dispatchTimeout;
+            testContext._options.Value.DispatchTimeout = dispatchTimeout;
 
             var mockHandlers = Enumerable.Range(0, handlerCount)
                 .Select(_ => new Mock<INotificationHandler<object>>())
                 .ToArray();
 
-            testContext.MockServiceProvider
+            testContext._mockServiceProvider
                 .Setup(x => x.GetService(typeof(IEnumerable<INotificationHandler<object>>)))
                 .Returns(mockHandlers.Select(x => x.Object));
 
@@ -107,17 +107,17 @@ namespace Modix.Common.Test.Messaging
 
             await uut.DispatchAsync(notification, timeout);
 
-            testContext.MockCancellationTokenSourceFactory.ShouldHaveReceived(x => x
+            testContext._mockCancellationTokenSourceFactory.ShouldHaveReceived(x => x
                 .Create(cancellationTokenSourceDelay));
 
-            testContext.MockServiceScopeFactory.ShouldHaveReceived(x => x
+            testContext._mockServiceScopeFactory.ShouldHaveReceived(x => x
                 .CreateScope());
 
             foreach (var mockHandler in mockHandlers)
                 mockHandler.ShouldHaveReceived(x => x
                     .HandleNotificationAsync(notification, testContext.CancellationToken));
 
-            testContext.MockServiceScope.ShouldHaveReceived(x => x
+            testContext._mockServiceScope.ShouldHaveReceived(x => x
                 .Dispose());
         }
 
@@ -128,7 +128,7 @@ namespace Modix.Common.Test.Messaging
 
             var mockHandler = new Mock<INotificationHandler<object>>();
 
-            testContext.MockServiceProvider
+            testContext._mockServiceProvider
                 .Setup(x => x.GetService(typeof(IEnumerable<INotificationHandler<object>>)))
                 .Returns(EnumerableEx.From(mockHandler.Object));
 
@@ -144,7 +144,7 @@ namespace Modix.Common.Test.Messaging
             await uut.DispatchAsync(mockNotification.Object);
 
             mockNotification.ShouldHaveReceived(x => x
-                .BeginLogScope(testContext.Logger));
+                .BeginLogScope(testContext._logger));
 
             mockNotificationLogScope.ShouldHaveReceived(x => x
                 .Dispose());
@@ -170,7 +170,7 @@ namespace Modix.Common.Test.Messaging
                 .Select(_ => new Mock<INotificationHandler<object>>())
                 .ToArray();
 
-            testContext.MockServiceProvider
+            testContext._mockServiceProvider
                 .Setup(x => x.GetService(typeof(IEnumerable<INotificationHandler<object>>)))
                 .Returns(mockHandlers.Select(x => x.Object));
 
@@ -189,7 +189,7 @@ namespace Modix.Common.Test.Messaging
                 mockHandler.ShouldHaveReceived(x => x
                     .HandleNotificationAsync(notification, testContext.CancellationToken));
 
-            testContext.MockServiceScope.ShouldHaveReceived(x => x
+            testContext._mockServiceScope.ShouldHaveReceived(x => x
                 .Dispose());
         }
 

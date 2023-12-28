@@ -19,33 +19,33 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
         {
             public TestContext()
             {
-                MockMessagePublisher = new Mock<IMessagePublisher>();
+                _mockMessagePublisher = new Mock<IMessagePublisher>();
 
-                MockServiceProvider = new Mock<IServiceProvider>();
-                MockServiceProvider
+                _mockServiceProvider = new Mock<IServiceProvider>();
+                _mockServiceProvider
                     .Setup(x => x.GetService(typeof(IMessagePublisher)))
-                    .Returns(() => MockMessagePublisher.Object);
+                    .Returns(() => _mockMessagePublisher.Object);
 
-                MockServiceScope = new Mock<IServiceScope>();
-                MockServiceScope
+                _mockServiceScope = new Mock<IServiceScope>();
+                _mockServiceScope
                     .Setup(x => x.ServiceProvider)
-                    .Returns(() => MockServiceProvider.Object);
+                    .Returns(() => _mockServiceProvider.Object);
 
-                MockServiceScopeFactory = new Mock<IServiceScopeFactory>();
-                MockServiceScopeFactory
+                _mockServiceScopeFactory = new Mock<IServiceScopeFactory>();
+                _mockServiceScopeFactory
                     .Setup(x => x.CreateScope())
-                    .Returns(() => MockServiceScope.Object);
+                    .Returns(() => _mockServiceScope.Object);
             }
 
             public HostLifetimeNotificationBehavior BuildUut()
                 => new(
-                    LoggerFactory.CreateLogger<HostLifetimeNotificationBehavior>(),
-                    MockServiceScopeFactory.Object);
+                    _loggerFactory.CreateLogger<HostLifetimeNotificationBehavior>(),
+                    _mockServiceScopeFactory.Object);
 
-            public readonly Mock<IMessagePublisher> MockMessagePublisher;
-            public readonly Mock<IServiceProvider> MockServiceProvider;
-            public readonly Mock<IServiceScope> MockServiceScope;
-            public readonly Mock<IServiceScopeFactory> MockServiceScopeFactory;
+            public readonly Mock<IMessagePublisher> _mockMessagePublisher;
+            public readonly Mock<IServiceProvider> _mockServiceProvider;
+            public readonly Mock<IServiceScope> _mockServiceScope;
+            public readonly Mock<IServiceScopeFactory> _mockServiceScopeFactory;
         }
 
         #endregion Test Context
@@ -61,10 +61,10 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
 
             await uut.StartAsync(testContext.CancellationToken);
 
-            testContext.MockMessagePublisher.ShouldHaveReceived(x => x
+            testContext._mockMessagePublisher.ShouldHaveReceived(x => x
                 .PublishAsync(It.IsNotNull<HostStartingNotification>(), testContext.CancellationToken));
 
-            testContext.MockServiceScope.ShouldHaveReceived(x => x
+            testContext._mockServiceScope.ShouldHaveReceived(x => x
                 .Dispose());
         }
 
@@ -81,10 +81,10 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
 
             await uut.StopAsync(testContext.CancellationToken);
 
-            testContext.MockMessagePublisher.ShouldHaveReceived(x => x
+            testContext._mockMessagePublisher.ShouldHaveReceived(x => x
                 .PublishAsync(It.IsNotNull<HostStoppingNotification>(), testContext.CancellationToken));
 
-            testContext.MockServiceScope.ShouldHaveReceived(x => x
+            testContext._mockServiceScope.ShouldHaveReceived(x => x
                 .Dispose());
         }
 

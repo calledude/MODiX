@@ -9,12 +9,12 @@ namespace Modix.Configuration
 {
     public class StaticFilesConfiguration : IConfigureOptions<StaticFileOptions>
     {
-        private readonly IAntiforgery antiforgery;
+        private readonly IAntiforgery _antiforgery;
         private readonly IWebHostEnvironment _env;
 
         public StaticFilesConfiguration(IAntiforgery antiforgery, IWebHostEnvironment env)
         {
-            this.antiforgery = antiforgery;
+            _antiforgery = antiforgery;
             _env = env;
         }
 
@@ -28,7 +28,7 @@ namespace Modix.Configuration
                 {
                     if (fileResponse.File.Name == "index.html")
                     {
-                        var tokens = antiforgery.GetAndStoreTokens(fileResponse.Context);
+                        var tokens = _antiforgery.GetAndStoreTokens(fileResponse.Context);
 
                         if (tokens.RequestToken is null)
                             return;

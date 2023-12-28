@@ -3,14 +3,13 @@
     public class AsyncMethodWithLoggerTestContext
         : AsyncMethodTestContext
     {
-        public readonly TestLoggerFactory LoggerFactory
-            = new();
+        public readonly TestLoggerFactory _loggerFactory = new();
 
         protected override void Dispose(
             bool disposeManaged)
         {
             if (disposeManaged)
-                LoggerFactory.Dispose();
+                _loggerFactory.Dispose();
             base.Dispose(disposeManaged);
         }
     }

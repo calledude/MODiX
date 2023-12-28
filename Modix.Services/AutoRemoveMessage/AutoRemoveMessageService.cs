@@ -48,7 +48,7 @@ namespace Modix.Services.AutoRemoveMessage
     /// <inheritdoc />
     internal class AutoRemoveMessageService : IAutoRemoveMessageService
     {
-        private const string _footerReactMessage = "React with ❌ to remove this embed.";
+        private const string FooterReactMessage = "React with ❌ to remove this embed.";
 
         public AutoRemoveMessageService(IMessageDispatcher messageDispatcher)
         {
@@ -66,11 +66,11 @@ namespace Modix.Services.AutoRemoveMessage
 
             if (embed.Footer?.Text == null)
             {
-                embed.WithFooter(_footerReactMessage);
+                embed.WithFooter(FooterReactMessage);
             }
-            else if (!embed.Footer.Text.Contains(_footerReactMessage))
+            else if (!embed.Footer.Text.Contains(FooterReactMessage))
             {
-                embed.Footer.Text += $" | {_footerReactMessage}";
+                embed.Footer.Text += $" | {FooterReactMessage}";
             }
 
             var msg = await callback.Invoke(embed);

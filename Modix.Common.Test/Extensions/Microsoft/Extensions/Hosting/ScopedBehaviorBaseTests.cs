@@ -20,30 +20,30 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
         {
             public TestContext()
             {
-                MockServiceProvider = new Mock<IServiceProvider>();
+                _mockServiceProvider = new Mock<IServiceProvider>();
 
-                MockServiceScope = new Mock<IServiceScope>();
-                MockServiceScope
+                _mockServiceScope = new Mock<IServiceScope>();
+                _mockServiceScope
                     .Setup(x => x.ServiceProvider)
-                    .Returns(() => MockServiceProvider.Object);
+                    .Returns(() => _mockServiceProvider.Object);
 
-                MockServiceScopeFactory = new Mock<IServiceScopeFactory>();
-                MockServiceScopeFactory
+                _mockServiceScopeFactory = new Mock<IServiceScopeFactory>();
+                _mockServiceScopeFactory
                     .Setup(x => x.CreateScope())
-                    .Returns(() => MockServiceScope.Object);
+                    .Returns(() => _mockServiceScope.Object);
             }
 
             public Mock<ScopedBehaviorBase> BuildMockUut()
                 => new(
-                    LoggerFactory.CreateLogger<ScopedBehaviorBase>(),
-                    MockServiceScopeFactory.Object)
+                    _loggerFactory.CreateLogger<ScopedBehaviorBase>(),
+                    _mockServiceScopeFactory.Object)
                 {
                     CallBase = true
                 };
 
-            public readonly Mock<IServiceProvider> MockServiceProvider;
-            public readonly Mock<IServiceScope> MockServiceScope;
-            public readonly Mock<IServiceScopeFactory> MockServiceScopeFactory;
+            public readonly Mock<IServiceProvider> _mockServiceProvider;
+            public readonly Mock<IServiceScope> _mockServiceScope;
+            public readonly Mock<IServiceScopeFactory> _mockServiceScopeFactory;
         }
 
         #endregion Test Context
@@ -60,9 +60,9 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
             await mockUut.Object.StartAsync(testContext.CancellationToken);
 
             mockUut.ShouldHaveReceived(x => x
-                .OnStartingAsync(testContext.MockServiceProvider.Object, testContext.CancellationToken));
+                .OnStartingAsync(testContext._mockServiceProvider.Object, testContext.CancellationToken));
 
-            testContext.MockServiceScope.ShouldHaveReceived(x => x
+            testContext._mockServiceScope.ShouldHaveReceived(x => x
                 .Dispose());
         }
 
@@ -80,9 +80,9 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
             await mockUut.Object.StopAsync(testContext.CancellationToken);
 
             mockUut.ShouldHaveReceived(x => x
-                .OnStoppingAsync(testContext.MockServiceProvider.Object, testContext.CancellationToken));
+                .OnStoppingAsync(testContext._mockServiceProvider.Object, testContext.CancellationToken));
 
-            testContext.MockServiceScope.ShouldHaveReceived(x => x
+            testContext._mockServiceScope.ShouldHaveReceived(x => x
                 .Dispose());
         }
 

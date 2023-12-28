@@ -150,7 +150,7 @@ namespace Modix
 
         public static void ConfigureCommon(WebApplication app)
         {
-            const string logFilesRequestPath = "/logfiles";
+            const string LogFilesRequestPath = "/logfiles";
 
             var options = new ForwardedHeadersOptions
             {
@@ -173,7 +173,7 @@ namespace Modix
             });
 
             // Serve up log files for maintainers only
-            app.MapWhen(x => x.Request.Path.Value?.StartsWith(logFilesRequestPath) ?? false, builder =>
+            app.MapWhen(x => x.Request.Path.Value?.StartsWith(LogFilesRequestPath) ?? false, builder =>
             {
                 var fileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "logs"));
                 builder
@@ -181,12 +181,12 @@ namespace Modix
                     .UseDirectoryBrowser(new DirectoryBrowserOptions()
                     {
                         FileProvider = fileProvider,
-                        RequestPath = logFilesRequestPath
+                        RequestPath = LogFilesRequestPath
                     })
                     .UseStaticFiles(new StaticFileOptions()
                     {
                         FileProvider = fileProvider,
-                        RequestPath = logFilesRequestPath,
+                        RequestPath = LogFilesRequestPath,
                         ServeUnknownFileTypes = true
                     });
             });

@@ -43,13 +43,12 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
         internal class TestContext
             : AsyncMethodWithLoggerTestContext
         {
-            public readonly List<MockBehavior> MockBehaviors
-                = [];
+            public readonly List<MockBehavior> _mockBehaviors = [];
 
             public BehaviorHost BuildUut()
                 => new(
-                    MockBehaviors.Select(x => x.Object),
-                    LoggerFactory.CreateLogger<BehaviorHost>());
+                    _mockBehaviors.Select(x => x.Object),
+                    _loggerFactory.CreateLogger<BehaviorHost>());
         }
 
         #endregion Test Context
@@ -79,7 +78,7 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
 
             Enumerable.Range(0, behaviorCount)
                 .Select(_ => new MockBehavior())
-                .ForEach(x => testContext.MockBehaviors.Add(x));
+                .ForEach(x => testContext._mockBehaviors.Add(x));
 
             var uut = testContext.BuildUut();
 
@@ -88,11 +87,11 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
 
             result.IsCompleted.ShouldBeFalse();
 
-            testContext.MockBehaviors
+            testContext._mockBehaviors
                 .ForEach(mockBehavior => mockBehavior.ShouldHaveReceived(x => x
                     .StartAsync(testContext.CancellationToken)));
 
-            testContext.MockBehaviors
+            testContext._mockBehaviors
                 .ForEach(mockBehavior => mockBehavior.CompleteStart());
 
             await result;
@@ -125,7 +124,7 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
 
             Enumerable.Range(0, behaviorCount)
                 .Select(_ => new MockBehavior())
-                .ForEach(x => testContext.MockBehaviors.Add(x));
+                .ForEach(x => testContext._mockBehaviors.Add(x));
 
             var uut = testContext.BuildUut();
 
@@ -134,11 +133,11 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
 
             result.IsCompleted.ShouldBeFalse();
 
-            testContext.MockBehaviors
+            testContext._mockBehaviors
                 .ForEach(mockBehavior => mockBehavior.ShouldHaveReceived(x => x
                     .StopAsync(testContext.CancellationToken)));
 
-            testContext.MockBehaviors
+            testContext._mockBehaviors
                 .ForEach(mockBehavior => mockBehavior.CompleteStop());
 
             await result;
