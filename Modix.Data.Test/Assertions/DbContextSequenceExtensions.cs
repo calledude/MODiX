@@ -23,7 +23,7 @@ namespace Microsoft.EntityFrameworkCore
 
             var table = tableSelector.Compile().Invoke(context).Local;
 
-            valueGenerator.SetValue(default(TProperty));
+            valueGenerator.SetValue(default);
         }
 
         public static void ResetSequenceToValue<TContext, TEntity, TProperty>(
@@ -54,7 +54,7 @@ namespace Microsoft.EntityFrameworkCore
 
             valueGenerator.SetValue(table.Any()
                 ? table.Max(propertySelector.Compile())
-                : default(TProperty)!);
+                : default!);
         }
 
         private static ResettableSequenceValueGenerator<TProperty> GetGetResettableSequenceValueGenerator<TContext, TEntity, TProperty>(
