@@ -19,7 +19,7 @@ namespace Modix.Data.Repositories
         /// <summary>
         /// Returns a new <see cref="IRepositoryTransaction"/> object, which creates a new transaction upon the given database,
         /// and manages its lifetime.
-        /// 
+        ///
         /// Only one transaction created by this provider may exist at any given time. If this method is called while a transaction
         /// already exists, it will not (asynchronously) return until that transaction is complete.
         /// </summary>
@@ -43,7 +43,7 @@ namespace Modix.Data.Repositories
         /// <summary>
         /// Returns a new <see cref="IRepositoryTransaction"/> object, which creates a new transaction upon the given database,
         /// and manages its lifetime.
-        /// 
+        ///
         /// Only one transaction created by this provider may exist at any given time. If this method is called while a transaction
         /// already exists, it will not (asynchronously) return until that transaction is complete.
         /// </summary>

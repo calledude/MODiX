@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Modix.Data.Models.Core
 {
     /// <summary>
-    /// Describes information about a Discord guild role, tracked by the application. 
+    /// Describes information about a Discord guild role, tracked by the application.
     /// Tracking this information locally, helps us avoid calls to the Discord API,
     /// and to keep a history for roles that have been deleted from the Discord API.
     /// </summary>

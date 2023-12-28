@@ -67,7 +67,6 @@ namespace Modix.Services.Quote
                 if (match.Groups["OpenBrace"].Success && match.Groups["CloseBrace"].Success)
                     continue;
 
-
                 if (ulong.TryParse(match.Groups["GuildId"].Value, out _)
                     && ulong.TryParse(match.Groups["ChannelId"].Value, out var channelId)
                     && ulong.TryParse(match.Groups["MessageId"].Value, out var messageId))

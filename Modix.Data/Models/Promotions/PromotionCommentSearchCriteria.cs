@@ -34,7 +34,7 @@ namespace Modix.Data.Models.Promotions
         public ulong? CreatedById { get; set; }
 
         /// <summary>
-        /// A flag indicating whether records to be returned should have a <see cref="PromotionCommentEntity.ModifyActionId"/> value of null, 
+        /// A flag indicating whether records to be returned should have a <see cref="PromotionCommentEntity.ModifyActionId"/> value of null,
         /// or non-null, (or both).
         /// </summary>
         public bool? IsModified { get; set; }

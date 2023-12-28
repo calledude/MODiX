@@ -37,7 +37,7 @@ namespace Modix.Data.Models.Core
         public ulong? CreatedById { get; set; }
 
         /// <summary>
-        /// A flag indicating whether records to be returned should have an <see cref="InfractionEntity.DeleteActionId"/> value of null, 
+        /// A flag indicating whether records to be returned should have an <see cref="InfractionEntity.DeleteActionId"/> value of null,
         /// or non-null, (or both).
         /// </summary>
         public bool? IsDeleted { get; set; }
