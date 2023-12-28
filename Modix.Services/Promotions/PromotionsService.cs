@@ -596,7 +596,7 @@ namespace Modix.Services.Promotions
                 throw new InvalidOperationException($"Creating a promotion campaign requires a rank at least as high as the proposed target rank.");
         }
 
-        private bool TryGetNextRankRoleForUser(
+        private static bool TryGetNextRankRoleForUser(
             GuildRoleBrief[] rankRoles, IGuildUser subject, [NotNullWhen(true)] out GuildRoleBrief? nextRankRole, out string? message)
         {
             var userRankRoles = rankRoles.Where(r => subject.RoleIds.Contains(r.Id));

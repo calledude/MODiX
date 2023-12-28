@@ -25,9 +25,7 @@ namespace Modix.Bot.Test
         [TestCaseSource(nameof(InvalidInputs))]
         public void TryParseTimeSpan_GivenInvalidInput_ReturnsFalse(string input)
         {
-            var uut = new TimeSpanTypeReader();
-
-            var succeeded = uut.TryParseTimeSpan(input, out _);
+            var succeeded = TimeSpanTypeReader.TryParseTimeSpan(input, out _);
 
             succeeded.ShouldBeFalse();
         }
@@ -69,9 +67,7 @@ namespace Modix.Bot.Test
         [TestCaseSource(nameof(ValidInputs))]
         public void TryParseTimeSpan_GivenValidInput_SuccessfullyParses(string input, TimeSpan expected)
         {
-            var uut = new TimeSpanTypeReader();
-
-            var succeeded = uut.TryParseTimeSpan(input, out var actual);
+            var succeeded = TimeSpanTypeReader.TryParseTimeSpan(input, out var actual);
 
             succeeded.ShouldBeTrue();
             actual.ShouldBe(expected);

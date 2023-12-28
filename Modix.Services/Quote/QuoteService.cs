@@ -74,7 +74,7 @@ namespace Modix.Services.Quote
                 async (e) => await callback.Invoke(e));
         }
 
-        private bool TryAddImageAttachment(IMessage message, EmbedBuilder embed)
+        private static bool TryAddImageAttachment(IMessage message, EmbedBuilder embed)
         {
             var firstAttachment = message.Attachments.FirstOrDefault();
             if (firstAttachment == null || firstAttachment.Height == null)
@@ -85,7 +85,7 @@ namespace Modix.Services.Quote
             return true;
         }
 
-        private bool TryAddOtherAttachment(IMessage message, EmbedBuilder embed)
+        private static bool TryAddOtherAttachment(IMessage message, EmbedBuilder embed)
         {
             var firstAttachment = message.Attachments.FirstOrDefault();
             if (firstAttachment == null)
@@ -96,7 +96,7 @@ namespace Modix.Services.Quote
             return true;
         }
 
-        private bool TryAddImageEmbed(IMessage message, EmbedBuilder embed)
+        private static bool TryAddImageEmbed(IMessage message, EmbedBuilder embed)
         {
             var imageEmbed = message.Embeds.Select(x => x.Image).FirstOrDefault(x => x is { });
             if (imageEmbed is null)
@@ -107,7 +107,7 @@ namespace Modix.Services.Quote
             return true;
         }
 
-        private bool TryAddThumbnailEmbed(IMessage message, EmbedBuilder embed)
+        private static bool TryAddThumbnailEmbed(IMessage message, EmbedBuilder embed)
         {
             var thumbnailEmbed = message.Embeds.Select(x => x.Thumbnail).FirstOrDefault(x => x is { });
             if (thumbnailEmbed is null)
@@ -118,7 +118,7 @@ namespace Modix.Services.Quote
             return true;
         }
 
-        private bool TryAddRichEmbed(IMessage message, IUser executingUser, ref EmbedBuilder embed)
+        private static bool TryAddRichEmbed(IMessage message, IUser executingUser, ref EmbedBuilder embed)
         {
             var firstEmbed = message.Embeds.FirstOrDefault();
             if (firstEmbed?.Type != EmbedType.Rich)
@@ -137,7 +137,7 @@ namespace Modix.Services.Quote
             return true;
         }
 
-        private void AddActivity(IMessage message, EmbedBuilder embed)
+        private static void AddActivity(IMessage message, EmbedBuilder embed)
         {
             if (message.Activity == null)
             { return; }
@@ -147,7 +147,7 @@ namespace Modix.Services.Quote
                 .AddField("Party Id", message.Activity.PartyId);
         }
 
-        private void AddOtherEmbed(IMessage message, EmbedBuilder embed)
+        private static void AddOtherEmbed(IMessage message, EmbedBuilder embed)
         {
             if (message.Embeds.Count == 0)
                 return;
@@ -155,7 +155,7 @@ namespace Modix.Services.Quote
             embed.AddField("Embed Type", message.Embeds.First().Type);
         }
 
-        private void AddContent(IMessage message, EmbedBuilder embed)
+        private static void AddContent(IMessage message, EmbedBuilder embed)
         {
             if (string.IsNullOrWhiteSpace(message.Content))
                 return;
@@ -163,7 +163,7 @@ namespace Modix.Services.Quote
             embed.WithDescription(message.Content);
         }
 
-        private void AddMeta(IMessage message, IUser executingUser, EmbedBuilder embed)
+        private static void AddMeta(IMessage message, IUser executingUser, EmbedBuilder embed)
         {
             embed
                 .WithUserAsAuthor(message.Author)
@@ -172,7 +172,7 @@ namespace Modix.Services.Quote
                 .AddField("Quoted by", $"{executingUser.Mention} from **{message.GetJumpUrlForEmbed()}**", true);
         }
 
-        private bool IsQuote(IMessage message)
+        private static bool IsQuote(IMessage message)
         {
             return message
                 .Embeds?

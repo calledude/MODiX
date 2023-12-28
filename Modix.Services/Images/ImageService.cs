@@ -88,6 +88,6 @@ namespace Modix.Services.Images
             return new Color((uint)mostCommonPaletteColor.ToArgb() << 8 >> 8);
         }
 
-        private object GetKey(Uri uri) => new { Target = "DominantColor", uri.AbsoluteUri };
+        private static object GetKey(Uri uri) => new { Target = "DominantColor", uri.AbsoluteUri };
     }
 }

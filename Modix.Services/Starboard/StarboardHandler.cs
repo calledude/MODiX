@@ -82,7 +82,7 @@ namespace Modix.Services.Starboard
             }
         }
 
-        private Color GetEmbedColor(int reactionCount)
+        private static Color GetEmbedColor(int reactionCount)
         {
             var percentModifier = reactionCount / 15.0;
             if (percentModifier > 1.0)

@@ -179,7 +179,7 @@ namespace Modix.Data.Repositories
         private static readonly RepositoryTransactionFactory _deleteTransactionFactory
             = new();
 
-        private void DoEntityDelete(DesignatedRoleMappingEntity entity, ulong deletedById)
+        private static void DoEntityDelete(DesignatedRoleMappingEntity entity, ulong deletedById)
             => entity.DeleteAction = new ConfigurationActionEntity()
             {
                 Type = ConfigurationActionType.DesignatedRoleMappingDeleted,

@@ -193,7 +193,7 @@ namespace Modix.Data.Repositories
         private static readonly RepositoryTransactionFactory _deleteTransactionFactory
             = new();
 
-        private void DoEntityDelete(DesignatedChannelMappingEntity entity, ulong deletedById)
+        private static void DoEntityDelete(DesignatedChannelMappingEntity entity, ulong deletedById)
             => entity.DeleteAction = new ConfigurationActionEntity()
             {
                 Type = ConfigurationActionType.DesignatedChannelMappingDeleted,

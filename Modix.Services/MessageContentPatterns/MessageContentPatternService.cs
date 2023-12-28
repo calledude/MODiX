@@ -93,7 +93,7 @@ namespace Modix.Services.MessageContentPatterns
             return ServiceResponse.Ok();
         }
 
-        private bool IsValidRegex(string candidate)
+        private static bool IsValidRegex(string candidate)
         {
             try
             {

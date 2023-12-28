@@ -266,13 +266,13 @@ public class C {
             VerifyWithLength("cs", 293, source, expected);
         }
 
-        private void Verify(string language, string source, string expected)
+        private static void Verify(string language, string source, string expected)
         {
             var actual = FormatUtilities.FormatCodeForEmbed(language, source, 2048);
             actual.ShouldBe(expected.Replace("\r", string.Empty));
         }
 
-        private void VerifyWithLength(string language, int length, string source, string expected)
+        private static void VerifyWithLength(string language, int length, string source, string expected)
         {
             var actual = FormatUtilities.FormatCodeForEmbed(language, source, length);
             actual.ShouldBe(expected.Replace("\r", string.Empty));

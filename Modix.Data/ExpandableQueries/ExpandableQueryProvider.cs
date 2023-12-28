@@ -48,7 +48,7 @@ namespace Modix.Data.ExpandableQueries
 
         internal readonly IQueryProvider _provider;
 
-        private Expression Visit(Expression expression)
+        private static Expression Visit(Expression expression)
             => new ProjectMethodVisitor().Visit(
                 new ExpansionExpressionVisitor().Visit(expression));
     }

@@ -12,7 +12,7 @@ namespace Modix.Bot
                 ? Task.FromResult(TypeReaderResult.FromSuccess(timeSpan))
                 : Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Failed to parse TimeSpan"));
 
-        internal protected bool TryParseTimeSpan(ReadOnlySpan<char> input, out TimeSpan result)
+        internal protected static bool TryParseTimeSpan(ReadOnlySpan<char> input, out TimeSpan result)
         {
             result = TimeSpan.Zero;
 

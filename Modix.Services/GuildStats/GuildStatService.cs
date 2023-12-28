@@ -54,12 +54,12 @@ namespace Modix.Services.GuildStats
         /// <summary>
         /// Create a unique key object for the cache
         /// </summary>
-        private object GetKeyForGuild(IGuild guild) => new { guild, Target = "GuildInfo" };
+        private static object GetKeyForGuild(IGuild guild) => new { guild, Target = "GuildInfo" };
 
         /// <summary>
         /// Create a unique key object for the cache
         /// </summary>
-        private object GetKeyForMsgCounts(IGuild guild, ulong userId) => new { guild, userId, Target = "MessageCounts" };
+        private static object GetKeyForMsgCounts(IGuild guild, ulong userId) => new { guild, userId, Target = "MessageCounts" };
 
         /// <summary>
         /// Clear the cache entry for the given guild
@@ -126,7 +126,7 @@ namespace Modix.Services.GuildStats
             return ret;
         }
 
-        public string GetRoleColorHex(IRole role)
+        public static string GetRoleColorHex(IRole role)
         {
             if (role.Color.RawValue > 0)
             {
@@ -141,7 +141,7 @@ namespace Modix.Services.GuildStats
         /// </summary>
         /// <param name="serverRoles">A dictionary of role IDs to roles in the server</param>
         /// <returns>The highest position role</returns>
-        private IRole? GetHighestRankingRole(IDictionary<ulong, IRole> serverRoles, IGuildUser user)
+        private static IRole? GetHighestRankingRole(IDictionary<ulong, IRole> serverRoles, IGuildUser user)
         {
             //Get the user's role from the cache
             var roles = user.RoleIds.Select(role => serverRoles[role]);
