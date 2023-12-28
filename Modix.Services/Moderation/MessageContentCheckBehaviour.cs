@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,9 +45,9 @@ namespace Modix.Services.Moderation
 
         private async Task TryCheckMessageAsync(IMessage message)
         {
-            if (!(message.Author is IGuildUser author)
+            if (message.Author is not IGuildUser author
                 || (author.Guild is null)
-                || !(message.Channel is IGuildChannel channel)
+                || message.Channel is not IGuildChannel channel
                 || (channel.Guild is null))
             {
                 Log.Debug(

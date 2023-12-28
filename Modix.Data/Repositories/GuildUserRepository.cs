@@ -107,10 +107,10 @@ namespace Modix.Data.Repositories
 
             await ModixContext.Set<GuildUserEntity>().AddAsync(guildDataEntity, cancellationToken);
 
-            if ((guildDataEntity.User.Username != data.Username) && !(data.Username is null))
+            if ((guildDataEntity.User.Username != data.Username) && data.Username is not null)
                 guildDataEntity.User.Username = data.Username;
 
-            if ((guildDataEntity.User.Discriminator != data.Discriminator) && !(data.Discriminator is null))
+            if ((guildDataEntity.User.Discriminator != data.Discriminator) && data.Discriminator is not null)
                 guildDataEntity.User.Discriminator = data.Discriminator;
 
             await ModixContext.SaveChangesAsync(cancellationToken);

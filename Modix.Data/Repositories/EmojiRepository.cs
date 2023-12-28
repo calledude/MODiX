@@ -314,7 +314,7 @@ namespace Modix.Data.Repositories
                     }
                 };
 
-                if (!(userId is null))
+                if (userId is not null)
                 {
                     paramList.Add(new NpgsqlParameter(":UserId", NpgsqlDbType.Bigint)
                     {
@@ -322,7 +322,7 @@ namespace Modix.Data.Repositories
                     });
                 }
 
-                if (!(emojiIds is null) && emojiIds.Any())
+                if (emojiIds is not null && emojiIds.Any())
                 {
                     paramList.Add(new NpgsqlParameter(":EmojiIds", NpgsqlDbType.Array | NpgsqlDbType.Bigint)
                     {
@@ -373,7 +373,7 @@ namespace Modix.Data.Repositories
                     },
                 };
 
-                if (!(emojiIds is null) && emojiIds.Any())
+                if (emojiIds is not null && emojiIds.Any())
                 {
                     paramList.Add(new NpgsqlParameter(":EmojiIds", NpgsqlDbType.Array | NpgsqlDbType.Bigint)
                     {

@@ -56,19 +56,19 @@ namespace Modix.Data.Models.Core
             return query
                 .FilterBy(
                     x => x.Id == criteria.Id,
-                    !(criteria.Id is null))
+                    criteria.Id is not null)
                 .FilterBy(
                     x => x.GuildId == criteria.GuildId,
-                    !(criteria.GuildId is null))
+                    criteria.GuildId is not null)
                 .FilterBy(
                     x => x.ChannelId == criteria.ChannelId,
-                    !(criteria.ChannelId is null))
+                    criteria.ChannelId is not null)
                 .FilterBy(
                     x => x.Type == criteria.Type,
-                    !(criteria.Type is null))
+                    criteria.Type is not null)
                 .FilterBy(
                     x => x.CreateAction.CreatedById == criteria.CreatedById,
-                    !(criteria.CreatedById is null))
+                    criteria.CreatedById is not null)
                 .FilterBy(
                     x => x.DeleteActionId != null,
                     criteria.IsDeleted == true)

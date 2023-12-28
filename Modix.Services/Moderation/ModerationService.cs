@@ -466,7 +466,7 @@ namespace Modix.Services.Moderation
             if (confirmDelegate is null)
                 throw new ArgumentNullException(nameof(confirmDelegate));
 
-            if (!(channel is IGuildChannel guildChannel))
+            if (channel is not IGuildChannel guildChannel)
                 throw new InvalidOperationException(
                     $"Cannot delete messages in {channel.Name} because it is not a guild channel.");
 
@@ -495,7 +495,7 @@ namespace Modix.Services.Moderation
             if (confirmDelegate is null)
                 throw new ArgumentNullException(nameof(confirmDelegate));
 
-            if (!(channel is IGuildChannel guildChannel))
+            if (channel is not IGuildChannel guildChannel)
                 throw new InvalidOperationException(
                     $"Cannot delete messages in {channel.Name} because it is not a guild channel.");
 
@@ -615,7 +615,7 @@ namespace Modix.Services.Moderation
                     IsDeleted = false
                 })).FirstOrDefault();
 
-            if (!(mapping is null))
+            if (mapping is not null)
                 return guild.Roles.First(x => x.Id == mapping.Role.Id);
 
             var role = guild.Roles.FirstOrDefault(x => x.Name == MuteRoleName)

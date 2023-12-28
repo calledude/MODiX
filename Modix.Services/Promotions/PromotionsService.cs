@@ -411,7 +411,7 @@ namespace Modix.Services.Promotions
             AuthorizationService.RequireAuthenticatedUser();
             AuthorizationService.RequireClaims(AuthorizationClaim.PromotionsCloseCampaign);
 
-            if (!(await PromotionCampaignRepository.TryCloseAsync(campaignId, AuthorizationService.CurrentUserId.Value, PromotionCampaignOutcome.Rejected) is PromotionActionSummary resultAction))
+            if (await PromotionCampaignRepository.TryCloseAsync(campaignId, AuthorizationService.CurrentUserId.Value, PromotionCampaignOutcome.Rejected) is not PromotionActionSummary resultAction)
                 throw new InvalidOperationException($"Campaign {campaignId} doesn't exist or is already closed.");
 
             PublishActionNotificationAsync(resultAction);

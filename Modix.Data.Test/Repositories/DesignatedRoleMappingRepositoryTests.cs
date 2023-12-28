@@ -28,7 +28,7 @@ namespace Modix.Data.Test.Repositories
                 x.Set<GuildUserEntity>().AddRange(GuildUsers.Entities.Clone());
                 x.Set<GuildRoleEntity>().AddRange(GuildRoles.Entities.Clone());
                 x.Set<DesignatedRoleMappingEntity>().AddRange(DesignatedRoleMappings.Entities.Clone());
-                x.Set<ConfigurationActionEntity>().AddRange(ConfigurationActions.Entities.Where(y => !(y.DesignatedRoleMappingId is null)).Clone());
+                x.Set<ConfigurationActionEntity>().AddRange(ConfigurationActions.Entities.Where(y => y.DesignatedRoleMappingId is not null).Clone());
             });
 
             var uut = new DesignatedRoleMappingRepository(modixContext);
@@ -228,7 +228,7 @@ namespace Modix.Data.Test.Repositories
             createAction.DesignatedRoleMappingId.ShouldNotBeNull();
             createAction.DesignatedRoleMappingId.ShouldBe(designatedRoleMapping.Id);
 
-            modixContext.Set<ConfigurationActionEntity>().Where(x => x.Id != createAction.Id).Select(x => x.Id).ShouldBe(ConfigurationActions.Entities.Where(x => !(x.DesignatedRoleMappingId is null)).Select(x => x.Id));
+            modixContext.Set<ConfigurationActionEntity>().Where(x => x.Id != createAction.Id).Select(x => x.Id).ShouldBe(ConfigurationActions.Entities.Where(x => x.DesignatedRoleMappingId is not null).Select(x => x.Id));
             modixContext.Set<ConfigurationActionEntity>().Where(x => x.Id != createAction.Id).EachShould(x => x.ShouldNotHaveChanged());
 
             await modixContext.ShouldHaveReceived(2)
@@ -437,7 +437,7 @@ namespace Modix.Data.Test.Repositories
                 .Where(x => x.Id != deleteAction.Id)
                 .Select(x => x.Id)
                 .ShouldBe(ConfigurationActions.Entities
-                    .Where(x => !(x.DesignatedRoleMappingId is null))
+                    .Where(x => x.DesignatedRoleMappingId is not null)
                     .Select(x => x.Id));
 
             modixContext.Set<ConfigurationActionEntity>()
@@ -471,7 +471,7 @@ namespace Modix.Data.Test.Repositories
                 .AsQueryable()
                 .Select(x => x.Id)
                 .ShouldBe(ConfigurationActions.Entities
-                    .Where(x => !(x.DesignatedRoleMappingId is null))
+                    .Where(x => x.DesignatedRoleMappingId is not null)
                     .Select(x => x.Id));
 
             modixContext.Set<ConfigurationActionEntity>()
@@ -537,7 +537,7 @@ namespace Modix.Data.Test.Repositories
 
         public static readonly IEnumerable<TestCaseData> DeletedDesignatedRoleMappingAndValidUserIdTestCases
             = DesignatedRoleMappings.Entities
-                .Where(x => !(x.DeleteActionId is null))
+                .Where(x => x.DeleteActionId is not null)
                 .SelectMany(x => GuildUsers.Entities
                     .Where(y => y.GuildId == x.GuildId)
                     .Select(y => new TestCaseData(x.Id, y.UserId)));

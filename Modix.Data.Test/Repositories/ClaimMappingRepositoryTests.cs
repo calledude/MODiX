@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore.Infrastructure;
-
-using Modix.Data;
 using Modix.Data.Models.Core;
 using Modix.Data.Repositories;
 using Modix.Data.Test.TestData;
@@ -28,7 +26,7 @@ namespace Modix.Data.Test.Repositories
                 x.Set<UserEntity>().AddRange(Users.Entities.Clone());
                 x.Set<GuildUserEntity>().AddRange(GuildUsers.Entities.Clone());
                 x.Set<ClaimMappingEntity>().AddRange(ClaimMappings.Entities.Clone());
-                x.Set<ConfigurationActionEntity>().AddRange(ConfigurationActions.Entities.Where(y => !(y.ClaimMappingId is null)).Clone());
+                x.Set<ConfigurationActionEntity>().AddRange(ConfigurationActions.Entities.Where(y => y.ClaimMappingId is not null).Clone());
             });
 
             var uut = new ClaimMappingRepository(modixContext);
@@ -371,7 +369,7 @@ namespace Modix.Data.Test.Repositories
                 .Where(x => x.Id != deleteAction.Id)
                 .Select(x => x.Id)
                 .ShouldBe(ConfigurationActions.Entities
-                    .Where(x => !(x.ClaimMappingId is null))
+                    .Where(x => x.ClaimMappingId is not null)
                     .Select(x => x.Id));
 
             modixContext.Set<ConfigurationActionEntity>()
@@ -406,7 +404,7 @@ namespace Modix.Data.Test.Repositories
                 .AsQueryable()
                 .Select(x => x.Id)
                 .ShouldBe(ConfigurationActions.Entities
-                    .Where(x => !(x.ClaimMappingId is null))
+                    .Where(x => x.ClaimMappingId is not null)
                     .Select(x => x.Id));
 
             modixContext.Set<ConfigurationActionEntity>()
@@ -460,7 +458,7 @@ namespace Modix.Data.Test.Repositories
 
         public static readonly IEnumerable<TestCaseData> DeletedClaimMappingWithValidUserIdTestCases
             = ClaimMappings.Entities
-                .Where(x => !(x.DeleteActionId is null))
+                .Where(x => x.DeleteActionId is not null)
                 .SelectMany(x => Users.Entities
                     .Where(y => GuildUsers.Entities.Any(z => z.GuildId == x.GuildId))
                     .Select(y => new TestCaseData(x.Id, y.Id)));
