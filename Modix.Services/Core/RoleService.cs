@@ -7,70 +7,69 @@ using Microsoft.Extensions.Logging;
 using Modix.Data.Models.Core;
 using Modix.Data.Repositories;
 
-namespace Modix.Services.Core
+namespace Modix.Services.Core;
+
+public interface IRoleService
 {
-    public interface IRoleService
+    Task TrackRoleAsync(
+        IRole role,
+        CancellationToken cancellationToken);
+}
+
+[ServiceBinding(ServiceLifetime.Scoped)]
+public class RoleService
+    : IRoleService
+{
+    public RoleService(
+        IGuildRoleRepository guildRoleRepository,
+        ILogger<RoleService> logger)
     {
-        Task TrackRoleAsync(
-            IRole role,
-            CancellationToken cancellationToken);
+        _guildRoleRepository = guildRoleRepository;
+        _logger = logger;
     }
 
-    [ServiceBinding(ServiceLifetime.Scoped)]
-    public class RoleService
-        : IRoleService
+    public async Task TrackRoleAsync(
+        IRole role,
+        CancellationToken cancellationToken)
     {
-        public RoleService(
-            IGuildRoleRepository guildRoleRepository,
-            ILogger<RoleService> logger)
+        using var logScope = RolesLogMessages.BeginRoleScope(_logger, role.Guild.Id, role.Id);
+
+        RolesLogMessages.RoleTracking(_logger);
+
+        RolesLogMessages.TransactionBeginning(_logger);
+        using var transaction = await _guildRoleRepository.BeginCreateTransactionAsync();
+
+        RolesLogMessages.RoleUpdating(_logger);
+        var wasUpdateSuccessful = await _guildRoleRepository.TryUpdateAsync(role.Id, data =>
         {
-            _guildRoleRepository = guildRoleRepository;
-            _logger = logger;
+            data.Name = role.Name;
+            data.Position = role.Position;
+        });
+
+        if (wasUpdateSuccessful)
+        {
+            RolesLogMessages.RoleUpdated(_logger);
         }
-
-        public async Task TrackRoleAsync(
-            IRole role,
-            CancellationToken cancellationToken)
+        else
         {
-            using var logScope = RolesLogMessages.BeginRoleScope(_logger, role.Guild.Id, role.Id);
-
-            RolesLogMessages.RoleTracking(_logger);
-
-            RolesLogMessages.TransactionBeginning(_logger);
-            using var transaction = await _guildRoleRepository.BeginCreateTransactionAsync();
-
-            RolesLogMessages.RoleUpdating(_logger);
-            var wasUpdateSuccessful = await _guildRoleRepository.TryUpdateAsync(role.Id, data =>
+            RolesLogMessages.RoleUpdateFailed(_logger);
+            RolesLogMessages.RoleCreating(_logger);
+            await _guildRoleRepository.CreateAsync(new GuildRoleCreationData()
             {
-                data.Name = role.Name;
-                data.Position = role.Position;
+                RoleId = role.Id,
+                GuildId = role.Guild.Id,
+                Name = role.Name,
+                Position = role.Position
             });
-
-            if (wasUpdateSuccessful)
-            {
-                RolesLogMessages.RoleUpdated(_logger);
-            }
-            else
-            {
-                RolesLogMessages.RoleUpdateFailed(_logger);
-                RolesLogMessages.RoleCreating(_logger);
-                await _guildRoleRepository.CreateAsync(new GuildRoleCreationData()
-                {
-                    RoleId = role.Id,
-                    GuildId = role.Guild.Id,
-                    Name = role.Name,
-                    Position = role.Position
-                });
-                RolesLogMessages.RoleCreated(_logger);
-            }
-
-            RolesLogMessages.TransactionCommitting(_logger);
-            transaction.Commit();
-
-            RolesLogMessages.RoleTracked(_logger);
+            RolesLogMessages.RoleCreated(_logger);
         }
 
-        private readonly IGuildRoleRepository _guildRoleRepository;
-        private readonly ILogger _logger;
+        RolesLogMessages.TransactionCommitting(_logger);
+        transaction.Commit();
+
+        RolesLogMessages.RoleTracked(_logger);
     }
+
+    private readonly IGuildRoleRepository _guildRoleRepository;
+    private readonly ILogger _logger;
 }

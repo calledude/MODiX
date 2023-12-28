@@ -4,17 +4,17 @@ using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Modix.Analyzers.UseAllowedMentions;
 using NUnit.Framework;
 
-namespace Modix.Analyzers.Test
-{
-    using VerifyCodeFix = CSharpCodeFixVerifier<UseAllowedMentionsAnalyzer, UseAllowedMentionsCodeFixProvider, NUnitVerifier>;
+namespace Modix.Analyzers.Test;
 
-    [TestFixture]
-    public class UseAllowedMentionsTests
+using VerifyCodeFix = CSharpCodeFixVerifier<UseAllowedMentionsAnalyzer, UseAllowedMentionsCodeFixProvider, NUnitVerifier>;
+
+[TestFixture]
+public class UseAllowedMentionsTests
+{
+    [Test]
+    public async Task FollowupAsync_NeedsAllowedMentions_HasDiagnosticAsync()
     {
-        [Test]
-        public async Task FollowupAsync_NeedsAllowedMentions_HasDiagnosticAsync()
-        {
-            const string Source = @"
+        const string Source = @"
 using System;
 using System.Threading.Tasks;
 
@@ -40,7 +40,7 @@ public class AllowedMentions
 }
 ";
 
-            const string FixedSource = @"
+        const string FixedSource = @"
 using System;
 using System.Threading.Tasks;
 
@@ -66,12 +66,11 @@ public class AllowedMentions
 }
 ";
 
-            var expected = VerifyCodeFix
-                .Diagnostic(UseAllowedMentionsAnalyzer.DiagnosticId)
-                .WithLocation(0)
-                .WithArguments("FollowupAsync");
+        var expected = VerifyCodeFix
+            .Diagnostic(UseAllowedMentionsAnalyzer.DiagnosticId)
+            .WithLocation(0)
+            .WithArguments("FollowupAsync");
 
-            await VerifyCodeFix.VerifyCodeFixAsync(Source, expected, FixedSource);
-        }
+        await VerifyCodeFix.VerifyCodeFixAsync(Source, expected, FixedSource);
     }
 }

@@ -2,29 +2,28 @@
 using System;
 using System.Collections.Generic;
 
-namespace Discord
+namespace Discord;
+
+public static class StringExtensions
 {
-    public static class StringExtensions
+    public static IEnumerable<EmbedFieldBuilder> EnumerateLongTextAsFieldBuilders(
+        this string text,
+        string fieldName)
     {
-        public static IEnumerable<EmbedFieldBuilder> EnumerateLongTextAsFieldBuilders(
-            this string text,
-            string fieldName)
+        if (string.IsNullOrEmpty(text))
+            throw new ArgumentException("Cannot be empty", nameof(text));
+        if (string.IsNullOrEmpty(fieldName))
+            throw new ArgumentException("Cannot be empty", nameof(fieldName));
+
+        return EnumerateLongTextAsFieldBuildersInternal();
+
+        IEnumerable<EmbedFieldBuilder> EnumerateLongTextAsFieldBuildersInternal()
         {
-            if (string.IsNullOrEmpty(text))
-                throw new ArgumentException("Cannot be empty", nameof(text));
-            if (string.IsNullOrEmpty(fieldName))
-                throw new ArgumentException("Cannot be empty", nameof(fieldName));
-
-            return EnumerateLongTextAsFieldBuildersInternal();
-
-            IEnumerable<EmbedFieldBuilder> EnumerateLongTextAsFieldBuildersInternal()
+            for (var i = 0; i < text.Length; i += EmbedFieldBuilder.MaxFieldValueLength)
             {
-                for (var i = 0; i < text.Length; i += EmbedFieldBuilder.MaxFieldValueLength)
-                {
-                    yield return new EmbedFieldBuilder()
-                        .WithName((i == 0) ? fieldName : "(continued)")
-                        .WithValue(text[i..Math.Min(text.Length, (i + EmbedFieldBuilder.MaxFieldValueLength))]);
-                }
+                yield return new EmbedFieldBuilder()
+                    .WithName((i == 0) ? fieldName : "(continued)")
+                    .WithValue(text[i..Math.Min(text.Length, (i + EmbedFieldBuilder.MaxFieldValueLength))]);
             }
         }
     }

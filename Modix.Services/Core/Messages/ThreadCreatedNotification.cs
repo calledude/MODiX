@@ -1,6 +1,5 @@
 ﻿using Discord.WebSocket;
 
-namespace Discord
-{
-    public record ThreadCreatedNotification(SocketThreadChannel Thread);
-}
+namespace Discord;
+
+public record ThreadCreatedNotification(SocketThreadChannel Thread);

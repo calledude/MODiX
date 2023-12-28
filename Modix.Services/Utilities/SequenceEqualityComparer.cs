@@ -2,28 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Modix.Services.Utilities
+namespace Modix.Services.Utilities;
+
+public class SequenceEqualityComparer<T> : IEqualityComparer<IReadOnlyCollection<T>>
 {
-    public class SequenceEqualityComparer<T> : IEqualityComparer<IReadOnlyCollection<T>>
+    public bool Equals(IReadOnlyCollection<T>? x, IReadOnlyCollection<T>? y)
     {
-        public bool Equals(IReadOnlyCollection<T>? x, IReadOnlyCollection<T>? y)
-        {
-            if (x == null || y == null)
-                return false;
+        if (x == null || y == null)
+            return false;
 
-            return x.SequenceEqual(y);
+        return x.SequenceEqual(y);
+    }
+
+    public int GetHashCode(IReadOnlyCollection<T> obj)
+    {
+        var hashCode = new HashCode();
+
+        foreach (var item in obj)
+        {
+            hashCode.Add(item);
         }
 
-        public int GetHashCode(IReadOnlyCollection<T> obj)
-        {
-            var hashCode = new HashCode();
-
-            foreach (var item in obj)
-            {
-                hashCode.Add(item);
-            }
-
-            return hashCode.ToHashCode();
-        }
+        return hashCode.ToHashCode();
     }
 }

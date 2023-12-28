@@ -1,21 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Modix.Data
+namespace Modix.Data;
+
+public class ModixContext : DbContext
 {
-    public class ModixContext : DbContext
+    public ModixContext(
+            DbContextOptions<ModixContext> options)
+        : base(options) { }
+
+    // For building fakes during testing
+    public ModixContext() { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public ModixContext(
-                DbContextOptions<ModixContext> options)
-            : base(options) { }
+        modelBuilder.UseSerialColumns();
 
-        // For building fakes during testing
-        public ModixContext() { }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.UseSerialColumns();
-
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ModixContext).Assembly);
-        }
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ModixContext).Assembly);
     }
 }

@@ -1,47 +1,46 @@
 ﻿using System;
 
-namespace Modix.Data.Models.Core
+namespace Modix.Data.Models.Core;
+
+/// <summary>
+/// Describes an operation to modify a pair of <see cref="UserEntity"/> and <see cref="GuildUserEntity"/> objects.
+/// </summary>
+public class GuildUserMutationData
 {
     /// <summary>
-    /// Describes an operation to modify a pair of <see cref="UserEntity"/> and <see cref="GuildUserEntity"/> objects.
+    /// See <see cref="UserEntity.Username"/>.
     /// </summary>
-    public class GuildUserMutationData
-    {
-        /// <summary>
-        /// See <see cref="UserEntity.Username"/>.
-        /// </summary>
-        public required string Username { get; set; }
+    public required string Username { get; set; }
 
-        /// <summary>
-        /// See <see cref="UserEntity.Discriminator"/>.
-        /// </summary>
-        public required string Discriminator { get; set; }
+    /// <summary>
+    /// See <see cref="UserEntity.Discriminator"/>.
+    /// </summary>
+    public required string Discriminator { get; set; }
 
-        /// <summary>
-        /// See <see cref="GuildUserEntity.Nickname"/>.
-        /// </summary>
-        public string? Nickname { get; set; }
+    /// <summary>
+    /// See <see cref="GuildUserEntity.Nickname"/>.
+    /// </summary>
+    public string? Nickname { get; set; }
 
-        /// <summary>
-        /// See <see cref="GuildUserEntity.LastSeen"/>.
-        /// </summary>
-        public DateTimeOffset LastSeen { get; set; }
+    /// <summary>
+    /// See <see cref="GuildUserEntity.LastSeen"/>.
+    /// </summary>
+    public DateTimeOffset LastSeen { get; set; }
 
-        internal static GuildUserMutationData FromEntity(GuildUserEntity entity)
-            => new()
-            {
-                Username = entity.User.Username,
-                Discriminator = entity.User.Discriminator,
-                Nickname = entity.Nickname,
-                LastSeen = entity.LastSeen
-            };
-
-        internal void ApplyTo(GuildUserEntity entity)
+    internal static GuildUserMutationData FromEntity(GuildUserEntity entity)
+        => new()
         {
-            entity.User.Username = Username;
-            entity.User.Discriminator = Discriminator;
-            entity.Nickname = Nickname;
-            entity.LastSeen = LastSeen;
-        }
+            Username = entity.User.Username,
+            Discriminator = entity.User.Discriminator,
+            Nickname = entity.Nickname,
+            LastSeen = entity.LastSeen
+        };
+
+    internal void ApplyTo(GuildUserEntity entity)
+    {
+        entity.User.Username = Username;
+        entity.User.Discriminator = Discriminator;
+        entity.Nickname = Nickname;
+        entity.LastSeen = LastSeen;
     }
 }

@@ -3,19 +3,18 @@ using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
 
-namespace Modix.Data.Test.Repositories
+namespace Modix.Data.Test.Repositories;
+
+[TestFixture]
+public class RepositoryBaseTests
 {
-    [TestFixture]
-    public class RepositoryBaseTests
+    [Test]
+    public void Constructor_Always_ModixContextIsGiven()
     {
-        [Test]
-        public void Constructor_Always_ModixContextIsGiven()
-        {
-            var modixContext = TestDataContextFactory.BuildTestDataContext();
+        var modixContext = TestDataContextFactory.BuildTestDataContext();
 
-            var uut = Substitute.For<RepositoryBase>(modixContext);
+        var uut = Substitute.For<RepositoryBase>(modixContext);
 
-            uut.ModixContext.ShouldBeSameAs(modixContext);
-        }
+        uut.ModixContext.ShouldBeSameAs(modixContext);
     }
 }

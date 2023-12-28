@@ -1,9 +1,8 @@
 ﻿using Modix.Common;
 
-namespace Modix.Data
+namespace Modix.Data;
+
+public enum DataLogEventType
 {
-    public enum DataLogEventType
-    {
-        DbContext = ApplicationLogEventType.Data + 0x010000
-    }
+    DbContext = ApplicationLogEventType.Data + 0x010000
 }

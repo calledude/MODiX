@@ -27,340 +27,339 @@ using Modix.Services.Moderation;
 using Modix.Services.Promotions;
 using Modix.Services.Utilities;
 
-namespace Modix.Modules
+namespace Modix.Modules;
+
+[ModuleHelp("User Information", "Retrieves information and statistics about the supplied user.")]
+[HelpTags("userinfo", "info")]
+public class UserInfoModule : InteractionModuleBase
 {
-    [ModuleHelp("User Information", "Retrieves information and statistics about the supplied user.")]
-    [HelpTags("userinfo", "info")]
-    public class UserInfoModule : InteractionModuleBase
+    private readonly ILogger<UserInfoModule> _log;
+    private readonly IUserService _userService;
+    private readonly IModerationService _moderationService;
+    private readonly IAuthorizationService _authorizationService;
+    private readonly IMessageRepository _messageRepository;
+    private readonly IEmojiRepository _emojiRepository;
+    private readonly IPromotionsService _promotionsService;
+    private readonly IImageService _imageService;
+    private readonly ModixConfig _config;
+    private readonly IAutoRemoveMessageService _autoRemoveMessageService;
+
+    //optimization: UtcNow is slow and the module is created per-request
+    private readonly DateTime _utcNow = DateTime.UtcNow;
+
+    public UserInfoModule(
+        ILogger<UserInfoModule> logger,
+        IUserService userService,
+        IModerationService moderationService,
+        IAuthorizationService authorizationService,
+        IMessageRepository messageRepository,
+        IEmojiRepository emojiRepository,
+        IPromotionsService promotionsService,
+        IImageService imageService,
+        IOptions<ModixConfig> config,
+        IAutoRemoveMessageService autoRemoveMessageService)
     {
-        private readonly ILogger<UserInfoModule> _log;
-        private readonly IUserService _userService;
-        private readonly IModerationService _moderationService;
-        private readonly IAuthorizationService _authorizationService;
-        private readonly IMessageRepository _messageRepository;
-        private readonly IEmojiRepository _emojiRepository;
-        private readonly IPromotionsService _promotionsService;
-        private readonly IImageService _imageService;
-        private readonly ModixConfig _config;
-        private readonly IAutoRemoveMessageService _autoRemoveMessageService;
+        _log = logger ?? new NullLogger<UserInfoModule>();
+        _userService = userService;
+        _moderationService = moderationService;
+        _authorizationService = authorizationService;
+        _messageRepository = messageRepository;
+        _emojiRepository = emojiRepository;
+        _promotionsService = promotionsService;
+        _imageService = imageService;
+        _config = config.Value;
+        _autoRemoveMessageService = autoRemoveMessageService;
+    }
 
-        //optimization: UtcNow is slow and the module is created per-request
-        private readonly DateTime _utcNow = DateTime.UtcNow;
+    [MessageCommand("User Info")]
+    [RequireContext(ContextType.Guild)]
+    public async Task GetUserInfoAsync(IMessage message)
+        => await GetUserInfoAsync(message.Author);
 
-        public UserInfoModule(
-            ILogger<UserInfoModule> logger,
-            IUserService userService,
-            IModerationService moderationService,
-            IAuthorizationService authorizationService,
-            IMessageRepository messageRepository,
-            IEmojiRepository emojiRepository,
-            IPromotionsService promotionsService,
-            IImageService imageService,
-            IOptions<ModixConfig> config,
-            IAutoRemoveMessageService autoRemoveMessageService)
+    [SlashCommand("info", "Retrieves information about the supplied user, or the current user if one is not provided.")]
+    [UserCommand("User Info")]
+    public async Task GetUserInfoAsync(
+        [Summary(description: "The user to retrieve information about, if any.")]
+            IUser? user = null)
+    {
+        var timer = Stopwatch.StartNew();
+        var originalResponse = await GetOriginalResponseAsync();
+        var ephemeral = originalResponse.Flags.GetValueOrDefault().HasFlag(MessageFlags.Ephemeral);
+
+        user ??= Context.User;
+
+        var userInfo = await _userService.GetUserInformationAsync(Context.Guild.Id, user.Id);
+
+        if (userInfo == null)
         {
-            _log = logger ?? new NullLogger<UserInfoModule>();
-            _userService = userService;
-            _moderationService = moderationService;
-            _authorizationService = authorizationService;
-            _messageRepository = messageRepository;
-            _emojiRepository = emojiRepository;
-            _promotionsService = promotionsService;
-            _imageService = imageService;
-            _config = config.Value;
-            _autoRemoveMessageService = autoRemoveMessageService;
+            var embed = new EmbedBuilder()
+                .WithTitle("Retrieval Error")
+                .WithColor(Color.Red)
+                .WithDescription("Sorry, we don't have any data for that user - and we couldn't find any, either.")
+                .AddField("User Id", user.Id);
+            await _autoRemoveMessageService.RegisterRemovableMessageAsync(
+                Context.User,
+                embed,
+                async (embedBuilder) => await FollowupAsync(embed: embedBuilder.Build()));
+
+            return;
         }
 
-        [MessageCommand("User Info")]
-        [RequireContext(ContextType.Guild)]
-        public async Task GetUserInfoAsync(IMessage message)
-            => await GetUserInfoAsync(message.Author);
+        var builder = new StringBuilder();
+        builder.AppendLine("**\u276F User Information**");
+        builder.Append("ID: ").Append(user.Id).AppendLine();
+        builder.Append("Profile: ").AppendLine(MentionUtils.MentionUser(user.Id));
+        builder.Append("Username: ").AppendLine(user.Username);
 
-        [SlashCommand("info", "Retrieves information about the supplied user, or the current user if one is not provided.")]
-        [UserCommand("User Info")]
-        public async Task GetUserInfoAsync(
-            [Summary(description: "The user to retrieve information about, if any.")]
-                IUser? user = null)
+        var embedBuilder = new EmbedBuilder()
+            .WithUserAsAuthor(userInfo)
+            .WithTimestamp(_utcNow);
+
+        var avatar = userInfo.GetDefiniteAvatarUrl();
+
+        embedBuilder.ThumbnailUrl = avatar;
+        embedBuilder.Author.IconUrl = avatar;
+
+        ValueTask<Color> colorTask = default;
+
+        if ((userInfo.GetAvatarUrl(size: 16) ?? userInfo.GetDefaultAvatarUrl()) is { } avatarUrl)
         {
-            var timer = Stopwatch.StartNew();
-            var originalResponse = await GetOriginalResponseAsync();
-            var ephemeral = originalResponse.Flags.GetValueOrDefault().HasFlag(MessageFlags.Ephemeral);
+            colorTask = _imageService.GetDominantColorAsync(new Uri(avatarUrl));
+        }
+        var commandUser = (IGuildUser)Context.User;
+        var moderationRead = await _authorizationService.HasClaimsAsync(Context.User.Id, commandUser.Guild.Id, commandUser.RoleIds.ToList(), AuthorizationClaim.ModerationRead);
 
-            user ??= Context.User;
-
-            var userInfo = await _userService.GetUserInformationAsync(Context.Guild.Id, user.Id);
-
-            if (userInfo == null)
-            {
-                var embed = new EmbedBuilder()
-                    .WithTitle("Retrieval Error")
-                    .WithColor(Color.Red)
-                    .WithDescription("Sorry, we don't have any data for that user - and we couldn't find any, either.")
-                    .AddField("User Id", user.Id);
-                await _autoRemoveMessageService.RegisterRemovableMessageAsync(
-                    Context.User,
-                    embed,
-                    async (embedBuilder) => await FollowupAsync(embed: embedBuilder.Build()));
-
-                return;
-            }
-
-            var builder = new StringBuilder();
-            builder.AppendLine("**\u276F User Information**");
-            builder.Append("ID: ").Append(user.Id).AppendLine();
-            builder.Append("Profile: ").AppendLine(MentionUtils.MentionUser(user.Id));
-            builder.Append("Username: ").AppendLine(user.Username);
-
-            var embedBuilder = new EmbedBuilder()
-                .WithUserAsAuthor(userInfo)
-                .WithTimestamp(_utcNow);
-
-            var avatar = userInfo.GetDefiniteAvatarUrl();
-
-            embedBuilder.ThumbnailUrl = avatar;
-            embedBuilder.Author.IconUrl = avatar;
-
-            ValueTask<Color> colorTask = default;
-
-            if ((userInfo.GetAvatarUrl(size: 16) ?? userInfo.GetDefaultAvatarUrl()) is { } avatarUrl)
-            {
-                colorTask = _imageService.GetDominantColorAsync(new Uri(avatarUrl));
-            }
-            var commandUser = (IGuildUser)Context.User;
-            var moderationRead = await _authorizationService.HasClaimsAsync(Context.User.Id, commandUser.Guild.Id, commandUser.RoleIds.ToList(), AuthorizationClaim.ModerationRead);
-
-            if (userInfo.IsBanned)
-            {
-                builder.AppendLine("Status: **Banned** \\🔨");
-
-                if (moderationRead)
-                {
-                    builder.Append("Ban reason: ").AppendLine(userInfo.BanReason);
-                }
-            }
-
-            builder.Append("Created: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, userInfo.CreatedAt));
-
-            if (userInfo.FirstSeen is DateTimeOffset firstSeen)
-                builder.Append("First seen: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, firstSeen));
-
-            if (userInfo.LastSeen is DateTimeOffset lastSeen)
-                builder.Append("Last seen: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, lastSeen));
-
-            if (userInfo.FirstSeen is not null)
-            {
-                try
-                {
-                    var userRank = await _messageRepository.GetGuildUserParticipationStatistics(Context.Guild.Id, user.Id);
-                    var messagesByDate = await _messageRepository.GetGuildUserMessageCountByDate(Context.Guild.Id, user.Id, TimeSpan.FromDays(30));
-                    var messageCountsByChannel = await _messageRepository.GetGuildUserMessageCountByChannel(Context.Guild.Id, user.Id, TimeSpan.FromDays(30));
-                    var emojiCounts = await _emojiRepository.GetEmojiStatsAsync(Context.Guild.Id, SortDirection.Ascending, 1, userId: user.Id);
-
-                    await AddParticipationToEmbedAsync(user.Id, builder, userRank, messagesByDate, messageCountsByChannel, emojiCounts);
-                }
-                catch (Exception ex)
-                {
-                    _log.LogError(ex, "An error occurred while retrieving a user's message count.");
-                }
-
-                AddMemberInformationToEmbed(userInfo, builder);
-
-                var promotions = await _promotionsService.GetPromotionsForUserAsync(Context.Guild.Id, user.Id);
-                AddPromotionsToEmbed(builder, promotions);
-            }
+        if (userInfo.IsBanned)
+        {
+            builder.AppendLine("Status: **Banned** \\🔨");
 
             if (moderationRead)
             {
-                await AddInfractionsToEmbedAsync(user.Id, builder, ephemeral);
-            }
-
-            embedBuilder.Description = builder.ToString();
-
-            embedBuilder.WithColor(await colorTask);
-
-            timer.Stop();
-            embedBuilder.WithFooter(footer => footer.Text = $"Completed after {timer.ElapsedMilliseconds} ms");
-
-            if (ephemeral)
-            {
-                await FollowupAsync(embed: embedBuilder.Build());
-            }
-            else
-            {
-                await _autoRemoveMessageService.RegisterRemovableMessageAsync(
-                    userInfo.Id == Context.User.Id ? new[] { userInfo } : new[] { userInfo, Context.User },
-                    embedBuilder,
-                    async (embedBuilder) => await FollowupAsync(embed: embedBuilder.Build()));
+                builder.Append("Ban reason: ").AppendLine(userInfo.BanReason);
             }
         }
 
-        private void AddMemberInformationToEmbed(EphemeralUser member, StringBuilder builder)
+        builder.Append("Created: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, userInfo.CreatedAt));
+
+        if (userInfo.FirstSeen is DateTimeOffset firstSeen)
+            builder.Append("First seen: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, firstSeen));
+
+        if (userInfo.LastSeen is DateTimeOffset lastSeen)
+            builder.Append("Last seen: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, lastSeen));
+
+        if (userInfo.FirstSeen is not null)
         {
-            builder.AppendLine();
-            builder.AppendLine("**\u276F Member Information**");
-
-            if (!string.IsNullOrEmpty(member.Nickname))
+            try
             {
-                builder.Append("Nickname: ").AppendLine(Format.Sanitize(member.Nickname));
+                var userRank = await _messageRepository.GetGuildUserParticipationStatistics(Context.Guild.Id, user.Id);
+                var messagesByDate = await _messageRepository.GetGuildUserMessageCountByDate(Context.Guild.Id, user.Id, TimeSpan.FromDays(30));
+                var messageCountsByChannel = await _messageRepository.GetGuildUserMessageCountByChannel(Context.Guild.Id, user.Id, TimeSpan.FromDays(30));
+                var emojiCounts = await _emojiRepository.GetEmojiStatsAsync(Context.Guild.Id, SortDirection.Ascending, 1, userId: user.Id);
+
+                await AddParticipationToEmbedAsync(user.Id, builder, userRank, messagesByDate, messageCountsByChannel, emojiCounts);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(ex, "An error occurred while retrieving a user's message count.");
             }
 
-            if (member.JoinedAt is DateTimeOffset joinedAt)
-            {
-                builder.Append("Joined: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, joinedAt));
-            }
+            AddMemberInformationToEmbed(userInfo, builder);
 
-            if (member.RoleIds?.Count > 0)
-            {
-                var roles = member.RoleIds.Select(x => member.Guild!.Roles.Single(y => y.Id == x))
-                    .Where(x => x.Id != x.Guild.Id) // @everyone role always has same ID than guild
-                    .ToArray();
-
-                if (roles.Length > 0)
-                {
-                    Array.Sort(roles); // Sort by position: lowest positioned role is first
-                    Array.Reverse(roles); // Reverse the sort: highest positioned role is first
-
-                    builder.Append("Role".ToQuantity(roles.Length, ShowQuantityAs.None)).Append(": ");
-                    builder.AppendLine(roles.Select(r => r.Mention).Humanize());
-                }
-            }
+            var promotions = await _promotionsService.GetPromotionsForUserAsync(Context.Guild.Id, user.Id);
+            AddPromotionsToEmbed(builder, promotions);
         }
 
-        private async Task AddInfractionsToEmbedAsync(ulong userId, StringBuilder builder, bool ephemeral)
+        if (moderationRead)
         {
-            // https://modix.gg/infractions?subject=1234
-            var url = new UriBuilder(_config.WebsiteBaseUrl)
-            {
-                Path = "/infractions",
-                Query = $"subject={userId}"
-            }.RemoveDefaultPort().ToString();
-
-            builder.AppendLine();
-            builder.Append("**\u276F Infractions [see here](").Append(url).AppendLine(")**");
-
-            if (!(Context.Channel as IGuildChannel).IsPublic() || ephemeral)
-            {
-                var counts = await _moderationService.GetInfractionCountsForUserAsync(userId);
-                builder.AppendLine(FormatUtilities.FormatInfractionCounts(counts));
-            }
-            else
-            {
-                builder.AppendLine("Infractions cannot be listed in public channels without using the `/infractions` command.");
-            }
+            await AddInfractionsToEmbedAsync(user.Id, builder, ephemeral);
         }
 
-        private async Task AddParticipationToEmbedAsync(
-            ulong userId,
-            StringBuilder builder,
-            GuildUserParticipationStatistics userRank,
-            IReadOnlyList<MessageCountByDate> messagesByDate,
-            IReadOnlyList<MessageCountPerChannel> messageCountsByChannel,
-            IReadOnlyCollection<EmojiUsageStatistics> emojiCounts)
+        embedBuilder.Description = builder.ToString();
+
+        embedBuilder.WithColor(await colorTask);
+
+        timer.Stop();
+        embedBuilder.WithFooter(footer => footer.Text = $"Completed after {timer.ElapsedMilliseconds} ms");
+
+        if (ephemeral)
         {
-            var lastWeek = _utcNow - TimeSpan.FromDays(7);
+            await FollowupAsync(embed: embedBuilder.Build());
+        }
+        else
+        {
+            await _autoRemoveMessageService.RegisterRemovableMessageAsync(
+                userInfo.Id == Context.User.Id ? new[] { userInfo } : new[] { userInfo, Context.User },
+                embedBuilder,
+                async (embedBuilder) => await FollowupAsync(embed: embedBuilder.Build()));
+        }
+    }
 
-            var weekTotal = 0;
-            var monthTotal = 0;
-            foreach (var kvp in messagesByDate.OrderByDescending(x => x.Date))
+    private void AddMemberInformationToEmbed(EphemeralUser member, StringBuilder builder)
+    {
+        builder.AppendLine();
+        builder.AppendLine("**\u276F Member Information**");
+
+        if (!string.IsNullOrEmpty(member.Nickname))
+        {
+            builder.Append("Nickname: ").AppendLine(Format.Sanitize(member.Nickname));
+        }
+
+        if (member.JoinedAt is DateTimeOffset joinedAt)
+        {
+            builder.Append("Joined: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, joinedAt));
+        }
+
+        if (member.RoleIds?.Count > 0)
+        {
+            var roles = member.RoleIds.Select(x => member.Guild!.Roles.Single(y => y.Id == x))
+                .Where(x => x.Id != x.Guild.Id) // @everyone role always has same ID than guild
+                .ToArray();
+
+            if (roles.Length > 0)
             {
-                if (kvp.Date >= lastWeek)
+                Array.Sort(roles); // Sort by position: lowest positioned role is first
+                Array.Reverse(roles); // Reverse the sort: highest positioned role is first
+
+                builder.Append("Role".ToQuantity(roles.Length, ShowQuantityAs.None)).Append(": ");
+                builder.AppendLine(roles.Select(r => r.Mention).Humanize());
+            }
+        }
+    }
+
+    private async Task AddInfractionsToEmbedAsync(ulong userId, StringBuilder builder, bool ephemeral)
+    {
+        // https://modix.gg/infractions?subject=1234
+        var url = new UriBuilder(_config.WebsiteBaseUrl)
+        {
+            Path = "/infractions",
+            Query = $"subject={userId}"
+        }.RemoveDefaultPort().ToString();
+
+        builder.AppendLine();
+        builder.Append("**\u276F Infractions [see here](").Append(url).AppendLine(")**");
+
+        if (!(Context.Channel as IGuildChannel).IsPublic() || ephemeral)
+        {
+            var counts = await _moderationService.GetInfractionCountsForUserAsync(userId);
+            builder.AppendLine(FormatUtilities.FormatInfractionCounts(counts));
+        }
+        else
+        {
+            builder.AppendLine("Infractions cannot be listed in public channels without using the `/infractions` command.");
+        }
+    }
+
+    private async Task AddParticipationToEmbedAsync(
+        ulong userId,
+        StringBuilder builder,
+        GuildUserParticipationStatistics userRank,
+        IReadOnlyList<MessageCountByDate> messagesByDate,
+        IReadOnlyList<MessageCountPerChannel> messageCountsByChannel,
+        IReadOnlyCollection<EmojiUsageStatistics> emojiCounts)
+    {
+        var lastWeek = _utcNow - TimeSpan.FromDays(7);
+
+        var weekTotal = 0;
+        var monthTotal = 0;
+        foreach (var kvp in messagesByDate.OrderByDescending(x => x.Date))
+        {
+            if (kvp.Date >= lastWeek)
+            {
+                weekTotal += kvp.MessageCount;
+            }
+
+            monthTotal += kvp.MessageCount;
+        }
+
+        builder.AppendLine();
+        builder.AppendLine("**\u276F Guild Participation**");
+
+        if (userRank.Rank > 0)
+        {
+            builder.AppendFormat("Rank: {0} {1}\n", userRank.Rank.Ordinalize(), GetParticipationEmoji(userRank));
+        }
+
+        var weekParticipation = "Last 7 days: " + weekTotal + " messages";
+        if (weekTotal > 0 && monthTotal > 0)
+        {
+            var percentage = (int)((decimal)weekTotal / monthTotal * 100);
+            weekParticipation += string.Format(" ({0}%)", percentage);
+        }
+
+        builder.AppendLine(weekParticipation);
+        builder.Append("Last 30 days: ").Append(monthTotal).AppendLine(" messages");
+
+        if (monthTotal > 0)
+        {
+            builder.AppendFormat(
+                "Avg. per day: {0} messages (top {1} percentile)\n",
+                decimal.Round(userRank.AveragePerDay, 3),
+                userRank.Percentile.Ordinalize());
+
+            try
+            {
+                foreach (var channelMessageCount in messageCountsByChannel.OrderByDescending(x => x.MessageCount))
                 {
-                    weekTotal += kvp.MessageCount;
-                }
+                    var channel = await Context.Guild.GetChannelAsync(channelMessageCount.ChannelId);
 
-                monthTotal += kvp.MessageCount;
-            }
-
-            builder.AppendLine();
-            builder.AppendLine("**\u276F Guild Participation**");
-
-            if (userRank.Rank > 0)
-            {
-                builder.AppendFormat("Rank: {0} {1}\n", userRank.Rank.Ordinalize(), GetParticipationEmoji(userRank));
-            }
-
-            var weekParticipation = "Last 7 days: " + weekTotal + " messages";
-            if (weekTotal > 0 && monthTotal > 0)
-            {
-                var percentage = (int)((decimal)weekTotal / monthTotal * 100);
-                weekParticipation += string.Format(" ({0}%)", percentage);
-            }
-
-            builder.AppendLine(weekParticipation);
-            builder.Append("Last 30 days: ").Append(monthTotal).AppendLine(" messages");
-
-            if (monthTotal > 0)
-            {
-                builder.AppendFormat(
-                    "Avg. per day: {0} messages (top {1} percentile)\n",
-                    decimal.Round(userRank.AveragePerDay, 3),
-                    userRank.Percentile.Ordinalize());
-
-                try
-                {
-                    foreach (var channelMessageCount in messageCountsByChannel.OrderByDescending(x => x.MessageCount))
+                    if (channel.IsPublic())
                     {
-                        var channel = await Context.Guild.GetChannelAsync(channelMessageCount.ChannelId);
-
-                        if (channel.IsPublic())
-                        {
-                            builder.Append("Most active channel: ").Append(MentionUtils.MentionChannel(channel.Id)).Append(" (").Append(channelMessageCount.MessageCount).AppendLine(" messages)");
-                            break;
-                        }
+                        builder.Append("Most active channel: ").Append(MentionUtils.MentionChannel(channel.Id)).Append(" (").Append(channelMessageCount.MessageCount).AppendLine(" messages)");
+                        break;
                     }
                 }
-                catch (Exception ex)
-                {
-                    _log.LogDebug(ex, "Unable to get the most active channel for {UserId}.", userId);
-                }
             }
-
-            if (emojiCounts.Count != 0)
+            catch (Exception ex)
             {
-                var favoriteEmoji = emojiCounts.First();
-
-                var emojiFormatted = ((SocketSelfUser)Context.Client.CurrentUser).CanAccessEmoji(favoriteEmoji.Emoji)
-                    ? favoriteEmoji.Emoji.ToString()
-                    : $"{Format.Url("❔", favoriteEmoji.Emoji.Url)} (`{favoriteEmoji.Emoji.Name}`)";
-
-                builder.Append("Favorite emoji: ").Append(emojiFormatted).Append(" (").Append("time".ToQuantity(favoriteEmoji.Uses)).AppendLine(")");
+                _log.LogDebug(ex, "Unable to get the most active channel for {UserId}.", userId);
             }
         }
 
-        private static string GetParticipationEmoji(GuildUserParticipationStatistics stats)
+        if (emojiCounts.Count != 0)
         {
-            if (stats.Percentile == 100 || stats.Rank == 1)
-            {
-                return "🥇";
-            }
-            else if (stats.Percentile == 99 || stats.Rank == 2)
-            {
-                return "🥈";
-            }
-            else if (stats.Percentile == 98 || stats.Rank == 3)
-            {
-                return "🥉";
-            }
-            else if (stats.Percentile >= 95 && stats.Percentile < 98)
-            {
-                return "🏆";
-            }
+            var favoriteEmoji = emojiCounts.First();
 
-            return string.Empty;
+            var emojiFormatted = ((SocketSelfUser)Context.Client.CurrentUser).CanAccessEmoji(favoriteEmoji.Emoji)
+                ? favoriteEmoji.Emoji.ToString()
+                : $"{Format.Url("❔", favoriteEmoji.Emoji.Url)} (`{favoriteEmoji.Emoji.Name}`)";
+
+            builder.Append("Favorite emoji: ").Append(emojiFormatted).Append(" (").Append("time".ToQuantity(favoriteEmoji.Uses)).AppendLine(")");
+        }
+    }
+
+    private static string GetParticipationEmoji(GuildUserParticipationStatistics stats)
+    {
+        if (stats.Percentile == 100 || stats.Rank == 1)
+        {
+            return "🥇";
+        }
+        else if (stats.Percentile == 99 || stats.Rank == 2)
+        {
+            return "🥈";
+        }
+        else if (stats.Percentile == 98 || stats.Rank == 3)
+        {
+            return "🥉";
+        }
+        else if (stats.Percentile >= 95 && stats.Percentile < 98)
+        {
+            return "🏆";
         }
 
-        private void AddPromotionsToEmbed(StringBuilder builder, IReadOnlyCollection<PromotionCampaignSummary> promotions)
+        return string.Empty;
+    }
+
+    private void AddPromotionsToEmbed(StringBuilder builder, IReadOnlyCollection<PromotionCampaignSummary> promotions)
+    {
+        if (promotions.Count == 0)
+            return;
+
+        builder.AppendLine();
+        builder.AppendLine(Format.Bold("\u276F Promotion History"));
+
+        foreach (var promotion in promotions.OrderByDescending(x => x.CloseAction!.Id).Take(5))
         {
-            if (promotions.Count == 0)
-                return;
-
-            builder.AppendLine();
-            builder.AppendLine(Format.Bold("\u276F Promotion History"));
-
-            foreach (var promotion in promotions.OrderByDescending(x => x.CloseAction!.Id).Take(5))
-            {
-                builder.Append("• ").Append(MentionUtils.MentionRole(promotion.TargetRole.Id)).Append(' ').AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, promotion.CloseAction!.Created));
-            }
+            builder.Append("• ").Append(MentionUtils.MentionRole(promotion.TargetRole.Id)).Append(' ').AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, promotion.CloseAction!.Created));
         }
     }
 }

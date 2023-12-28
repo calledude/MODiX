@@ -4,17 +4,17 @@ using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Modix.Analyzers.AddDoNotDefer;
 using NUnit.Framework;
 
-namespace Modix.Analyzers.Test
-{
-    using VerifyCodeFix = CSharpCodeFixVerifier<AddDoNotDeferAnalyzer, AddDoNotDeferCodeFixProvider, NUnitVerifier>;
+namespace Modix.Analyzers.Test;
 
-    [TestFixture]
-    public class AddDoNotDeferTests
+using VerifyCodeFix = CSharpCodeFixVerifier<AddDoNotDeferAnalyzer, AddDoNotDeferCodeFixProvider, NUnitVerifier>;
+
+[TestFixture]
+public class AddDoNotDeferTests
+{
+    [Test]
+    public async Task SlashCommand_NeedsDoNotDefer_HasDiagnosticAsync()
     {
-        [Test]
-        public async Task SlashCommand_NeedsDoNotDefer_HasDiagnosticAsync()
-        {
-            const string Source = @"
+        const string Source = @"
 using System;
 using System.Threading.Tasks;
 
@@ -37,7 +37,7 @@ public class SlashCommandAttribute : Attribute
 }
 ";
 
-            const string FixedSource = @"
+        const string FixedSource = @"
 using System;
 using System.Threading.Tasks;
 
@@ -61,12 +61,11 @@ public class SlashCommandAttribute : Attribute
 }
 ";
 
-            var expected = VerifyCodeFix
-                .Diagnostic(AddDoNotDeferAnalyzer.DiagnosticId)
-                .WithLocation(0)
-                .WithArguments("CommandAsync");
+        var expected = VerifyCodeFix
+            .Diagnostic(AddDoNotDeferAnalyzer.DiagnosticId)
+            .WithLocation(0)
+            .WithArguments("CommandAsync");
 
-            await VerifyCodeFix.VerifyCodeFixAsync(Source, expected, FixedSource);
-        }
+        await VerifyCodeFix.VerifyCodeFixAsync(Source, expected, FixedSource);
     }
 }

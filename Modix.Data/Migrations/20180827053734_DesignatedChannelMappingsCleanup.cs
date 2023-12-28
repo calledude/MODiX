@@ -1,23 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Modix.Data.Migrations
+namespace Modix.Data.Migrations;
+
+public partial class DesignatedChannelMappingsCleanup : Migration
 {
-    public partial class DesignatedChannelMappingsCleanup : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.RenameColumn(
-                name: "ChannelDesignation",
-                table: "DesignatedChannelMappings",
-                newName: "Type");
+        migrationBuilder.RenameColumn(
+            name: "ChannelDesignation",
+            table: "DesignatedChannelMappings",
+            newName: "Type");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_DesignatedChannelMappings_ChannelId",
-                table: "DesignatedChannelMappings",
-                column: "ChannelId");
+        migrationBuilder.CreateIndex(
+            name: "IX_DesignatedChannelMappings_ChannelId",
+            table: "DesignatedChannelMappings",
+            column: "ChannelId");
 
-            migrationBuilder.Sql(
-                @"INSERT INTO `GuildChannels` (
+        migrationBuilder.Sql(
+            @"INSERT INTO `GuildChannels` (
                       `ChannelId`,
                       `GuildId`,
                       `Name`)
@@ -30,67 +30,66 @@ namespace Modix.Data.Migrations
                       SELECT*
                       FROM `GuildChannels` gc
                       WHERE gc.`ChannelId` = dcm.`ChannelId`)"
-                    .Replace('`', '"'));
+                .Replace('`', '"'));
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_DesignatedChannelMappings_GuildChannels_ChannelId",
-                table: "DesignatedChannelMappings",
-                column: "ChannelId",
-                principalTable: "GuildChannels",
-                principalColumn: "ChannelId",
-                onDelete: ReferentialAction.Cascade);
+        migrationBuilder.AddForeignKey(
+            name: "FK_DesignatedChannelMappings_GuildChannels_ChannelId",
+            table: "DesignatedChannelMappings",
+            column: "ChannelId",
+            principalTable: "GuildChannels",
+            principalColumn: "ChannelId",
+            onDelete: ReferentialAction.Cascade);
 
-            migrationBuilder.Sql(
-                @"UPDATE `ConfigurationActions`
+        migrationBuilder.Sql(
+            @"UPDATE `ConfigurationActions`
                   SET `Type` = 'DesignatedChannelMappingCreate'
                   WHERE `Type` = 'ChannelDesignationCreate'"
-                    .Replace('`', '"'));
+                .Replace('`', '"'));
 
-            migrationBuilder.Sql(
-                @"UPDATE `ConfigurationActions`
+        migrationBuilder.Sql(
+            @"UPDATE `ConfigurationActions`
                   SET `Type` = 'DesignatedChannelMappingRead'
                   WHERE `Type` = 'ChannelDesignationRead'"
-                    .Replace('`', '"'));
+                .Replace('`', '"'));
 
-            migrationBuilder.Sql(
-                @"UPDATE `ConfigurationActions`
+        migrationBuilder.Sql(
+            @"UPDATE `ConfigurationActions`
                   SET `Type` = 'DesignatedChannelMappingDelete'
                   WHERE `Type` = 'ChannelDesignationDelete'"
-                    .Replace('`', '"'));
-        }
+                .Replace('`', '"'));
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropForeignKey(
-                name: "FK_DesignatedChannelMappings_GuildChannels_ChannelId",
-                table: "DesignatedChannelMappings");
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropForeignKey(
+            name: "FK_DesignatedChannelMappings_GuildChannels_ChannelId",
+            table: "DesignatedChannelMappings");
 
-            migrationBuilder.DropIndex(
-                name: "IX_DesignatedChannelMappings_ChannelId",
-                table: "DesignatedChannelMappings");
+        migrationBuilder.DropIndex(
+            name: "IX_DesignatedChannelMappings_ChannelId",
+            table: "DesignatedChannelMappings");
 
-            migrationBuilder.RenameColumn(
-                name: "Type",
-                table: "DesignatedChannelMappings",
-                newName: "ChannelDesignation");
+        migrationBuilder.RenameColumn(
+            name: "Type",
+            table: "DesignatedChannelMappings",
+            newName: "ChannelDesignation");
 
-            migrationBuilder.Sql(
-                @"UPDATE `ConfigurationActions`
+        migrationBuilder.Sql(
+            @"UPDATE `ConfigurationActions`
                   SET `Type` = 'ChannelDesignationCreate'
                   WHERE `Type` = 'DesignatedChannelMappingCreate'"
-                    .Replace('`', '"'));
+                .Replace('`', '"'));
 
-            migrationBuilder.Sql(
-                @"UPDATE `ConfigurationActions`
+        migrationBuilder.Sql(
+            @"UPDATE `ConfigurationActions`
                   SET `Type` = 'ChannelDesignationRead'
                   WHERE `Type` = 'DesignatedChannelMappingRead'"
-                    .Replace('`', '"'));
+                .Replace('`', '"'));
 
-            migrationBuilder.Sql(
-                @"UPDATE `ConfigurationActions`
+        migrationBuilder.Sql(
+            @"UPDATE `ConfigurationActions`
                   SET `Type` = 'ChannelDesignationDelete'
                   WHERE `Type` = 'DesignatedChannelMappingDelete'"
-                    .Replace('`', '"'));
-        }
+                .Replace('`', '"'));
     }
 }

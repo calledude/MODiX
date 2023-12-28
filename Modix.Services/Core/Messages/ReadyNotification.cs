@@ -1,15 +1,14 @@
 ﻿using Discord.WebSocket;
 
-namespace Discord
+namespace Discord;
+
+/// <summary>
+/// Describes an application-wide notification that occurs when <see cref="DiscordSocketClient.Ready"/> is raised.
+/// </summary>
+public class ReadyNotification
 {
     /// <summary>
-    /// Describes an application-wide notification that occurs when <see cref="DiscordSocketClient.Ready"/> is raised.
+    /// Constructs a new <see cref="ReadyNotification"/> object.
     /// </summary>
-    public class ReadyNotification
-    {
-        /// <summary>
-        /// Constructs a new <see cref="ReadyNotification"/> object.
-        /// </summary>
-        public ReadyNotification() { }
-    }
+    public ReadyNotification() { }
 }

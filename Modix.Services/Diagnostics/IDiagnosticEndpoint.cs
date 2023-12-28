@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Modix.Services.Diagnostics
+namespace Modix.Services.Diagnostics;
+
+public interface IDiagnosticEndpoint
 {
-    public interface IDiagnosticEndpoint
-    {
-        string DisplayName { get; }
-    }
+    string DisplayName { get; }
 }

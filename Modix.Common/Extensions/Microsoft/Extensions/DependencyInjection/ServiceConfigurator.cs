@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection;
+
+public interface IServiceConfigurator
 {
-    public interface IServiceConfigurator
-    {
-        void ConfigureServices(
-            IServiceCollection services,
-            IConfiguration configuration);
-    }
+    void ConfigureServices(
+        IServiceCollection services,
+        IConfiguration configuration);
 }

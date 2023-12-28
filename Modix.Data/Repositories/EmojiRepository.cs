@@ -9,252 +9,252 @@ using Modix.Data.Models.Emoji;
 using Npgsql;
 using NpgsqlTypes;
 
-namespace Modix.Data.Repositories
+namespace Modix.Data.Repositories;
+
+/// <summary>
+/// Describes a repository for managing emoji entities within an underlying data storage provider.
+/// </summary>
+public interface IEmojiRepository
 {
     /// <summary>
-    /// Describes a repository for managing emoji entities within an underlying data storage provider.
+    /// Begins a new transaction to maintain emoji within the repository.
     /// </summary>
-    public interface IEmojiRepository
+    /// <returns>
+    /// A <see cref="Task"/> that will complete, with the requested transaction object,
+    /// when no other transactions are active upon the repository.
+    /// </returns>
+    Task<IRepositoryTransaction> BeginMaintainTransactionAsync();
+
+    /// <summary>
+    /// Creates a new emoji log within the repository.
+    /// </summary>
+    /// <param name="data">The data for the emoji log to be created.</param>
+    /// <exception cref="ArgumentNullException">Throws for <paramref name="data"/>.</exception>
+    /// <returns>
+    /// A <see cref="Task"/> which will complete when the operation is complete,
+    /// containing the auto-generated identifier value assigned to the new emoji log.
+    /// </returns>
+    Task<long> CreateAsync(EmojiCreationData data);
+
+    /// <summary>
+    /// Creates multiple new emoji logs within the repository.
+    /// </summary>
+    /// <param name="data">The data for the emoji logs to be created.</param>
+    /// <param name="count">The number of new logs to be created.</param>
+    /// <exception cref="ArgumentNullException">Throws for <paramref name="data"/>.</exception>
+    /// <returns>
+    /// A <see cref="Task"/> which will complete when the operation is complete.
+    /// </returns>
+    Task CreateMultipleAsync(EmojiCreationData data, int count);
+
+    /// <summary>
+    /// Deletes emoji logs within the repository.
+    /// </summary>
+    /// <param name="criteria">The criteria for the emoji to be deleted.</param>
+    /// <exception cref="ArgumentNullException">Throws for <paramref name="criteria"/>.</exception>
+    /// <returns>
+    /// A <see cref="Task"/> which will complete when the operation is complete.
+    /// </returns>
+    Task DeleteAsync(EmojiSearchCriteria criteria);
+
+    /// <summary>
+    /// Returns the number of times emoji matching the specified criteria occurred.
+    /// </summary>
+    /// <param name="criteria">The criteria for the emoji to be counted.</param>
+    /// <exception cref="ArgumentNullException">Throws for <paramref name="criteria"/>.</exception>
+    /// <returns>
+    /// A <see cref="Task"/> which will complete when the operation is complete,
+    /// containing a dictionary of emoji and their counts.
+    /// </returns>
+    Task<IReadOnlyDictionary<EphemeralEmoji, int>> GetCountsAsync(EmojiSearchCriteria criteria);
+
+    /// <summary>
+    /// Searches the emoji logs for emoji records matching the supplied criteria.
+    /// </summary>
+    /// <param name="criteria">The criteria with which to filter the emoji returned.</param>
+    /// <exception cref="ArgumentNullException">Throws for <paramref name="criteria"/>.</exception>
+    /// <returns>
+    /// A <see cref="Task"/> which will complete when the operation is complete,
+    /// containing a collection of emoji meeting the supplied criteria.
+    /// </returns>
+    Task<IReadOnlyCollection<EmojiSummary>> SearchSummariesAsync(EmojiSearchCriteria criteria);
+
+    /// <summary>
+    /// Retrieves statistics for a single emoji.
+    /// </summary>
+    /// <param name="guildId">The Discord snowflake ID of the guild to retrieve statistics from.</param>
+    /// <param name="emoji">The emoji to retrieve statistics for.</param>
+    /// <param name="dateFilter">How far in the past to search for statistics.</param>
+    /// <returns>
+    /// A <see cref="Task"/> that will complete when the operation is complete,
+    /// containing statistical information about the emoji.
+    /// </returns>
+    Task<SingleEmojiUsageStatistics?> GetEmojiStatsAsync(ulong guildId, EphemeralEmoji emoji, TimeSpan? dateFilter = null);
+
+    /// <summary>
+    /// Retrieves statistics for emojis within a guild.
+    /// </summary>
+    /// <param name="guildId">The Discord snowflake ID of the guild to retrieve statistics from.</param>
+    /// <param name="sortDirection">The sort direction, determining whether to retrieve results from the top (ascending) or bottom (descending).</param>
+    /// <param name="recordLimit">How many statistical records to retrieve.</param>
+    /// <param name="dateFilter">How far in the past to search for statistics.</param>
+    /// <param name="userId">The user to retrieve statistics for, if any.</param>
+    /// <param name="emojiIds">The emojis to limit the results to, if any.</param>
+    /// <returns>
+    /// A <see cref="Task"/> that will complete when the operation is complete,
+    /// containing a collection of statistical information about the emoji in a guild.
+    /// </returns>
+    Task<IReadOnlyCollection<EmojiUsageStatistics>> GetEmojiStatsAsync(
+        ulong guildId, SortDirection sortDirection, int recordLimit, TimeSpan? dateFilter = null, ulong? userId = null, IEnumerable<ulong>? emojiIds = null);
+
+    /// <summary>
+    /// Retrieves statistics about a guild's emoji usage.
+    /// </summary>
+    /// <param name="guildId">The Discord snowflake ID of the guild to retrieve statistics from.</param>
+    /// <param name="emojiIds">The emojis to limit the results to, if any.</param>
+    /// <returns>
+    /// A <see cref="Task"/> that will complete when the operation completes,
+    /// containing statistical information about a guild's emoji usage.
+    /// </returns>
+    Task<GuildEmojiStats> GetGuildStatsAsync(ulong guildId, ulong? userId = null, IEnumerable<ulong>? emojiIds = null);
+}
+
+/// <inheritdoc />
+public sealed class EmojiRepository : RepositoryBase, IEmojiRepository
+{
+    /// <summary>
+    /// Creates a new <see cref="EmojiRepository"/> with the injected dependencies
+    /// See <see cref="RepositoryBase"/> for details.
+    /// </summary>
+    public EmojiRepository(ModixContext modixContext)
+        : base(modixContext) { }
+
+    /// <inheritdoc />
+    public Task<IRepositoryTransaction> BeginMaintainTransactionAsync()
+        => _maintainTransactionFactory.BeginTransactionAsync(ModixContext.Database);
+
+    /// <inheritdoc />
+    public async Task<long> CreateAsync(EmojiCreationData data)
     {
-        /// <summary>
-        /// Begins a new transaction to maintain emoji within the repository.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="Task"/> that will complete, with the requested transaction object,
-        /// when no other transactions are active upon the repository.
-        /// </returns>
-        Task<IRepositoryTransaction> BeginMaintainTransactionAsync();
+        ArgumentNullException.ThrowIfNull(data);
 
-        /// <summary>
-        /// Creates a new emoji log within the repository.
-        /// </summary>
-        /// <param name="data">The data for the emoji log to be created.</param>
-        /// <exception cref="ArgumentNullException">Throws for <paramref name="data"/>.</exception>
-        /// <returns>
-        /// A <see cref="Task"/> which will complete when the operation is complete,
-        /// containing the auto-generated identifier value assigned to the new emoji log.
-        /// </returns>
-        Task<long> CreateAsync(EmojiCreationData data);
+        var entity = data.ToEntity();
 
-        /// <summary>
-        /// Creates multiple new emoji logs within the repository.
-        /// </summary>
-        /// <param name="data">The data for the emoji logs to be created.</param>
-        /// <param name="count">The number of new logs to be created.</param>
-        /// <exception cref="ArgumentNullException">Throws for <paramref name="data"/>.</exception>
-        /// <returns>
-        /// A <see cref="Task"/> which will complete when the operation is complete.
-        /// </returns>
-        Task CreateMultipleAsync(EmojiCreationData data, int count);
+        ModixContext.Set<EmojiEntity>().Add(entity);
+        await ModixContext.SaveChangesAsync();
 
-        /// <summary>
-        /// Deletes emoji logs within the repository.
-        /// </summary>
-        /// <param name="criteria">The criteria for the emoji to be deleted.</param>
-        /// <exception cref="ArgumentNullException">Throws for <paramref name="criteria"/>.</exception>
-        /// <returns>
-        /// A <see cref="Task"/> which will complete when the operation is complete.
-        /// </returns>
-        Task DeleteAsync(EmojiSearchCriteria criteria);
-
-        /// <summary>
-        /// Returns the number of times emoji matching the specified criteria occurred.
-        /// </summary>
-        /// <param name="criteria">The criteria for the emoji to be counted.</param>
-        /// <exception cref="ArgumentNullException">Throws for <paramref name="criteria"/>.</exception>
-        /// <returns>
-        /// A <see cref="Task"/> which will complete when the operation is complete,
-        /// containing a dictionary of emoji and their counts.
-        /// </returns>
-        Task<IReadOnlyDictionary<EphemeralEmoji, int>> GetCountsAsync(EmojiSearchCriteria criteria);
-
-        /// <summary>
-        /// Searches the emoji logs for emoji records matching the supplied criteria.
-        /// </summary>
-        /// <param name="criteria">The criteria with which to filter the emoji returned.</param>
-        /// <exception cref="ArgumentNullException">Throws for <paramref name="criteria"/>.</exception>
-        /// <returns>
-        /// A <see cref="Task"/> which will complete when the operation is complete,
-        /// containing a collection of emoji meeting the supplied criteria.
-        /// </returns>
-        Task<IReadOnlyCollection<EmojiSummary>> SearchSummariesAsync(EmojiSearchCriteria criteria);
-
-        /// <summary>
-        /// Retrieves statistics for a single emoji.
-        /// </summary>
-        /// <param name="guildId">The Discord snowflake ID of the guild to retrieve statistics from.</param>
-        /// <param name="emoji">The emoji to retrieve statistics for.</param>
-        /// <param name="dateFilter">How far in the past to search for statistics.</param>
-        /// <returns>
-        /// A <see cref="Task"/> that will complete when the operation is complete,
-        /// containing statistical information about the emoji.
-        /// </returns>
-        Task<SingleEmojiUsageStatistics?> GetEmojiStatsAsync(ulong guildId, EphemeralEmoji emoji, TimeSpan? dateFilter = null);
-
-        /// <summary>
-        /// Retrieves statistics for emojis within a guild.
-        /// </summary>
-        /// <param name="guildId">The Discord snowflake ID of the guild to retrieve statistics from.</param>
-        /// <param name="sortDirection">The sort direction, determining whether to retrieve results from the top (ascending) or bottom (descending).</param>
-        /// <param name="recordLimit">How many statistical records to retrieve.</param>
-        /// <param name="dateFilter">How far in the past to search for statistics.</param>
-        /// <param name="userId">The user to retrieve statistics for, if any.</param>
-        /// <param name="emojiIds">The emojis to limit the results to, if any.</param>
-        /// <returns>
-        /// A <see cref="Task"/> that will complete when the operation is complete,
-        /// containing a collection of statistical information about the emoji in a guild.
-        /// </returns>
-        Task<IReadOnlyCollection<EmojiUsageStatistics>> GetEmojiStatsAsync(
-            ulong guildId, SortDirection sortDirection, int recordLimit, TimeSpan? dateFilter = null, ulong? userId = null, IEnumerable<ulong>? emojiIds = null);
-
-        /// <summary>
-        /// Retrieves statistics about a guild's emoji usage.
-        /// </summary>
-        /// <param name="guildId">The Discord snowflake ID of the guild to retrieve statistics from.</param>
-        /// <param name="emojiIds">The emojis to limit the results to, if any.</param>
-        /// <returns>
-        /// A <see cref="Task"/> that will complete when the operation completes,
-        /// containing statistical information about a guild's emoji usage.
-        /// </returns>
-        Task<GuildEmojiStats> GetGuildStatsAsync(ulong guildId, ulong? userId = null, IEnumerable<ulong>? emojiIds = null);
+        return entity.Id;
     }
 
     /// <inheritdoc />
-    public sealed class EmojiRepository : RepositoryBase, IEmojiRepository
+    public async Task CreateMultipleAsync(EmojiCreationData data, int count)
     {
-        /// <summary>
-        /// Creates a new <see cref="EmojiRepository"/> with the injected dependencies
-        /// See <see cref="RepositoryBase"/> for details.
-        /// </summary>
-        public EmojiRepository(ModixContext modixContext)
-            : base(modixContext) { }
+        ArgumentNullException.ThrowIfNull(data);
 
-        /// <inheritdoc />
-        public Task<IRepositoryTransaction> BeginMaintainTransactionAsync()
-            => _maintainTransactionFactory.BeginTransactionAsync(ModixContext.Database);
+        if (count <= 0)
+            return;
 
-        /// <inheritdoc />
-        public async Task<long> CreateAsync(EmojiCreationData data)
-        {
-            ArgumentNullException.ThrowIfNull(data);
+        var now = DateTimeOffset.UtcNow;
+        var entities = Enumerable.Range(0, count).Select(_ => data.ToEntity(now));
 
-            var entity = data.ToEntity();
+        await ModixContext.Set<EmojiEntity>().AddRangeAsync(entities);
+        await ModixContext.SaveChangesAsync();
+    }
 
-            ModixContext.Set<EmojiEntity>().Add(entity);
-            await ModixContext.SaveChangesAsync();
+    /// <inheritdoc />
+    public async Task DeleteAsync(EmojiSearchCriteria criteria)
+    {
+        ArgumentNullException.ThrowIfNull(criteria);
 
-            return entity.Id;
-        }
+        var entities = ModixContext.Set<EmojiEntity>().FilterBy(criteria);
 
-        /// <inheritdoc />
-        public async Task CreateMultipleAsync(EmojiCreationData data, int count)
-        {
-            ArgumentNullException.ThrowIfNull(data);
+        ModixContext.RemoveRange(entities);
+        await ModixContext.SaveChangesAsync();
+    }
 
-            if (count <= 0)
-                return;
+    /// <inheritdoc />
+    public async Task<IReadOnlyDictionary<EphemeralEmoji, int>> GetCountsAsync(EmojiSearchCriteria criteria)
+    {
+        ArgumentNullException.ThrowIfNull(criteria);
 
-            var now = DateTimeOffset.UtcNow;
-            var entities = Enumerable.Range(0, count).Select(_ => data.ToEntity(now));
+        var emoji = await ModixContext.Set<EmojiEntity>().AsNoTracking()
+            .FilterBy(criteria)
+            .GroupBy(x => new
+            {
+                x.EmojiId,
+                EmojiName = x.EmojiId == null
+                    ? x.EmojiName
+                    : null
+            },
+            x => new { x.EmojiId, x.EmojiName, x.IsAnimated, x.Timestamp })
+            .ToArrayAsync();
 
-            await ModixContext.Set<EmojiEntity>().AddRangeAsync(entities);
-            await ModixContext.SaveChangesAsync();
-        }
+        var counts = emoji.ToDictionary(
+            x =>
+            {
+                var mostRecentEmoji = x.OrderByDescending(y => y.Timestamp).First();
+                return EphemeralEmoji.FromRawData(mostRecentEmoji.EmojiName, mostRecentEmoji.EmojiId, mostRecentEmoji.IsAnimated);
+            },
+            x => x.Count());
 
-        /// <inheritdoc />
-        public async Task DeleteAsync(EmojiSearchCriteria criteria)
-        {
-            ArgumentNullException.ThrowIfNull(criteria);
+        return counts;
+    }
 
-            var entities = ModixContext.Set<EmojiEntity>().FilterBy(criteria);
+    /// <inheritdoc />
+    public async Task<IReadOnlyCollection<EmojiSummary>> SearchSummariesAsync(EmojiSearchCriteria criteria)
+    {
+        ArgumentNullException.ThrowIfNull(criteria);
 
-            ModixContext.RemoveRange(entities);
-            await ModixContext.SaveChangesAsync();
-        }
+        var emoji = await ModixContext.Set<EmojiEntity>().AsNoTracking()
+            .FilterBy(criteria)
+            .AsExpandable()
+            .Select(EmojiSummary.FromEntityProjection)
+            .ToArrayAsync();
 
-        /// <inheritdoc />
-        public async Task<IReadOnlyDictionary<EphemeralEmoji, int>> GetCountsAsync(EmojiSearchCriteria criteria)
-        {
-            ArgumentNullException.ThrowIfNull(criteria);
+        return emoji;
+    }
 
-            var emoji = await ModixContext.Set<EmojiEntity>().AsNoTracking()
-                .FilterBy(criteria)
-                .GroupBy(x => new
+    /// <inheritdoc />
+    public async Task<SingleEmojiUsageStatistics?> GetEmojiStatsAsync(ulong guildId, EphemeralEmoji emoji, TimeSpan? dateFilter = null)
+    {
+        var query = GetQuery();
+        var parameters = GetParameters();
+
+        var stats = await ModixContext.Database
+            .SqlQueryRaw<SingleEmojiStatsDto>(query, parameters)
+            .FirstOrDefaultAsync();
+
+        if (stats is null)
+            return null;
+
+        return SingleEmojiUsageStatistics.FromDto(stats);
+
+        NpgsqlParameter[] GetParameters() =>
+            new[]
+            {
+                new NpgsqlParameter(":GuildId", NpgsqlDbType.Bigint)
                 {
-                    x.EmojiId,
-                    EmojiName = x.EmojiId == null
-                        ? x.EmojiName
-                        : null
+                    Value = unchecked((long)guildId),
                 },
-                x => new { x.EmojiId, x.EmojiName, x.IsAnimated, x.Timestamp })
-                .ToArrayAsync();
-
-            var counts = emoji.ToDictionary(
-                x =>
-                {
-                    var mostRecentEmoji = x.OrderByDescending(y => y.Timestamp).First();
-                    return EphemeralEmoji.FromRawData(mostRecentEmoji.EmojiName, mostRecentEmoji.EmojiId, mostRecentEmoji.IsAnimated);
-                },
-                x => x.Count());
-
-            return counts;
-        }
-
-        /// <inheritdoc />
-        public async Task<IReadOnlyCollection<EmojiSummary>> SearchSummariesAsync(EmojiSearchCriteria criteria)
-        {
-            ArgumentNullException.ThrowIfNull(criteria);
-
-            var emoji = await ModixContext.Set<EmojiEntity>().AsNoTracking()
-                .FilterBy(criteria)
-                .AsExpandable()
-                .Select(EmojiSummary.FromEntityProjection)
-                .ToArrayAsync();
-
-            return emoji;
-        }
-
-        /// <inheritdoc />
-        public async Task<SingleEmojiUsageStatistics?> GetEmojiStatsAsync(ulong guildId, EphemeralEmoji emoji, TimeSpan? dateFilter = null)
-        {
-            var query = GetQuery();
-            var parameters = GetParameters();
-
-            var stats = await ModixContext.Database
-                .SqlQueryRaw<SingleEmojiStatsDto>(query, parameters)
-                .FirstOrDefaultAsync();
-
-            if (stats is null)
-                return null;
-
-            return SingleEmojiUsageStatistics.FromDto(stats);
-
-            NpgsqlParameter[] GetParameters() =>
-                new[]
-                {
-                    new NpgsqlParameter(":GuildId", NpgsqlDbType.Bigint)
+                emoji.Id is null
+                    ? new NpgsqlParameter(":EmojiName", NpgsqlDbType.Text)
                     {
-                        Value = unchecked((long)guildId),
-                    },
-                    emoji.Id is null
-                        ? new NpgsqlParameter(":EmojiName", NpgsqlDbType.Text)
-                        {
-                            Value = emoji.Name,
-                        }
-                        : new NpgsqlParameter(":EmojiId", NpgsqlDbType.Bigint)
-                        {
-                            Value = unchecked((long)emoji.Id.Value),
-                        },
-                    new NpgsqlParameter(":StartTimestamp", NpgsqlDbType.TimestampTz)
-                    {
-                        Value = dateFilter is null
-                            ? DateTimeOffset.MinValue
-                            : DateTimeOffset.UtcNow - dateFilter
+                        Value = emoji.Name,
                     }
-                };
+                    : new NpgsqlParameter(":EmojiId", NpgsqlDbType.Bigint)
+                    {
+                        Value = unchecked((long)emoji.Id.Value),
+                    },
+                new NpgsqlParameter(":StartTimestamp", NpgsqlDbType.TimestampTz)
+                {
+                    Value = dateFilter is null
+                        ? DateTimeOffset.MinValue
+                        : DateTimeOffset.UtcNow - dateFilter
+                }
+            };
 
-            string GetQuery()
-                => $@"
+        string GetQuery()
+            => $@"
                     with user_stats as (
                         select ""UserId"" as ""TopUserId"", count(*) as ""TopUserUses""
                         from ""Emoji""
@@ -275,61 +275,61 @@ namespace Modix.Data.Repositories
                     select ""EmojiId"", ""EmojiName"", ""IsAnimated"", ""Uses"", ""Rank"", ""TopUserId"", ""TopUserUses""
                     from stats, user_stats
                     where {(emoji.Id is null ? @"""EmojiName"" = :EmojiName" : @"""EmojiId"" = :EmojiId")}";
-        }
+    }
 
-        /// <inheritdoc />
-        public async Task<IReadOnlyCollection<EmojiUsageStatistics>> GetEmojiStatsAsync(
-            ulong guildId, SortDirection sortDirection, int recordLimit, TimeSpan? dateFilter = null, ulong? userId = null, IEnumerable<ulong>? emojiIds = null)
+    /// <inheritdoc />
+    public async Task<IReadOnlyCollection<EmojiUsageStatistics>> GetEmojiStatsAsync(
+        ulong guildId, SortDirection sortDirection, int recordLimit, TimeSpan? dateFilter = null, ulong? userId = null, IEnumerable<ulong>? emojiIds = null)
+    {
+        var parameters = GetParameters();
+        var query = GetQuery();
+
+        var stats = await ModixContext.Database
+            .SqlQueryRaw<EmojiStatsDto>(query, parameters)
+            .ToArrayAsync();
+
+        return stats
+            .Where(x => x is not null)
+            .Select(EmojiUsageStatistics.FromDto)
+            .ToArray();
+
+        NpgsqlParameter[] GetParameters()
         {
-            var parameters = GetParameters();
-            var query = GetQuery();
-
-            var stats = await ModixContext.Database
-                .SqlQueryRaw<EmojiStatsDto>(query, parameters)
-                .ToArrayAsync();
-
-            return stats
-                .Where(x => x is not null)
-                .Select(EmojiUsageStatistics.FromDto)
-                .ToArray();
-
-            NpgsqlParameter[] GetParameters()
+            var paramList = new List<NpgsqlParameter>(3)
             {
-                var paramList = new List<NpgsqlParameter>(3)
+                new(":GuildId", NpgsqlDbType.Bigint)
                 {
-                    new(":GuildId", NpgsqlDbType.Bigint)
-                    {
-                        Value = unchecked((long)guildId),
-                    },
-                    new(":StartTimestamp", NpgsqlDbType.TimestampTz)
-                    {
-                        Value = dateFilter is null
-                            ? DateTimeOffset.MinValue
-                            : DateTimeOffset.UtcNow - dateFilter
-                    }
-                };
-
-                if (userId is not null)
+                    Value = unchecked((long)guildId),
+                },
+                new(":StartTimestamp", NpgsqlDbType.TimestampTz)
                 {
-                    paramList.Add(new NpgsqlParameter(":UserId", NpgsqlDbType.Bigint)
-                    {
-                        Value = unchecked((long)userId),
-                    });
+                    Value = dateFilter is null
+                        ? DateTimeOffset.MinValue
+                        : DateTimeOffset.UtcNow - dateFilter
                 }
+            };
 
-                if (emojiIds is not null && emojiIds.Any())
+            if (userId is not null)
+            {
+                paramList.Add(new NpgsqlParameter(":UserId", NpgsqlDbType.Bigint)
                 {
-                    paramList.Add(new NpgsqlParameter(":EmojiIds", NpgsqlDbType.Array | NpgsqlDbType.Bigint)
-                    {
-                        Value = emojiIds.Select(x => unchecked((long)x)).ToArray(),
-                    });
-                }
-
-                return [.. paramList];
+                    Value = unchecked((long)userId),
+                });
             }
 
-            string GetQuery()
-                => $@"
+            if (emojiIds is not null && emojiIds.Any())
+            {
+                paramList.Add(new NpgsqlParameter(":EmojiIds", NpgsqlDbType.Array | NpgsqlDbType.Bigint)
+                {
+                    Value = emojiIds.Select(x => unchecked((long)x)).ToArray(),
+                });
+            }
+
+            return [.. paramList];
+        }
+
+        string GetQuery()
+            => $@"
                     with stats as (
                         select ""EmojiId"", ""EmojiName"", ""IsAnimated"", count(*) as ""Uses"", row_number() over (order by count(*) desc) as ""Rank""
                         from ""Emoji""
@@ -344,51 +344,51 @@ namespace Modix.Data.Repositories
                     select ""EmojiId"", ""EmojiName"", ""IsAnimated"", ""Uses"", ""Rank""
                     from stats
                     order by ""Rank"" asc";
-        }
+    }
 
-        /// <inheritdoc />
-        public async Task<GuildEmojiStats> GetGuildStatsAsync(ulong guildId, ulong? userId = null, IEnumerable<ulong>? emojiIds = null)
+    /// <inheritdoc />
+    public async Task<GuildEmojiStats> GetGuildStatsAsync(ulong guildId, ulong? userId = null, IEnumerable<ulong>? emojiIds = null)
+    {
+        var parameters = GetParameters();
+        var query = GetQuery();
+
+        var stats = await ModixContext.Database
+            .SqlQueryRaw<GuildEmojiStats>(query, parameters)
+            .FirstOrDefaultAsync();
+
+        return stats ?? new();
+
+        NpgsqlParameter[] GetParameters()
         {
-            var parameters = GetParameters();
-            var query = GetQuery();
-
-            var stats = await ModixContext.Database
-                .SqlQueryRaw<GuildEmojiStats>(query, parameters)
-                .FirstOrDefaultAsync();
-
-            return stats ?? new();
-
-            NpgsqlParameter[] GetParameters()
+            var paramList = new List<NpgsqlParameter>(3)
             {
-                var paramList = new List<NpgsqlParameter>(3)
+                new(":GuildId", NpgsqlDbType.Bigint)
                 {
-                    new(":GuildId", NpgsqlDbType.Bigint)
-                    {
-                        Value = unchecked((long)guildId),
-                    },
-                };
+                    Value = unchecked((long)guildId),
+                },
+            };
 
-                if (emojiIds is not null && emojiIds.Any())
+            if (emojiIds is not null && emojiIds.Any())
+            {
+                paramList.Add(new NpgsqlParameter(":EmojiIds", NpgsqlDbType.Array | NpgsqlDbType.Bigint)
                 {
-                    paramList.Add(new NpgsqlParameter(":EmojiIds", NpgsqlDbType.Array | NpgsqlDbType.Bigint)
-                    {
-                        Value = emojiIds.Select(x => unchecked((long)x)).ToArray(),
-                    });
-                }
-
-                if (userId.HasValue)
-                {
-                    paramList.Add(new NpgsqlParameter(":UserId", NpgsqlDbType.Bigint)
-                    {
-                        Value = unchecked((long)userId),
-                    });
-                }
-
-                return [.. paramList];
+                    Value = emojiIds.Select(x => unchecked((long)x)).ToArray(),
+                });
             }
 
-            string GetQuery()
-                => $@"
+            if (userId.HasValue)
+            {
+                paramList.Add(new NpgsqlParameter(":UserId", NpgsqlDbType.Bigint)
+                {
+                    Value = unchecked((long)userId),
+                });
+            }
+
+            return [.. paramList];
+        }
+
+        string GetQuery()
+            => $@"
                     with stats as (
                         select count(distinct coalesce(cast(""EmojiId"" as text), ""EmojiName"")) as ""UniqueEmojis"", count(*) as ""TotalUses"", coalesce(min(""Timestamp""), now()) as ""OldestTimestamp""
                         from ""Emoji""
@@ -399,9 +399,8 @@ namespace Modix.Data.Repositories
                     )
                     select ""UniqueEmojis"", ""TotalUses"", ""OldestTimestamp""
                     from stats";
-        }
-
-        private static readonly RepositoryTransactionFactory _maintainTransactionFactory
-            = new();
     }
+
+    private static readonly RepositoryTransactionFactory _maintainTransactionFactory
+        = new();
 }

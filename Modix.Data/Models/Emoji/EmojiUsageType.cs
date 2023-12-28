@@ -1,8 +1,7 @@
-﻿namespace Modix.Data.Models.Emoji
+﻿namespace Modix.Data.Models.Emoji;
+
+public enum EmojiUsageType
 {
-    public enum EmojiUsageType
-    {
-        Reaction,
-        MessageContent,
-    }
+    Reaction,
+    MessageContent,
 }

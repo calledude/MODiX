@@ -2,26 +2,25 @@
 
 using Discord.WebSocket;
 
-namespace Discord
+namespace Discord;
+
+/// <summary>
+/// Describes an application-wide notification that occurs when <see cref="IBaseSocketClient.ChannelCreated"/> is raised.
+/// </summary>
+public class ChannelCreatedNotification
 {
     /// <summary>
-    /// Describes an application-wide notification that occurs when <see cref="IBaseSocketClient.ChannelCreated"/> is raised.
+    /// Constructs a new <see cref="ChannelCreatedNotification"/> from the given values.
     /// </summary>
-    public class ChannelCreatedNotification
+    /// <param name="channel">The value to use for <see cref="Channel"/>.</param>
+    /// <exception cref="ArgumentNullException">Throws for <paramref name="channel"/>.</exception>
+    public ChannelCreatedNotification(SocketChannel channel)
     {
-        /// <summary>
-        /// Constructs a new <see cref="ChannelCreatedNotification"/> from the given values.
-        /// </summary>
-        /// <param name="channel">The value to use for <see cref="Channel"/>.</param>
-        /// <exception cref="ArgumentNullException">Throws for <paramref name="channel"/>.</exception>
-        public ChannelCreatedNotification(SocketChannel channel)
-        {
-            Channel = channel ?? throw new ArgumentNullException(nameof(channel));
-        }
-
-        /// <summary>
-        /// The channel that was created.
-        /// </summary>
-        public SocketChannel Channel { get; }
+        Channel = channel ?? throw new ArgumentNullException(nameof(channel));
     }
+
+    /// <summary>
+    /// The channel that was created.
+    /// </summary>
+    public SocketChannel Channel { get; }
 }

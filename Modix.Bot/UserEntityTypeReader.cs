@@ -4,38 +4,37 @@ using Discord;
 using Discord.Commands;
 using Modix.Services.Utilities;
 
-namespace Modix
+namespace Modix;
+
+public class DiscordUserEntity : IEntity<ulong>
 {
-    public class DiscordUserEntity : IEntity<ulong>
-    {
-        public ulong Id { get; }
-        public DiscordUserEntity(ulong id) { Id = id; }
+    public ulong Id { get; }
+    public DiscordUserEntity(ulong id) { Id = id; }
 
-        public static DiscordUserEntity FromIUser(IUser user) => new(user.Id);
-    }
+    public static DiscordUserEntity FromIUser(IUser user) => new(user.Id);
+}
 
-    public class UserEntityTypeReader : UserTypeReader<IGuildUser>
+public class UserEntityTypeReader : UserTypeReader<IGuildUser>
+{
+    public override async Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
     {
-        public override async Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
+        var baseResult = await base.ReadAsync(context, input, services);
+
+        if (baseResult.IsSuccess && baseResult.BestMatch is IUser user)
         {
-            var baseResult = await base.ReadAsync(context, input, services);
-
-            if (baseResult.IsSuccess && baseResult.BestMatch is IUser user)
-            {
-                return TypeReaderResult.FromSuccess(DiscordUserEntity.FromIUser(user));
-            }
-
-            if (ulong.TryParse(input, out var uid) || MentionUtils.TryParseUser(input, out uid))
-            {
-                if (!SnowflakeUtilities.IsValidSnowflake(uid))
-                {
-                    return TypeReaderResult.FromError(CommandError.ParseFailed, "Snowflake was almost certainly invalid.");
-                }
-
-                return TypeReaderResult.FromSuccess(new DiscordUserEntity(uid));
-            }
-
-            return TypeReaderResult.FromError(CommandError.ParseFailed, "Could not find user / parse user ID");
+            return TypeReaderResult.FromSuccess(DiscordUserEntity.FromIUser(user));
         }
+
+        if (ulong.TryParse(input, out var uid) || MentionUtils.TryParseUser(input, out uid))
+        {
+            if (!SnowflakeUtilities.IsValidSnowflake(uid))
+            {
+                return TypeReaderResult.FromError(CommandError.ParseFailed, "Snowflake was almost certainly invalid.");
+            }
+
+            return TypeReaderResult.FromSuccess(new DiscordUserEntity(uid));
+        }
+
+        return TypeReaderResult.FromError(CommandError.ParseFailed, "Could not find user / parse user ID");
     }
 }

@@ -6,64 +6,63 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 
-namespace Modix.Analyzers.AddDoNotDefer
+namespace Modix.Analyzers.AddDoNotDefer;
+
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public class AddDoNotDeferAnalyzer : DiagnosticAnalyzer
 {
-    [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class AddDoNotDeferAnalyzer : DiagnosticAnalyzer
+    public const string DiagnosticId = "MDX002";
+
+    private const string Title = "Add DoNotDeferAttribute";
+    private const string MessageFormat = "Command '{0}' should have DoNotDeferAttribute";
+    private const string Description = "DoNotDeferAttribute should be added to commands that respond rather than follow-up to an interaction.";
+    private const string Category = "Discord";
+
+    private static readonly DiagnosticDescriptor _descriptor = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+    private static readonly ImmutableArray<OperationKind> _supportedOperations = ImmutableArray.Create(OperationKind.MethodBody);
+
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
+        = ImmutableArray.Create(_descriptor);
+
+    public override void Initialize(AnalysisContext context)
     {
-        public const string DiagnosticId = "MDX002";
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+        context.EnableConcurrentExecution();
+        context.RegisterOperationAction(Analyze, _supportedOperations);
+    }
 
-        private const string Title = "Add DoNotDeferAttribute";
-        private const string MessageFormat = "Command '{0}' should have DoNotDeferAttribute";
-        private const string Description = "DoNotDeferAttribute should be added to commands that respond rather than follow-up to an interaction.";
-        private const string Category = "Discord";
+    private static void Analyze(OperationAnalysisContext context)
+    {
+        var method = (IMethodBodyOperation)context.Operation;
 
-        private static readonly DiagnosticDescriptor _descriptor = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
-        private static readonly ImmutableArray<OperationKind> _supportedOperations = ImmutableArray.Create(OperationKind.MethodBody);
+        if (method.Syntax is not MethodDeclarationSyntax methodSyntax)
+            return;
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
-            = ImmutableArray.Create(_descriptor);
+        var attributes = methodSyntax.AttributeLists.SelectMany(x => x.Attributes);
 
-        public override void Initialize(AnalysisContext context)
-        {
-            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-            context.EnableConcurrentExecution();
-            context.RegisterOperationAction(Analyze, _supportedOperations);
-        }
+        if (!AttributesContains(attributes, "SlashCommand"))
+            return;
 
-        private static void Analyze(OperationAnalysisContext context)
-        {
-            var method = (IMethodBodyOperation)context.Operation;
+        if (AttributesContains(attributes, "DoNotDefer"))
+            return;
 
-            if (method.Syntax is not MethodDeclarationSyntax methodSyntax)
-                return;
+        if (!MethodContainsResponseMethodInvocation(method))
+            return;
 
-            var attributes = methodSyntax.AttributeLists.SelectMany(x => x.Attributes);
+        var diagnostic = Diagnostic.Create(_descriptor, method.Syntax.GetLocation(), methodSyntax.Identifier.Text);
+        context.ReportDiagnostic(diagnostic);
 
-            if (!AttributesContains(attributes, "SlashCommand"))
-                return;
+        static bool AttributesContains(IEnumerable<AttributeSyntax> attributes, string attributeName)
+            => attributes.Any(x => x.Name.ToString() is var name && (name == attributeName || name == $"{attributeName}Attribute"));
 
-            if (AttributesContains(attributes, "DoNotDefer"))
-                return;
+        static bool MethodContainsResponseMethodInvocation(IMethodBodyOperation method)
+            => (method.BlockBody ?? method.ExpressionBody)!
+                .Operations
+                .SelectMany(x => x.DescendantsAndSelf())
+                .OfType<IInvocationOperation>()
+                .Any(InvocationIsResponseMethod);
 
-            if (!MethodContainsResponseMethodInvocation(method))
-                return;
-
-            var diagnostic = Diagnostic.Create(_descriptor, method.Syntax.GetLocation(), methodSyntax.Identifier.Text);
-            context.ReportDiagnostic(diagnostic);
-
-            static bool AttributesContains(IEnumerable<AttributeSyntax> attributes, string attributeName)
-                => attributes.Any(x => x.Name.ToString() is var name && (name == attributeName || name == $"{attributeName}Attribute"));
-
-            static bool MethodContainsResponseMethodInvocation(IMethodBodyOperation method)
-                => (method.BlockBody ?? method.ExpressionBody)!
-                    .Operations
-                    .SelectMany(x => x.DescendantsAndSelf())
-                    .OfType<IInvocationOperation>()
-                    .Any(InvocationIsResponseMethod);
-
-            static bool InvocationIsResponseMethod(IInvocationOperation x)
-                => x.TargetMethod.Name is var name && name.StartsWith("Respond") && name.EndsWith("Async");
-        }
+        static bool InvocationIsResponseMethod(IInvocationOperation x)
+            => x.TargetMethod.Name is var name && name.StartsWith("Respond") && name.EndsWith("Async");
     }
 }

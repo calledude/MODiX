@@ -1,15 +1,14 @@
-﻿namespace Modix.Data.Models.Emoji
+﻿namespace Modix.Data.Models.Emoji;
+
+internal class EmojiStatsDto
 {
-    internal class EmojiStatsDto
-    {
-        public ulong? EmojiId { get; set; }
+    public ulong? EmojiId { get; set; }
 
-        public required string EmojiName { get; set; }
+    public required string EmojiName { get; set; }
 
-        public bool IsAnimated { get; set; }
+    public bool IsAnimated { get; set; }
 
-        public int Rank { get; set; }
+    public int Rank { get; set; }
 
-        public int Uses { get; set; }
-    }
+    public int Uses { get; set; }
 }

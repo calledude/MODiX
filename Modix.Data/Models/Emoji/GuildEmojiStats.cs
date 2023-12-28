@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace Modix.Data.Models.Emoji
+namespace Modix.Data.Models.Emoji;
+
+public class GuildEmojiStats
 {
-    public class GuildEmojiStats
-    {
-        public int UniqueEmojis { get; set; }
+    public int UniqueEmojis { get; set; }
 
-        public int TotalUses { get; set; }
+    public int TotalUses { get; set; }
 
-        public DateTimeOffset OldestTimestamp { get; set; }
-    }
+    public DateTimeOffset OldestTimestamp { get; set; }
 }

@@ -2,67 +2,66 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 
-namespace Modix.Bot
+namespace Modix.Bot;
+
+public class TimeSpanTypeReader : TypeReader
 {
-    public class TimeSpanTypeReader : TypeReader
+    /// <inheritdoc />
+    public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
+        => TryParseTimeSpan(input.ToLowerInvariant(), out var timeSpan)
+            ? Task.FromResult(TypeReaderResult.FromSuccess(timeSpan))
+            : Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Failed to parse TimeSpan"));
+
+    internal protected static bool TryParseTimeSpan(ReadOnlySpan<char> input, out TimeSpan result)
     {
-        /// <inheritdoc />
-        public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
-            => TryParseTimeSpan(input.ToLowerInvariant(), out var timeSpan)
-                ? Task.FromResult(TypeReaderResult.FromSuccess(timeSpan))
-                : Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Failed to parse TimeSpan"));
+        result = TimeSpan.Zero;
 
-        internal protected static bool TryParseTimeSpan(ReadOnlySpan<char> input, out TimeSpan result)
+        if (input.Length <= 1)
+            return false;
+
+        var start = 0;
+
+        while (start < input.Length)
         {
-            result = TimeSpan.Zero;
-
-            if (input.Length <= 1)
-                return false;
-
-            var start = 0;
-
-            while (start < input.Length)
+            if (char.IsDigit(input[start]))
             {
-                if (char.IsDigit(input[start]))
-                {
-                    var i = start + 1;
+                var i = start + 1;
 
-                    while (i < input.Length - 1 && char.IsDigit(input[i]))
-                        i++;
+                while (i < input.Length - 1 && char.IsDigit(input[i]))
+                    i++;
 
-                    if (!double.TryParse(input[start..i], out var timeQuantity))
-                        return false;
-
-                    switch (input[i])
-                    {
-                        case 'w':
-                            result += TimeSpan.FromDays(timeQuantity * 7);
-                            break;
-                        case 'd':
-                            result += TimeSpan.FromDays(timeQuantity);
-                            break;
-                        case 'h':
-                            result += TimeSpan.FromHours(timeQuantity);
-                            break;
-                        case 'm':
-                            result += TimeSpan.FromMinutes(timeQuantity);
-                            break;
-                        case 's':
-                            result += TimeSpan.FromSeconds(timeQuantity);
-                            break;
-                        default:
-                            return false;
-                    }
-
-                    start = i + 1;
-                }
-                else
-                {
+                if (!double.TryParse(input[start..i], out var timeQuantity))
                     return false;
-                }
-            }
 
-            return true;
+                switch (input[i])
+                {
+                    case 'w':
+                        result += TimeSpan.FromDays(timeQuantity * 7);
+                        break;
+                    case 'd':
+                        result += TimeSpan.FromDays(timeQuantity);
+                        break;
+                    case 'h':
+                        result += TimeSpan.FromHours(timeQuantity);
+                        break;
+                    case 'm':
+                        result += TimeSpan.FromMinutes(timeQuantity);
+                        break;
+                    case 's':
+                        result += TimeSpan.FromSeconds(timeQuantity);
+                        break;
+                    default:
+                        return false;
+                }
+
+                start = i + 1;
+            }
+            else
+            {
+                return false;
+            }
         }
+
+        return true;
     }
 }

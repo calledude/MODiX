@@ -1,9 +1,8 @@
-﻿namespace Modix.Common
+﻿namespace Modix.Common;
+
+public enum CommonLogEventType
 {
-    public enum CommonLogEventType
-    {
-        DependencyInjection = ApplicationLogEventType.Common + 0x010000,
-        Hosting = ApplicationLogEventType.Common + 0x020000,
-        Messaging = ApplicationLogEventType.Common + 0x030000
-    }
+    DependencyInjection = ApplicationLogEventType.Common + 0x010000,
+    Hosting = ApplicationLogEventType.Common + 0x020000,
+    Messaging = ApplicationLogEventType.Common + 0x030000
 }

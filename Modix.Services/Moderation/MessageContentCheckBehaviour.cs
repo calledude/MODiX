@@ -10,133 +10,132 @@ using Modix.Services.Core;
 using Modix.Services.MessageContentPatterns;
 using Serilog;
 
-namespace Modix.Services.Moderation
+namespace Modix.Services.Moderation;
+
+public class MessageContentCheckBehaviour :
+    INotificationHandler<MessageReceivedNotification>,
+    INotificationHandler<MessageUpdatedNotification>
 {
-    public class MessageContentCheckBehaviour :
-        INotificationHandler<MessageReceivedNotification>,
-        INotificationHandler<MessageUpdatedNotification>
+    private readonly IDesignatedChannelService _designatedChannelService;
+    private readonly IAuthorizationService _authorizationService;
+    private readonly IModerationService _moderationService;
+    private readonly IMessageContentPatternService _messageContentPatternService;
+    private readonly DiscordSocketClient _discordSocketClient;
+
+    public MessageContentCheckBehaviour(
+        IDesignatedChannelService designatedChannelService,
+        DiscordSocketClient discordSocketClient,
+        IAuthorizationService authorizationService,
+        IModerationService moderationService, IMessageContentPatternService messageContentPatternService)
     {
-        private readonly IDesignatedChannelService _designatedChannelService;
-        private readonly IAuthorizationService _authorizationService;
-        private readonly IModerationService _moderationService;
-        private readonly IMessageContentPatternService _messageContentPatternService;
-        private readonly DiscordSocketClient _discordSocketClient;
+        _designatedChannelService = designatedChannelService;
+        _discordSocketClient = discordSocketClient;
+        _authorizationService = authorizationService;
+        _moderationService = moderationService;
+        _messageContentPatternService = messageContentPatternService;
+    }
 
-        public MessageContentCheckBehaviour(
-            IDesignatedChannelService designatedChannelService,
-            DiscordSocketClient discordSocketClient,
-            IAuthorizationService authorizationService,
-            IModerationService moderationService, IMessageContentPatternService messageContentPatternService)
+    public Task HandleNotificationAsync(MessageReceivedNotification notification,
+        CancellationToken cancellationToken = default)
+        => TryCheckMessageAsync(notification.Message);
+
+    public Task HandleNotificationAsync(MessageUpdatedNotification notification,
+        CancellationToken cancellationToken = default)
+        => TryCheckMessageAsync(notification.NewMessage);
+
+    private async Task TryCheckMessageAsync(IMessage message)
+    {
+        if (message.Author is not IGuildUser author
+            || (author.Guild is null)
+            || message.Channel is not IGuildChannel channel
+            || (channel.Guild is null))
         {
-            _designatedChannelService = designatedChannelService;
-            _discordSocketClient = discordSocketClient;
-            _authorizationService = authorizationService;
-            _moderationService = moderationService;
-            _messageContentPatternService = messageContentPatternService;
+            Log.Debug(
+                "Message {MessageId} was not in an IGuildChannel & IMessageChannel, or Author {Author} was not an IGuildUser",
+                message.Id, message.Author.Id);
+            return;
         }
 
-        public Task HandleNotificationAsync(MessageReceivedNotification notification,
-            CancellationToken cancellationToken = default)
-            => TryCheckMessageAsync(notification.Message);
+        if (author.Id == _discordSocketClient.CurrentUser.Id)
+            return;
 
-        public Task HandleNotificationAsync(MessageUpdatedNotification notification,
-            CancellationToken cancellationToken = default)
-            => TryCheckMessageAsync(notification.NewMessage);
+        var isContentBlocked = await IsContentBlockedAsync(channel, message);
 
-        private async Task TryCheckMessageAsync(IMessage message)
+        if (!isContentBlocked)
         {
-            if (message.Author is not IGuildUser author
-                || (author.Guild is null)
-                || message.Channel is not IGuildChannel channel
-                || (channel.Guild is null))
-            {
-                Log.Debug(
-                    "Message {MessageId} was not in an IGuildChannel & IMessageChannel, or Author {Author} was not an IGuildUser",
-                    message.Id, message.Author.Id);
-                return;
-            }
-
-            if (author.Id == _discordSocketClient.CurrentUser.Id)
-                return;
-
-            var isContentBlocked = await IsContentBlockedAsync(channel, message);
-
-            if (!isContentBlocked)
-            {
-                return;
-            }
-
-            if (await _designatedChannelService.ChannelHasDesignationAsync(channel.Guild.Id,
-                channel.Id, DesignatedChannelType.Unmoderated, default))
-            {
-                return;
-            }
-
-            if (await _authorizationService.HasClaimsAsync(author.Id, author.Guild.Id, author.RoleIds?.ToList(), AuthorizationClaim.BypassMessageContentPatternCheck))
-            {
-                Log.Debug("Message {MessageId} was skipped because the author {Author} has the {Claim} claim",
-                    message.Id, message.Author.Id, AuthorizationClaim.BypassMessageContentPatternCheck);
-                return;
-            }
-
-            Log.Debug("Message {MessageId} is going to be deleted", message.Id);
-
-            await _moderationService.DeleteMessageAsync(message, "Unauthorized Message Content",
-                _discordSocketClient.CurrentUser.Id, default);
-
-            Log.Debug("Message {MessageId} was deleted because it contains blocked content", message.Id);
-
-            await message.Channel.SendMessageAsync(
-                $"Sorry {author.Mention} your message contained blocked content and has been removed!");
+            return;
         }
 
-        private async Task<bool> IsContentBlockedAsync(IGuildChannel channel, IMessage message)
+        if (await _designatedChannelService.ChannelHasDesignationAsync(channel.Guild.Id,
+            channel.Id, DesignatedChannelType.Unmoderated, default))
         {
-            var patterns = await _messageContentPatternService.GetPatterns(channel.GuildId);
+            return;
+        }
 
-            foreach (var patternToCheck in patterns.Where(x => x.Type == MessageContentPatternType.Blocked))
+        if (await _authorizationService.HasClaimsAsync(author.Id, author.Guild.Id, author.RoleIds?.ToList(), AuthorizationClaim.BypassMessageContentPatternCheck))
+        {
+            Log.Debug("Message {MessageId} was skipped because the author {Author} has the {Claim} claim",
+                message.Id, message.Author.Id, AuthorizationClaim.BypassMessageContentPatternCheck);
+            return;
+        }
+
+        Log.Debug("Message {MessageId} is going to be deleted", message.Id);
+
+        await _moderationService.DeleteMessageAsync(message, "Unauthorized Message Content",
+            _discordSocketClient.CurrentUser.Id, default);
+
+        Log.Debug("Message {MessageId} was deleted because it contains blocked content", message.Id);
+
+        await message.Channel.SendMessageAsync(
+            $"Sorry {author.Mention} your message contained blocked content and has been removed!");
+    }
+
+    private async Task<bool> IsContentBlockedAsync(IGuildChannel channel, IMessage message)
+    {
+        var patterns = await _messageContentPatternService.GetPatterns(channel.GuildId);
+
+        foreach (var patternToCheck in patterns.Where(x => x.Type == MessageContentPatternType.Blocked))
+        {
+            // If the content is not blocked, we can just continue to check the next
+            // blocked pattern
+
+            var (containsBlockedPattern, blockedMatches) = GetContentMatches(message.Content, patternToCheck);
+
+            if (!containsBlockedPattern)
             {
-                // If the content is not blocked, we can just continue to check the next
-                // blocked pattern
+                continue;
+            }
 
-                var (containsBlockedPattern, blockedMatches) = GetContentMatches(message.Content, patternToCheck);
+            var allowedPatterns = patterns.Where(x => x.Type == MessageContentPatternType.Allowed).ToList();
 
-                if (!containsBlockedPattern)
+            if (allowedPatterns.Count == 0)
+            {
+                return true;
+            }
+
+            foreach (Match blockedMatch in blockedMatches)
+            {
+                var didFindAllowedPattern = false;
+
+                foreach (var allowPattern in allowedPatterns)
                 {
-                    continue;
+                    var (hasAllowedMatch, _) = GetContentMatches(blockedMatch.Value, allowPattern);
+                    didFindAllowedPattern = hasAllowedMatch;
                 }
 
-                var allowedPatterns = patterns.Where(x => x.Type == MessageContentPatternType.Allowed).ToList();
-
-                if (allowedPatterns.Count == 0)
-                {
+                if (!didFindAllowedPattern)
                     return true;
-                }
-
-                foreach (Match blockedMatch in blockedMatches)
-                {
-                    var didFindAllowedPattern = false;
-
-                    foreach (var allowPattern in allowedPatterns)
-                    {
-                        var (hasAllowedMatch, _) = GetContentMatches(blockedMatch.Value, allowPattern);
-                        didFindAllowedPattern = hasAllowedMatch;
-                    }
-
-                    if (!didFindAllowedPattern)
-                        return true;
-                }
-
-                return false;
-
-                static (bool, MatchCollection) GetContentMatches(string content, MessageContentPatternDto pattern)
-                {
-                    var matches = pattern.Regex.Matches(content);
-                    return (matches.Count != 0, matches);
-                }
             }
 
             return false;
+
+            static (bool, MatchCollection) GetContentMatches(string content, MessageContentPatternDto pattern)
+            {
+                var matches = pattern.Regex.Matches(content);
+                return (matches.Count != 0, matches);
+            }
         }
+
+        return false;
     }
 }

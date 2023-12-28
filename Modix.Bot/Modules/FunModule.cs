@@ -12,163 +12,162 @@ using Modix.Services.Utilities;
 
 using Serilog;
 
-namespace Modix.Modules
+namespace Modix.Modules;
+
+[ModuleHelp("Fun", "A bunch of miscellaneous, fun commands.")]
+[HelpTags("jumbo")]
+public partial class FunModule : InteractionModuleBase
 {
-    [ModuleHelp("Fun", "A bunch of miscellaneous, fun commands.")]
-    [HelpTags("jumbo")]
-    public partial class FunModule : InteractionModuleBase
+    private static readonly string[] _owoFaces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
+
+    private const ushort MinimumAvatarSize = 16;
+    private const ushort MaximumAvatarSize = 4096;
+
+    public FunModule(IHttpClientFactory httpClientFactory)
     {
-        private static readonly string[] _owoFaces = { "(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^" };
-
-        private const ushort MinimumAvatarSize = 16;
-        private const ushort MaximumAvatarSize = 4096;
-
-        public FunModule(IHttpClientFactory httpClientFactory)
-        {
-            HttpClientFactory = httpClientFactory;
-        }
-
-        [SlashCommand("jumbo", "Jumbofy an emoji.")]
-        public async Task JumboAsync(
-            [Summary(description : "The emoji to jumbofy.")]
-                IEmote emoji)
-        {
-            var emojiString = emoji.ToString();
-            if (emojiString is null)
-            {
-                await FollowupAsync($"Sorry {Context.User.Mention}, I don't recognize that emoji.", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
-                return;
-            }
-
-            var emojiUrl = EmojiUtilities.GetUrl(emojiString);
-
-            try
-            {
-                var client = HttpClientFactory.CreateClient();
-                var req = await client.GetStreamAsync(emojiUrl);
-
-                await FollowupWithFileAsync(req, Path.GetFileName(emojiUrl));
-            }
-            catch (HttpRequestException ex)
-            {
-                Log.Warning(ex, "Failed jumbofying emoji");
-                await FollowupAsync($"Sorry {Context.User.Mention}, I don't recognize that emoji.", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
-            }
-        }
-
-        [SlashCommand("avatar", "Gets an avatar for a user.")]
-        public async Task GetAvatarAsync(
-            [Summary(description: "User that has the avatar.")]
-                IUser? user = null,
-            [Summary(description: "Size for the avatar, defaults to 128.")]
-            [MinValue(MinimumAvatarSize)]
-            [MaxValue(MaximumAvatarSize)]
-            [Choice("16", 16)]
-            [Choice("32", 32)]
-            [Choice("64", 64)]
-            [Choice("128", 128)]
-            [Choice("256", 256)]
-            [Choice("512", 512)]
-            [Choice("1024", 1024)]
-            [Choice("2048", 2048)]
-            [Choice("4096", 4096)]
-                ushort size = 128)
-        {
-            user ??= Context.User;
-
-            try
-            {
-                size = Math.Clamp(size, MinimumAvatarSize, MaximumAvatarSize);
-
-                var avatarUrl = user.GetDefiniteAvatarUrl(size);
-
-                var embed = new EmbedBuilder()
-                    .WithTitle($"{user.GetDisplayName()}'s avatar")
-                    .WithImageUrl(avatarUrl)
-                    .WithCurrentTimestamp()
-                    .Build();
-
-                await FollowupAsync(embed: embed);
-            }
-            catch (HttpRequestException ex)
-            {
-                Log.Warning(ex, "Failed getting avatar for user {userId}", user.Id);
-                await FollowupAsync($"Sorry {Context.User.Mention}, I couldn't get the avatar!", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
-            }
-        }
-
-        [RequireContext(ContextType.Guild)]
-        [SlashCommand("guild-avatar", "Gets a guild-specific avatar for a user.")]
-        public async Task GetGuildAvatarAsync(
-            [Summary(description: "User that has the avatar.")]
-                IGuildUser? user = null,
-            [Summary(description: "Size for the avatar, defaults to 128.")]
-            [MinValue(MinimumAvatarSize)]
-            [MaxValue(MaximumAvatarSize)]
-            [Choice("16", 16)]
-            [Choice("32", 32)]
-            [Choice("64", 64)]
-            [Choice("128", 128)]
-            [Choice("256", 256)]
-            [Choice("512", 512)]
-            [Choice("1024", 1024)]
-            [Choice("2048", 2048)]
-            [Choice("4096", 4096)]
-                ushort size = 128)
-        {
-            user ??= (IGuildUser)Context.User;
-
-            try
-            {
-                size = Math.Clamp(size, MinimumAvatarSize, MaximumAvatarSize);
-
-                var avatarUrl = user.GetGuildAvatarUrl(size: size) ?? user.GetDefiniteAvatarUrl(size);
-
-                var embed = new EmbedBuilder()
-                    .WithTitle($"{user.GetDisplayName()}'s avatar")
-                    .WithImageUrl(avatarUrl)
-                    .Build();
-
-                await FollowupAsync(embed: embed);
-            }
-            catch (HttpRequestException ex)
-            {
-                Log.Warning(ex, "Failed getting avatar for user {userId}", user.Id);
-                await FollowupAsync($"Sorry {Context.User.Mention}, I couldn't get the avatar!", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
-            }
-        }
-
-        [SlashCommand("owo", "Owoifies the given message.")]
-        public async Task OwoifyAsync([Summary(description: "The message to owoify.")] string message)
-        {
-            var owoMessage = message;
-
-            owoMessage = OwORegex().Replace(owoMessage, "w");
-            owoMessage = OwORegex2().Replace(owoMessage, "W");
-            owoMessage = OwORegex3().Replace(owoMessage, "ny$1");
-            owoMessage = OwORegex4().Replace(owoMessage, "Ny$1");
-            owoMessage = OwORegex5().Replace(owoMessage, "Ny$1");
-            owoMessage = OwORegex6().Replace(owoMessage, "uv");
-            owoMessage = OwORegex7().Replace(owoMessage, " " + _owoFaces[new Random().Next(_owoFaces.Length)] + " ");
-
-            await FollowupAsync(owoMessage, allowedMentions: AllowedMentions.None);
-        }
-
-        protected IHttpClientFactory HttpClientFactory { get; }
-
-        [GeneratedRegex("(?:r|l)")]
-        private static partial Regex OwORegex();
-        [GeneratedRegex("(?:R|L)")]
-        private static partial Regex OwORegex2();
-        [GeneratedRegex("n([aeiou])")]
-        private static partial Regex OwORegex3();
-        [GeneratedRegex("N([aeiou])")]
-        private static partial Regex OwORegex4();
-        [GeneratedRegex("N([AEIOU])")]
-        private static partial Regex OwORegex5();
-        [GeneratedRegex("ove")]
-        private static partial Regex OwORegex6();
-        [GeneratedRegex("(?<!\\@)\\!+")]
-        private static partial Regex OwORegex7();
+        HttpClientFactory = httpClientFactory;
     }
+
+    [SlashCommand("jumbo", "Jumbofy an emoji.")]
+    public async Task JumboAsync(
+        [Summary(description : "The emoji to jumbofy.")]
+            IEmote emoji)
+    {
+        var emojiString = emoji.ToString();
+        if (emojiString is null)
+        {
+            await FollowupAsync($"Sorry {Context.User.Mention}, I don't recognize that emoji.", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
+            return;
+        }
+
+        var emojiUrl = EmojiUtilities.GetUrl(emojiString);
+
+        try
+        {
+            var client = HttpClientFactory.CreateClient();
+            var req = await client.GetStreamAsync(emojiUrl);
+
+            await FollowupWithFileAsync(req, Path.GetFileName(emojiUrl));
+        }
+        catch (HttpRequestException ex)
+        {
+            Log.Warning(ex, "Failed jumbofying emoji");
+            await FollowupAsync($"Sorry {Context.User.Mention}, I don't recognize that emoji.", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
+        }
+    }
+
+    [SlashCommand("avatar", "Gets an avatar for a user.")]
+    public async Task GetAvatarAsync(
+        [Summary(description: "User that has the avatar.")]
+            IUser? user = null,
+        [Summary(description: "Size for the avatar, defaults to 128.")]
+        [MinValue(MinimumAvatarSize)]
+        [MaxValue(MaximumAvatarSize)]
+        [Choice("16", 16)]
+        [Choice("32", 32)]
+        [Choice("64", 64)]
+        [Choice("128", 128)]
+        [Choice("256", 256)]
+        [Choice("512", 512)]
+        [Choice("1024", 1024)]
+        [Choice("2048", 2048)]
+        [Choice("4096", 4096)]
+            ushort size = 128)
+    {
+        user ??= Context.User;
+
+        try
+        {
+            size = Math.Clamp(size, MinimumAvatarSize, MaximumAvatarSize);
+
+            var avatarUrl = user.GetDefiniteAvatarUrl(size);
+
+            var embed = new EmbedBuilder()
+                .WithTitle($"{user.GetDisplayName()}'s avatar")
+                .WithImageUrl(avatarUrl)
+                .WithCurrentTimestamp()
+                .Build();
+
+            await FollowupAsync(embed: embed);
+        }
+        catch (HttpRequestException ex)
+        {
+            Log.Warning(ex, "Failed getting avatar for user {userId}", user.Id);
+            await FollowupAsync($"Sorry {Context.User.Mention}, I couldn't get the avatar!", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
+        }
+    }
+
+    [RequireContext(ContextType.Guild)]
+    [SlashCommand("guild-avatar", "Gets a guild-specific avatar for a user.")]
+    public async Task GetGuildAvatarAsync(
+        [Summary(description: "User that has the avatar.")]
+            IGuildUser? user = null,
+        [Summary(description: "Size for the avatar, defaults to 128.")]
+        [MinValue(MinimumAvatarSize)]
+        [MaxValue(MaximumAvatarSize)]
+        [Choice("16", 16)]
+        [Choice("32", 32)]
+        [Choice("64", 64)]
+        [Choice("128", 128)]
+        [Choice("256", 256)]
+        [Choice("512", 512)]
+        [Choice("1024", 1024)]
+        [Choice("2048", 2048)]
+        [Choice("4096", 4096)]
+            ushort size = 128)
+    {
+        user ??= (IGuildUser)Context.User;
+
+        try
+        {
+            size = Math.Clamp(size, MinimumAvatarSize, MaximumAvatarSize);
+
+            var avatarUrl = user.GetGuildAvatarUrl(size: size) ?? user.GetDefiniteAvatarUrl(size);
+
+            var embed = new EmbedBuilder()
+                .WithTitle($"{user.GetDisplayName()}'s avatar")
+                .WithImageUrl(avatarUrl)
+                .Build();
+
+            await FollowupAsync(embed: embed);
+        }
+        catch (HttpRequestException ex)
+        {
+            Log.Warning(ex, "Failed getting avatar for user {userId}", user.Id);
+            await FollowupAsync($"Sorry {Context.User.Mention}, I couldn't get the avatar!", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
+        }
+    }
+
+    [SlashCommand("owo", "Owoifies the given message.")]
+    public async Task OwoifyAsync([Summary(description: "The message to owoify.")] string message)
+    {
+        var owoMessage = message;
+
+        owoMessage = OwORegex().Replace(owoMessage, "w");
+        owoMessage = OwORegex2().Replace(owoMessage, "W");
+        owoMessage = OwORegex3().Replace(owoMessage, "ny$1");
+        owoMessage = OwORegex4().Replace(owoMessage, "Ny$1");
+        owoMessage = OwORegex5().Replace(owoMessage, "Ny$1");
+        owoMessage = OwORegex6().Replace(owoMessage, "uv");
+        owoMessage = OwORegex7().Replace(owoMessage, " " + _owoFaces[new Random().Next(_owoFaces.Length)] + " ");
+
+        await FollowupAsync(owoMessage, allowedMentions: AllowedMentions.None);
+    }
+
+    protected IHttpClientFactory HttpClientFactory { get; }
+
+    [GeneratedRegex("(?:r|l)")]
+    private static partial Regex OwORegex();
+    [GeneratedRegex("(?:R|L)")]
+    private static partial Regex OwORegex2();
+    [GeneratedRegex("n([aeiou])")]
+    private static partial Regex OwORegex3();
+    [GeneratedRegex("N([aeiou])")]
+    private static partial Regex OwORegex4();
+    [GeneratedRegex("N([AEIOU])")]
+    private static partial Regex OwORegex5();
+    [GeneratedRegex("ove")]
+    private static partial Regex OwORegex6();
+    [GeneratedRegex("(?<!\\@)\\!+")]
+    private static partial Regex OwORegex7();
 }

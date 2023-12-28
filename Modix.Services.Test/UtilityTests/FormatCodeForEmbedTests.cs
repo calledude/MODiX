@@ -2,15 +2,15 @@
 using NUnit.Framework;
 using Shouldly;
 
-namespace Modix.Services.Test.UtilityTests
+namespace Modix.Services.Test.UtilityTests;
+
+[TestFixture]
+public class FormatCodeForEmbedTests
 {
-    [TestFixture]
-    public class FormatCodeForEmbedTests
+    [Test]
+    public void TestCSharp()
     {
-        [Test]
-        public void TestCSharp()
-        {
-            const string Source =
+        const string Source =
 @"#nullable enable
 
 var c = new C();
@@ -29,7 +29,7 @@ struct CustomHandler
 }
 ";
 
-            const string Expected =
+        const string Expected =
 @"```cs
 #nullable enable
 var c = new C();
@@ -44,13 +44,13 @@ struct CustomHandler {
 }
 ```";
 
-            Verify("cs", Source, Expected);
-        }
+        Verify("cs", Source, Expected);
+    }
 
-        [Test]
-        public void TestVisualBasic()
-        {
-            const string Source =
+    [Test]
+    public void TestVisualBasic()
+    {
+        const string Source =
 @"Imports System
 Imports System.Threading.Tasks
 Public Class C
@@ -69,7 +69,7 @@ Public Class C
 End Class
 ";
 
-            const string Expected =
+        const string Expected =
 @"```vb
 Imports System
 Imports System.Threading.Tasks
@@ -84,13 +84,13 @@ Public Class C
 ' 4 more lines. Follow the link to view.
 ```";
 
-            Verify("vb", Source, Expected);
-        }
+        Verify("vb", Source, Expected);
+    }
 
-        [Test]
-        public void TestFSharp()
-        {
-            const string Source =
+    [Test]
+    public void TestFSharp()
+    {
+        const string Source =
 @"open System
 
 let printMessage name =
@@ -104,7 +104,7 @@ let names = [ ""Ana""; ""Felipe""; ""Emillia"" ]
 printNames names
 ";
 
-            const string Expected =
+        const string Expected =
 @"```fs
 open System
 let printMessage name =
@@ -116,13 +116,13 @@ let names = [ ""Ana""; ""Felipe""; ""Emillia"" ]
 printNames names
 ```";
 
-            Verify("fs", Source, Expected);
-        }
+        Verify("fs", Source, Expected);
+    }
 
-        [Test]
-        public void TestIL()
-        {
-            const string Source =
+    [Test]
+    public void TestIL()
+    {
+        const string Source =
 @".assembly A
 {
 }
@@ -140,7 +140,7 @@ printNames names
 }
 ";
 
-            const string Expected =
+        const string Expected =
 @"```il
 .assembly A {
 }
@@ -154,13 +154,13 @@ printNames names
 }
 ```";
 
-            Verify("il", Source, Expected);
-        }
+        Verify("il", Source, Expected);
+    }
 
-        [Test]
-        public void TestCSharpWithMaxLength()
-        {
-            const string Source =
+    [Test]
+    public void TestCSharpWithMaxLength()
+    {
+        const string Source =
 @"
 public class C {
     uint[] s_crcTable = new uint[256];
@@ -253,7 +253,7 @@ public class C {
 }
 ";
 
-            const string Expected =
+        const string Expected =
 @"```cs
 public class C {
     uint[] s_crcTable = new uint[256];
@@ -263,19 +263,18 @@ public class C {
 // 63 more lines. Follow the link to view.
 ```";
 
-            VerifyWithLength("cs", 293, Source, Expected);
-        }
+        VerifyWithLength("cs", 293, Source, Expected);
+    }
 
-        private static void Verify(string language, string source, string expected)
-        {
-            var actual = FormatUtilities.FormatCodeForEmbed(language, source, 2048);
-            actual.ShouldBe(expected.Replace("\r", string.Empty));
-        }
+    private static void Verify(string language, string source, string expected)
+    {
+        var actual = FormatUtilities.FormatCodeForEmbed(language, source, 2048);
+        actual.ShouldBe(expected.Replace("\r", string.Empty));
+    }
 
-        private static void VerifyWithLength(string language, int length, string source, string expected)
-        {
-            var actual = FormatUtilities.FormatCodeForEmbed(language, source, length);
-            actual.ShouldBe(expected.Replace("\r", string.Empty));
-        }
+    private static void VerifyWithLength(string language, int length, string source, string expected)
+    {
+        var actual = FormatUtilities.FormatCodeForEmbed(language, source, length);
+        actual.ShouldBe(expected.Replace("\r", string.Empty));
     }
 }

@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Modix.Data.Migrations
+namespace Modix.Data.Migrations;
+
+public partial class DropModerationMuteRoleMappings : Migration
 {
-    public partial class DropModerationMuteRoleMappings : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql(
-                @"INSERT INTO `GuildRoles` (
+        migrationBuilder.Sql(
+            @"INSERT INTO `GuildRoles` (
                       `RoleId`,
                       `GuildId`,
                       `Name`,
@@ -23,10 +23,10 @@ namespace Modix.Data.Migrations
                       SELECT *
                       FROM `GuildRoles` gr
                       WHERE gr.`RoleId` = mmrm.`MuteRoleId`)"
-                    .Replace('`', '"'));
+                .Replace('`', '"'));
 
-            migrationBuilder.Sql(
-                @"INSERT INTO `DesignatedRoleMappings` (
+        migrationBuilder.Sql(
+            @"INSERT INTO `DesignatedRoleMappings` (
                       `Id`,
                       `GuildId`,
                       `RoleId`,
@@ -41,10 +41,10 @@ namespace Modix.Data.Migrations
                       `CreateActionId`,
                       `DeleteActionId`
                   FROM `ModerationMuteRoleMappings`"
-                    .Replace('`', '"'));
+                .Replace('`', '"'));
 
-            migrationBuilder.Sql(
-                @"UPDATE `ConfigurationActions` AS ca
+        migrationBuilder.Sql(
+            @"UPDATE `ConfigurationActions` AS ca
                   SET `Type` = 'DesignatedRoleMappingCreated',
                       `DesignatedRoleMappingId` = (
                           SELECT drm.`Id`
@@ -52,10 +52,10 @@ namespace Modix.Data.Migrations
                           WHERE drm.`CreateActionId` = ca.`Id`),
                       `ModerationMuteRoleMappingId` = NULL
                   WHERE `Type` = 'ModerationMuteRoleMappingCreated'"
-              .Replace('`', '"'));
+          .Replace('`', '"'));
 
-            migrationBuilder.Sql(
-                @"UPDATE `ConfigurationActions` AS ca
+        migrationBuilder.Sql(
+            @"UPDATE `ConfigurationActions` AS ca
                   SET `Type` = 'DesignatedRoleMappingDeleted',
                       `DesignatedRoleMappingId` = (
                           SELECT drm.`Id`
@@ -63,86 +63,86 @@ namespace Modix.Data.Migrations
                           WHERE drm.`DeleteActionId` = ca.`Id`),
                       `ModerationMuteRoleMappingId` = NULL
                   WHERE `Type` = 'ModerationMuteRoleMappingDeleted'"
-              .Replace('`', '"'));
+          .Replace('`', '"'));
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_ConfigurationActions_ModerationMuteRoleMappings_ModerationM~",
-                table: "ConfigurationActions");
+        migrationBuilder.DropForeignKey(
+            name: "FK_ConfigurationActions_ModerationMuteRoleMappings_ModerationM~",
+            table: "ConfigurationActions");
 
-            migrationBuilder.DropTable(
-                name: "ModerationMuteRoleMappings");
+        migrationBuilder.DropTable(
+            name: "ModerationMuteRoleMappings");
 
-            migrationBuilder.DropIndex(
-                name: "IX_ConfigurationActions_ModerationMuteRoleMappingId",
-                table: "ConfigurationActions");
+        migrationBuilder.DropIndex(
+            name: "IX_ConfigurationActions_ModerationMuteRoleMappingId",
+            table: "ConfigurationActions");
 
-            migrationBuilder.DropColumn(
-                name: "ModerationMuteRoleMappingId",
-                table: "ConfigurationActions");
-        }
+        migrationBuilder.DropColumn(
+            name: "ModerationMuteRoleMappingId",
+            table: "ConfigurationActions");
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<long>(
-                name: "ModerationMuteRoleMappingId",
-                table: "ConfigurationActions",
-                nullable: true);
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AddColumn<long>(
+            name: "ModerationMuteRoleMappingId",
+            table: "ConfigurationActions",
+            nullable: true);
 
-            migrationBuilder.CreateTable(
-                name: "ModerationMuteRoleMappings",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    GuildId = table.Column<long>(nullable: false),
-                    MuteRoleId = table.Column<long>(nullable: false),
-                    CreateActionId = table.Column<long>(nullable: false),
-                    DeleteActionId = table.Column<long>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ModerationMuteRoleMappings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ModerationMuteRoleMappings_ConfigurationActions_CreateActio~",
-                        column: x => x.CreateActionId,
-                        principalTable: "ConfigurationActions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ModerationMuteRoleMappings_ConfigurationActions_DeleteActio~",
-                        column: x => x.DeleteActionId,
-                        principalTable: "ConfigurationActions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
+        migrationBuilder.CreateTable(
+            name: "ModerationMuteRoleMappings",
+            columns: table => new
+            {
+                Id = table.Column<long>(nullable: false)
+                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                GuildId = table.Column<long>(nullable: false),
+                MuteRoleId = table.Column<long>(nullable: false),
+                CreateActionId = table.Column<long>(nullable: false),
+                DeleteActionId = table.Column<long>(nullable: true)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_ModerationMuteRoleMappings", x => x.Id);
+                table.ForeignKey(
+                    name: "FK_ModerationMuteRoleMappings_ConfigurationActions_CreateActio~",
+                    column: x => x.CreateActionId,
+                    principalTable: "ConfigurationActions",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Cascade);
+                table.ForeignKey(
+                    name: "FK_ModerationMuteRoleMappings_ConfigurationActions_DeleteActio~",
+                    column: x => x.DeleteActionId,
+                    principalTable: "ConfigurationActions",
+                    principalColumn: "Id",
+                    onDelete: ReferentialAction.Restrict);
+            });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_ConfigurationActions_ModerationMuteRoleMappingId",
-                table: "ConfigurationActions",
-                column: "ModerationMuteRoleMappingId");
+        migrationBuilder.CreateIndex(
+            name: "IX_ConfigurationActions_ModerationMuteRoleMappingId",
+            table: "ConfigurationActions",
+            column: "ModerationMuteRoleMappingId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_ModerationMuteRoleMappings_CreateActionId",
-                table: "ModerationMuteRoleMappings",
-                column: "CreateActionId",
-                unique: true);
+        migrationBuilder.CreateIndex(
+            name: "IX_ModerationMuteRoleMappings_CreateActionId",
+            table: "ModerationMuteRoleMappings",
+            column: "CreateActionId",
+            unique: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_ModerationMuteRoleMappings_DeleteActionId",
-                table: "ModerationMuteRoleMappings",
-                column: "DeleteActionId",
-                unique: true);
+        migrationBuilder.CreateIndex(
+            name: "IX_ModerationMuteRoleMappings_DeleteActionId",
+            table: "ModerationMuteRoleMappings",
+            column: "DeleteActionId",
+            unique: true);
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_ConfigurationActions_ModerationMuteRoleMappings_ModerationM~",
-                table: "ConfigurationActions",
-                column: "ModerationMuteRoleMappingId",
-                principalTable: "ModerationMuteRoleMappings",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+        migrationBuilder.AddForeignKey(
+            name: "FK_ConfigurationActions_ModerationMuteRoleMappings_ModerationM~",
+            table: "ConfigurationActions",
+            column: "ModerationMuteRoleMappingId",
+            principalTable: "ModerationMuteRoleMappings",
+            principalColumn: "Id",
+            onDelete: ReferentialAction.Restrict);
 
-            migrationBuilder.Sql(
-                @"INSERT INTO `ModerationMuteRoleMappings` (
+        migrationBuilder.Sql(
+            @"INSERT INTO `ModerationMuteRoleMappings` (
                       `Id`,
                       `GuildId`,
                       `MuteRoleId`,
@@ -156,10 +156,10 @@ namespace Modix.Data.Migrations
                       `DeleteActionId`
                   FROM `DesignatedRoleMappings`
                   WHERE `Type` = 'ModerationMute'"
-                    .Replace('`', '"'));
+                .Replace('`', '"'));
 
-            migrationBuilder.Sql(
-                @"UPDATE `ConfigurationActions` AS ca
+        migrationBuilder.Sql(
+            @"UPDATE `ConfigurationActions` AS ca
                   SET `Type` = 'ModerationMuteRoleMappingCreated',
                       `ModerationMuteRoleMappingId` = (
                           SELECT mmrm.`Id`
@@ -170,10 +170,10 @@ namespace Modix.Data.Migrations
                       SELECT*
                       FROM `ModerationMuteRoleMappings` mmrm
                       WHERE mmrm.`CreateActionId` = ca.`Id`)"
-                    .Replace('`', '"'));
+                .Replace('`', '"'));
 
-            migrationBuilder.Sql(
-                @"UPDATE `ConfigurationActions` AS ca
+        migrationBuilder.Sql(
+            @"UPDATE `ConfigurationActions` AS ca
                   SET `Type` = 'ModerationMuteRoleMappingDeleted',
                       `ModerationMuteRoleMappingId` = (
                           SELECT mmrm.`Id`
@@ -184,12 +184,11 @@ namespace Modix.Data.Migrations
                       SELECT*
                       FROM `ModerationMuteRoleMappings` mmrm
                       WHERE mmrm.`DeleteActionId` = ca.`Id`)"
-                    .Replace('`', '"'));
+                .Replace('`', '"'));
 
-            migrationBuilder.Sql(
-                @"DELETE FROM `DesignatedRoleMappings`
+        migrationBuilder.Sql(
+            @"DELETE FROM `DesignatedRoleMappings`
                   WHERE `Type` = 'ModerationMute'"
-                    .Replace('`', '"'));
-        }
+                .Replace('`', '"'));
     }
 }

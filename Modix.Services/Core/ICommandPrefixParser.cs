@@ -4,12 +4,11 @@ using System.Threading.Tasks;
 
 using Discord;
 
-namespace Modix.Services.Core
+namespace Modix.Services.Core;
+
+public interface ICommandPrefixParser
 {
-    public interface ICommandPrefixParser
-    {
-        Task<int?> TryFindCommandArgPosAsync(
-            IUserMessage message,
-            CancellationToken cancellationToken);
-    }
+    Task<int?> TryFindCommandArgPosAsync(
+        IUserMessage message,
+        CancellationToken cancellationToken);
 }

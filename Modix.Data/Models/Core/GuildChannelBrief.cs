@@ -3,35 +3,34 @@ using System.Linq.Expressions;
 
 using Modix.Data.ExpandableQueries;
 
-namespace Modix.Data.Models.Core
+namespace Modix.Data.Models.Core;
+
+/// <summary>
+/// Describes a partial view of an <see cref="GuildChannelEntity"/>, for use within the context of another projected model.
+/// </summary>
+public class GuildChannelBrief
 {
     /// <summary>
-    /// Describes a partial view of an <see cref="GuildChannelEntity"/>, for use within the context of another projected model.
+    /// See <see cref="GuildChannelEntity.ChannelId"/>.
     /// </summary>
-    public class GuildChannelBrief
-    {
-        /// <summary>
-        /// See <see cref="GuildChannelEntity.ChannelId"/>.
-        /// </summary>
-        public ulong Id { get; set; }
+    public ulong Id { get; set; }
 
-        /// <summary>
-        /// See <see cref="GuildChannelEntity.Name"/>.
-        /// </summary>
-        public required string Name { get; set; }
+    /// <summary>
+    /// See <see cref="GuildChannelEntity.Name"/>.
+    /// </summary>
+    public required string Name { get; set; }
 
-        /// <summary>
-        /// See <see cref="GuildChannelEntity.ParentChannelId"/>.
-        /// </summary>
-        public ulong? ParentChannelId { get; set; }
+    /// <summary>
+    /// See <see cref="GuildChannelEntity.ParentChannelId"/>.
+    /// </summary>
+    public ulong? ParentChannelId { get; set; }
 
-        [ExpansionExpression]
-        internal static Expression<Func<GuildChannelEntity, GuildChannelBrief>> FromEntityProjection
-            = entity => new GuildChannelBrief()
-            {
-                Id = entity.ChannelId,
-                Name = entity.Name,
-                ParentChannelId = entity.ParentChannelId,
-            };
-    }
+    [ExpansionExpression]
+    internal static Expression<Func<GuildChannelEntity, GuildChannelBrief>> FromEntityProjection
+        = entity => new GuildChannelBrief()
+        {
+            Id = entity.ChannelId,
+            Name = entity.Name,
+            ParentChannelId = entity.ParentChannelId,
+        };
 }

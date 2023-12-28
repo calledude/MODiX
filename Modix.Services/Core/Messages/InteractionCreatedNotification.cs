@@ -1,6 +1,5 @@
 ﻿using Discord.WebSocket;
 
-namespace Discord
-{
-    public record InteractionCreatedNotification(SocketInteraction Interaction);
-}
+namespace Discord;
+
+public record InteractionCreatedNotification(SocketInteraction Interaction);

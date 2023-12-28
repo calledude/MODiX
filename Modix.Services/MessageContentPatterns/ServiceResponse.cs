@@ -1,48 +1,47 @@
 ﻿using System;
 
-namespace Modix.Services.MessageContentPatterns
+namespace Modix.Services.MessageContentPatterns;
+
+public class ServiceResponse
 {
-    public class ServiceResponse
+    public bool Success { get; }
+    public string ErrorMessage { get; }
+
+    public bool Failure => !Success;
+
+    protected ServiceResponse(bool success, string errorMessage)
     {
-        public bool Success { get; }
-        public string ErrorMessage { get; }
-
-        public bool Failure => !Success;
-
-        protected ServiceResponse(bool success, string errorMessage)
+        if (success && !string.IsNullOrWhiteSpace(errorMessage))
         {
-            if (success && !string.IsNullOrWhiteSpace(errorMessage))
-            {
-                throw new ArgumentException("Cannot be successful with error message");
-            }
-
-            if (!success && string.IsNullOrWhiteSpace(errorMessage))
-            {
-                throw new ArgumentException("Cannot be failure with no error message");
-            }
-
-            Success = success;
-            ErrorMessage = errorMessage;
+            throw new ArgumentException("Cannot be successful with error message");
         }
 
-        public static ServiceResponse Fail(string message)
+        if (!success && string.IsNullOrWhiteSpace(errorMessage))
         {
-            return new ServiceResponse(false, message);
+            throw new ArgumentException("Cannot be failure with no error message");
         }
 
-        public static ServiceResponse Ok()
-        {
-            return new ServiceResponse(true, string.Empty);
-        }
+        Success = success;
+        ErrorMessage = errorMessage;
     }
 
-    public class ServiceResponse<T> : ServiceResponse
+    public static ServiceResponse Fail(string message)
     {
-        public T Value { get; }
+        return new ServiceResponse(false, message);
+    }
 
-        internal protected ServiceResponse(T value, bool success, string errorMessage) : base(success, errorMessage)
-        {
-            Value = value;
-        }
+    public static ServiceResponse Ok()
+    {
+        return new ServiceResponse(true, string.Empty);
+    }
+}
+
+public class ServiceResponse<T> : ServiceResponse
+{
+    public T Value { get; }
+
+    internal protected ServiceResponse(T value, bool success, string errorMessage) : base(success, errorMessage)
+    {
+        Value = value;
     }
 }

@@ -4,35 +4,34 @@ using System.Reflection;
 using Modix.Data.Models.Core;
 using Modix.Data.Utilities;
 
-namespace Modix.Models.Core
+namespace Modix.Models.Core;
+
+public class ClaimInfoData
 {
-    public class ClaimInfoData
+    public required string Name { get; init; }
+    public required string Description { get; init; }
+    public required AuthorizationClaimCategory Category { get; init; }
+
+    private static Dictionary<AuthorizationClaim, ClaimInfoData>? _cachedClaimData;
+
+    public static Dictionary<AuthorizationClaim, ClaimInfoData> GetClaims()
     {
-        public required string Name { get; init; }
-        public required string Description { get; init; }
-        public required AuthorizationClaimCategory Category { get; init; }
+        _cachedClaimData ??= typeof(AuthorizationClaim).GetFields(BindingFlags.Public | BindingFlags.Static).ToDictionary
+        (
+            d => (AuthorizationClaim)d.GetValue(null)!,
+            d =>
+            {
+                var claimInfo = (ClaimInfoAttribute)d.GetCustomAttributes(typeof(ClaimInfoAttribute), true).First()!;
 
-        private static Dictionary<AuthorizationClaim, ClaimInfoData>? _cachedClaimData;
-
-        public static Dictionary<AuthorizationClaim, ClaimInfoData> GetClaims()
-        {
-            _cachedClaimData ??= typeof(AuthorizationClaim).GetFields(BindingFlags.Public | BindingFlags.Static).ToDictionary
-            (
-                d => (AuthorizationClaim)d.GetValue(null)!,
-                d =>
+                return new ClaimInfoData
                 {
-                    var claimInfo = (ClaimInfoAttribute)d.GetCustomAttributes(typeof(ClaimInfoAttribute), true).First()!;
+                    Name = d.Name,
+                    Description = claimInfo.Description,
+                    Category = claimInfo.Category
+                };
+            }
+        );
 
-                    return new ClaimInfoData
-                    {
-                        Name = d.Name,
-                        Description = claimInfo.Description,
-                        Category = claimInfo.Category
-                    };
-                }
-            );
-
-            return _cachedClaimData;
-        }
+        return _cachedClaimData;
     }
 }

@@ -8,78 +8,77 @@ using Moq.AutoMock;
 using NUnit.Framework;
 using Shouldly;
 
-namespace Modix.Services.Test.Tags
+namespace Modix.Services.Test.Tags;
+
+[TestFixture]
+public class CreateTagTests
 {
-    [TestFixture]
-    public class CreateTagTests
+    private static (AutoMocker autoMocker, TagService sut, ModixContext db) GetSut()
     {
-        private static (AutoMocker autoMocker, TagService sut, ModixContext db) GetSut()
+        var autoMocker = new AutoMocker();
+
+        var options = new DbContextOptionsBuilder<ModixContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString("N"));
+
+        var context = new ModixContext(options.Options);
+
+        autoMocker.Use(context);
+
+        var sut = autoMocker.CreateInstance<TagService>();
+
+        return (autoMocker, sut, context);
+    }
+
+    [Test]
+    public async Task CreateTagAsync_NameIsNotProvided_Throws()
+    {
+        (_, var sut, _) = GetSut();
+        await Should.ThrowAsync<ArgumentException>(() => sut.CreateTagAsync(0, 0, null, string.Empty));
+    }
+
+    [Test]
+    public async Task CreateTagAsync_ContentIsNotProvided_Throws()
+    {
+        (_, var sut, _) = GetSut();
+        await Should.ThrowAsync<ArgumentException>(() => sut.CreateTagAsync(0, 0, string.Empty, null));
+    }
+
+    [Test]
+    public async Task CreateTagAsync_NameEndsWithPunctuation_Throws()
+    {
+        (_, var sut, _) = GetSut();
+        await Should.ThrowAsync<ArgumentException>(() => sut.CreateTagAsync(0, 0, "MODiX.", string.Empty));
+    }
+
+    [Test]
+    public async Task CreateTagAsync_TagAlreadyExistsWithSameCasing_Throws()
+    {
+        (var _, var sut, var db) = GetSut();
+
+        db.Set<TagEntity>().Add(new Data.Models.Tags.TagEntity
         {
-            var autoMocker = new AutoMocker();
+            Name = "modix",
+            Content = "some content",
+        });
 
-            var options = new DbContextOptionsBuilder<ModixContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString("N"));
+        db.SaveChanges();
 
-            var context = new ModixContext(options.Options);
+        await Should.ThrowAsync<ArgumentException>(() => sut.CreateTagAsync(0, 0, "modix", string.Empty));
+    }
 
-            autoMocker.Use(context);
+    [Test]
+    public async Task CreateTagAsync_TagAlreadyExistsWithDifferentCasing_Throws()
+    {
+        (var _, var sut, var db) = GetSut();
 
-            var sut = autoMocker.CreateInstance<TagService>();
-
-            return (autoMocker, sut, context);
-        }
-
-        [Test]
-        public async Task CreateTagAsync_NameIsNotProvided_Throws()
+        db.Set<TagEntity>().Add(new Data.Models.Tags.TagEntity
         {
-            (_, var sut, _) = GetSut();
-            await Should.ThrowAsync<ArgumentException>(() => sut.CreateTagAsync(0, 0, null, string.Empty));
-        }
+            Name = "modix",
+            Content = "some content",
+        });
 
-        [Test]
-        public async Task CreateTagAsync_ContentIsNotProvided_Throws()
-        {
-            (_, var sut, _) = GetSut();
-            await Should.ThrowAsync<ArgumentException>(() => sut.CreateTagAsync(0, 0, string.Empty, null));
-        }
+        db.SaveChanges();
 
-        [Test]
-        public async Task CreateTagAsync_NameEndsWithPunctuation_Throws()
-        {
-            (_, var sut, _) = GetSut();
-            await Should.ThrowAsync<ArgumentException>(() => sut.CreateTagAsync(0, 0, "MODiX.", string.Empty));
-        }
-
-        [Test]
-        public async Task CreateTagAsync_TagAlreadyExistsWithSameCasing_Throws()
-        {
-            (var _, var sut, var db) = GetSut();
-
-            db.Set<TagEntity>().Add(new Data.Models.Tags.TagEntity
-            {
-                Name = "modix",
-                Content = "some content",
-            });
-
-            db.SaveChanges();
-
-            await Should.ThrowAsync<ArgumentException>(() => sut.CreateTagAsync(0, 0, "modix", string.Empty));
-        }
-
-        [Test]
-        public async Task CreateTagAsync_TagAlreadyExistsWithDifferentCasing_Throws()
-        {
-            (var _, var sut, var db) = GetSut();
-
-            db.Set<TagEntity>().Add(new Data.Models.Tags.TagEntity
-            {
-                Name = "modix",
-                Content = "some content",
-            });
-
-            db.SaveChanges();
-
-            await Should.ThrowAsync<ArgumentException>(() => sut.CreateTagAsync(0, 0, "MODiX", string.Empty));
-        }
+        await Should.ThrowAsync<ArgumentException>(() => sut.CreateTagAsync(0, 0, "MODiX", string.Empty));
     }
 }

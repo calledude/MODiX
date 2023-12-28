@@ -7,82 +7,81 @@ using Discord.Interactions;
 using Modix.Services.CommandHelp;
 using Modix.Services.Wikipedia;
 
-namespace Modix.Modules
-{
-    [ModuleHelp("Wikipedia", "Search Wikipedia from Discord!")]
-    public class WikipediaModule : InteractionModuleBase
-    {
-        private readonly WikipediaService _wikipediaService;
+namespace Modix.Modules;
 
-        public WikipediaModule(WikipediaService wikipediaService)
+[ModuleHelp("Wikipedia", "Search Wikipedia from Discord!")]
+public class WikipediaModule : InteractionModuleBase
+{
+    private readonly WikipediaService _wikipediaService;
+
+    public WikipediaModule(WikipediaService wikipediaService)
+    {
+        _wikipediaService = wikipediaService;
+    }
+
+    [SlashCommand("wiki", "Returns a Wikipedia page result matching the search phrase.")]
+    public async Task RunAsync(
+        [Summary(description: "The phrase to search on Wikipedia.")]
+            string phrase)
+    {
+        var response = await _wikipediaService.GetWikipediaResultsAsync(phrase);
+
+        // Empty response.
+        if (response?.Query?.Pages == null || response.Query.Pages.Count == 0)
         {
-            _wikipediaService = wikipediaService;
+            await FollowupAsync($"Failed to find anything for {phrase}.", allowedMentions: AllowedMentions.None);
+            return;
         }
 
-        [SlashCommand("wiki", "Returns a Wikipedia page result matching the search phrase.")]
-        public async Task RunAsync(
-            [Summary(description: "The phrase to search on Wikipedia.")]
-                string phrase)
+        // Construct results into one string (use StringBuilder for concat speed).
+        var messageBuilder = new StringBuilder();
+
+        foreach (var pageValue in response.Query.Pages.Values)
         {
-            var response = await _wikipediaService.GetWikipediaResultsAsync(phrase);
+            messageBuilder.AppendLine(pageValue.Extract);
+        }
 
-            // Empty response.
-            if (response?.Query?.Pages == null || response.Query.Pages.Count == 0)
-            {
-                await FollowupAsync($"Failed to find anything for {phrase}.", allowedMentions: AllowedMentions.None);
-                return;
-            }
+        var message = messageBuilder.ToString().Trim();
 
-            // Construct results into one string (use StringBuilder for concat speed).
-            var messageBuilder = new StringBuilder();
+        // Sometimes we get here and there's no message, just double check.
+        if (string.IsNullOrEmpty(message))
+        {
+            await FollowupAsync($"Failed to find anything for {phrase}.", allowedMentions: AllowedMentions.None);
+            return;
+        }
 
-            foreach (var pageValue in response.Query.Pages.Values)
-            {
-                messageBuilder.AppendLine(pageValue.Extract);
-            }
+        // Discord has a limit on channel message size... so this accounts for that.
+        if (message.Length > DiscordConfig.MaxMessageSize)
+        {
+            // How many batches do we need to send?
+            // IE: 5000 / 2000 = 2.5
+            // Round up = 3
+            var batchCount = Math.Ceiling(decimal.Divide(message.Length, DiscordConfig.MaxMessageSize));
 
-            var message = messageBuilder.ToString().Trim();
+            // Keep track of how many characters we've sent to the channel.
+            // Use the cursor to see the diff between what we've sent, and what is remaining to send
+            //  So we can satisfy the batch sending approach.
+            var cursor = 0;
 
-            // Sometimes we get here and there's no message, just double check.
-            if (string.IsNullOrEmpty(message))
-            {
-                await FollowupAsync($"Failed to find anything for {phrase}.", allowedMentions: AllowedMentions.None);
-                return;
-            }
-
-            // Discord has a limit on channel message size... so this accounts for that.
-            if (message.Length > DiscordConfig.MaxMessageSize)
-            {
-                // How many batches do we need to send?
-                // IE: 5000 / 2000 = 2.5
-                // Round up = 3
-                var batchCount = Math.Ceiling(decimal.Divide(message.Length, DiscordConfig.MaxMessageSize));
-
-                // Keep track of how many characters we've sent to the channel.
-                // Use the cursor to see the diff between what we've sent, and what is remaining to send
-                //  So we can satisfy the batch sending approach.
-                var cursor = 0;
-
-                for (var i = 0; i < batchCount; i++)
-                {
-                    var builder = new EmbedBuilder()
-                       .WithColor(new Color(95, 186, 125))
-                       .WithTitle($"Results for {phrase} (pt {i + 1})")
-                       .WithDescription(message.Substring(cursor, (i == batchCount - 1) ? message.Length - cursor : DiscordConfig.MaxMessageSize));
-
-                    await FollowupAsync(embed: builder.Build());
-                    cursor += DiscordConfig.MaxMessageSize;
-                }
-            }
-            else
+            for (var i = 0; i < batchCount; i++)
             {
                 var builder = new EmbedBuilder()
-                    .WithColor(new Color(95, 186, 125))
-                    .WithTitle($"Results for {phrase}")
-                    .WithDescription(message);
+                   .WithColor(new Color(95, 186, 125))
+                   .WithTitle($"Results for {phrase} (pt {i + 1})")
+                   .WithDescription(message.Substring(cursor, (i == batchCount - 1) ? message.Length - cursor : DiscordConfig.MaxMessageSize));
 
                 await FollowupAsync(embed: builder.Build());
+                cursor += DiscordConfig.MaxMessageSize;
             }
+        }
+        else
+        {
+            var builder = new EmbedBuilder()
+                .WithColor(new Color(95, 186, 125))
+                .WithTitle($"Results for {phrase}")
+                .WithDescription(message);
+
+            await FollowupAsync(embed: builder.Build());
         }
     }
 }

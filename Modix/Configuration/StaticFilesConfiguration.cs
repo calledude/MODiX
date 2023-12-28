@@ -5,40 +5,39 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace Modix.Configuration
+namespace Modix.Configuration;
+
+public class StaticFilesConfiguration : IConfigureOptions<StaticFileOptions>
 {
-    public class StaticFilesConfiguration : IConfigureOptions<StaticFileOptions>
+    private readonly IAntiforgery _antiforgery;
+    private readonly IWebHostEnvironment _env;
+
+    public StaticFilesConfiguration(IAntiforgery antiforgery, IWebHostEnvironment env)
     {
-        private readonly IAntiforgery _antiforgery;
-        private readonly IWebHostEnvironment _env;
+        _antiforgery = antiforgery;
+        _env = env;
+    }
 
-        public StaticFilesConfiguration(IAntiforgery antiforgery, IWebHostEnvironment env)
-        {
-            _antiforgery = antiforgery;
-            _env = env;
-        }
+    public void Configure(StaticFileOptions options)
+    {
+        var cachePeriod = _env.IsDevelopment() ? "600" : "604800";
 
-        public void Configure(StaticFileOptions options)
-        {
-            var cachePeriod = _env.IsDevelopment() ? "600" : "604800";
-
-            //Set up our antiforgery stuff when the user hits the page
-            options.OnPrepareResponse =
-                fileResponse =>
+        //Set up our antiforgery stuff when the user hits the page
+        options.OnPrepareResponse =
+            fileResponse =>
+            {
+                if (fileResponse.File.Name == "index.html")
                 {
-                    if (fileResponse.File.Name == "index.html")
-                    {
-                        var tokens = _antiforgery.GetAndStoreTokens(fileResponse.Context);
+                    var tokens = _antiforgery.GetAndStoreTokens(fileResponse.Context);
 
-                        if (tokens.RequestToken is null)
-                            return;
+                    if (tokens.RequestToken is null)
+                        return;
 
-                        fileResponse.Context.Response.Cookies.Append(
-                            "XSRF-TOKEN", tokens.RequestToken, new CookieOptions() { HttpOnly = false });
-                    }
+                    fileResponse.Context.Response.Cookies.Append(
+                        "XSRF-TOKEN", tokens.RequestToken, new CookieOptions() { HttpOnly = false });
+                }
 
-                    fileResponse.Context.Response.Headers.Append("Cache-Control", $"public, max-age={cachePeriod}");
-                };
-        }
+                fileResponse.Context.Response.Headers.Append("Cache-Control", $"public, max-age={cachePeriod}");
+            };
     }
 }

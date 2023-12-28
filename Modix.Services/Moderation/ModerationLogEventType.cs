@@ -1,8 +1,7 @@
 ﻿
-namespace Modix.Services.Moderation
+namespace Modix.Services.Moderation;
+
+public enum ModerationLogEventType
 {
-    public enum ModerationLogEventType
-    {
-        AttachmentBlacklist = ServicesLogEventType.Moderation + 0x0100
-    }
+    AttachmentBlacklist = ServicesLogEventType.Moderation + 0x0100
 }

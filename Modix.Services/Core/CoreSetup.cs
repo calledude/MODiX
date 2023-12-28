@@ -6,42 +6,41 @@ using Microsoft.Extensions.Hosting;
 using Modix.Common.Messaging;
 using Modix.Data.Repositories;
 
-namespace Modix.Services.Core
+namespace Modix.Services.Core;
+
+/// <summary>
+/// Contains extension methods for configuring the Modix Core services and features, upon application startup.
+/// </summary>
+public static class CoreSetup
 {
     /// <summary>
-    /// Contains extension methods for configuring the Modix Core services and features, upon application startup.
+    /// Adds the services and classes that make up the Modix Core, to a service collection.
     /// </summary>
-    public static class CoreSetup
-    {
-        /// <summary>
-        /// Adds the services and classes that make up the Modix Core, to a service collection.
-        /// </summary>
-        /// <param name="services">The <see cref="IServiceCollection"/> to which the Core services are to be added.</param>
-        /// <returns><paramref name="services"/></returns>
-        public static IServiceCollection AddModixCore(this IServiceCollection services)
-            => services
-                .AddSingleton<IBehavior, DiscordSocketListeningBehavior>()
-                .AddScoped<IAuthorizationService, AuthorizationService>()
-                .AddScoped<AuthorizationAutoConfigBehavior>()
-                .AddScoped<INotificationHandler<GuildAvailableNotification>>(x => x.GetRequiredService<AuthorizationAutoConfigBehavior>())
-                .AddScoped<INotificationHandler<JoinedGuildNotification>>(x => x.GetRequiredService<AuthorizationAutoConfigBehavior>())
-                .AddScoped<IChannelService, ChannelService>()
-                .AddScoped<ChannelTrackingBehavior>()
-                .AddScoped<INotificationHandler<ChannelCreatedNotification>>(x => x.GetRequiredService<ChannelTrackingBehavior>())
-                .AddScoped<INotificationHandler<ChannelUpdatedNotification>>(x => x.GetRequiredService<ChannelTrackingBehavior>())
-                .AddScoped<INotificationHandler<GuildAvailableNotification>>(x => x.GetRequiredService<ChannelTrackingBehavior>())
-                .AddScoped<INotificationHandler<JoinedGuildNotification>>(x => x.GetRequiredService<ChannelTrackingBehavior>())
-                .AddScoped<IUserService, UserService>()
-                .AddScoped<IGuildChannelRepository, GuildChannelRepository>()
-                .AddScoped<IGuildRoleRepository, GuildRoleRepository>()
-                .AddScoped<IGuildUserRepository, GuildUserRepository>()
-                .AddScoped<IDesignatedChannelService, DesignatedChannelService>()
-                .AddScoped<IDesignatedRoleService, DesignatedRoleService>()
-                .AddScoped<IClaimMappingRepository, ClaimMappingRepository>()
-                .AddScoped<IConfigurationActionRepository, ConfigurationActionRepository>()
-                .AddScoped<IDesignatedChannelMappingRepository, DesignatedChannelMappingRepository>()
-                .AddScoped<IDesignatedRoleMappingRepository, DesignatedRoleMappingRepository>()
-                .AddScoped<IMessageRepository, MessageRepository>()
-                .AddScoped<IMessageService, MessageService>();
-    }
+    /// <param name="services">The <see cref="IServiceCollection"/> to which the Core services are to be added.</param>
+    /// <returns><paramref name="services"/></returns>
+    public static IServiceCollection AddModixCore(this IServiceCollection services)
+        => services
+            .AddSingleton<IBehavior, DiscordSocketListeningBehavior>()
+            .AddScoped<IAuthorizationService, AuthorizationService>()
+            .AddScoped<AuthorizationAutoConfigBehavior>()
+            .AddScoped<INotificationHandler<GuildAvailableNotification>>(x => x.GetRequiredService<AuthorizationAutoConfigBehavior>())
+            .AddScoped<INotificationHandler<JoinedGuildNotification>>(x => x.GetRequiredService<AuthorizationAutoConfigBehavior>())
+            .AddScoped<IChannelService, ChannelService>()
+            .AddScoped<ChannelTrackingBehavior>()
+            .AddScoped<INotificationHandler<ChannelCreatedNotification>>(x => x.GetRequiredService<ChannelTrackingBehavior>())
+            .AddScoped<INotificationHandler<ChannelUpdatedNotification>>(x => x.GetRequiredService<ChannelTrackingBehavior>())
+            .AddScoped<INotificationHandler<GuildAvailableNotification>>(x => x.GetRequiredService<ChannelTrackingBehavior>())
+            .AddScoped<INotificationHandler<JoinedGuildNotification>>(x => x.GetRequiredService<ChannelTrackingBehavior>())
+            .AddScoped<IUserService, UserService>()
+            .AddScoped<IGuildChannelRepository, GuildChannelRepository>()
+            .AddScoped<IGuildRoleRepository, GuildRoleRepository>()
+            .AddScoped<IGuildUserRepository, GuildUserRepository>()
+            .AddScoped<IDesignatedChannelService, DesignatedChannelService>()
+            .AddScoped<IDesignatedRoleService, DesignatedRoleService>()
+            .AddScoped<IClaimMappingRepository, ClaimMappingRepository>()
+            .AddScoped<IConfigurationActionRepository, ConfigurationActionRepository>()
+            .AddScoped<IDesignatedChannelMappingRepository, DesignatedChannelMappingRepository>()
+            .AddScoped<IDesignatedRoleMappingRepository, DesignatedRoleMappingRepository>()
+            .AddScoped<IMessageRepository, MessageRepository>()
+            .AddScoped<IMessageService, MessageService>();
 }

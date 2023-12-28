@@ -1,8 +1,7 @@
-﻿namespace Modix.Data.Models.Core
+﻿namespace Modix.Data.Models.Core;
+
+public enum MessageContentPatternType
 {
-    public enum MessageContentPatternType
-    {
-        Blocked = 0,
-        Allowed = 1,
-    }
+    Blocked = 0,
+    Allowed = 1,
 }

@@ -10,140 +10,139 @@ using Modix.Data;
 using Modix.Data.Models.Core;
 using Modix.Services.Core;
 
-namespace Modix.Services.MessageContentPatterns
+namespace Modix.Services.MessageContentPatterns;
+
+public interface IMessageContentPatternService
 {
-    public interface IMessageContentPatternService
+    bool CanViewPatterns();
+    Task<List<MessageContentPatternDto>> GetPatterns(ulong guildId);
+    Task<ServiceResponse> AddPattern(ulong guildId, string regexPattern, MessageContentPatternType patternType);
+    Task<ServiceResponse> RemovePattern(ulong guildId, string regexPattern);
+}
+
+[ServiceBinding(ServiceLifetime.Scoped)]
+public class MessageContentPatternService : IMessageContentPatternService
+{
+    private readonly ModixContext _db;
+    private readonly IAuthorizationService _authorizationService;
+    private readonly IMemoryCache _memoryCache;
+
+    public MessageContentPatternService(ModixContext db, IAuthorizationService authorizationService, IMemoryCache memoryCache)
     {
-        bool CanViewPatterns();
-        Task<List<MessageContentPatternDto>> GetPatterns(ulong guildId);
-        Task<ServiceResponse> AddPattern(ulong guildId, string regexPattern, MessageContentPatternType patternType);
-        Task<ServiceResponse> RemovePattern(ulong guildId, string regexPattern);
+        _db = db;
+        _authorizationService = authorizationService;
+        _memoryCache = memoryCache;
     }
 
-    [ServiceBinding(ServiceLifetime.Scoped)]
-    public class MessageContentPatternService : IMessageContentPatternService
+    private static object GetKeyForCache(ulong guildId) => new { guildId, Target = "MessageContentPattern" };
+
+    private readonly MemoryCacheEntryOptions _patternCacheEntryOptions =
+        new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(1));
+
+    public bool CanViewPatterns() =>
+        _authorizationService.HasClaim(AuthorizationClaim.ManageMessageContentPatterns);
+
+    public async Task<List<MessageContentPatternDto>> GetPatterns(ulong guildId)
     {
-        private readonly ModixContext _db;
-        private readonly IAuthorizationService _authorizationService;
-        private readonly IMemoryCache _memoryCache;
+        var key = GetKeyForCache(guildId);
 
-        public MessageContentPatternService(ModixContext db, IAuthorizationService authorizationService, IMemoryCache memoryCache)
+        if (_memoryCache.TryGetValue(key, out List<MessageContentPatternDto>? patterns))
+            return patterns ?? [];
+
+        patterns = await _db
+            .Set<MessageContentPatternEntity>()
+            .Where(x => x.GuildId == guildId)
+            .Select(x => new MessageContentPatternDto(x.Pattern, x.PatternType))
+            .ToListAsync();
+
+        _memoryCache.Set(key, patterns, _patternCacheEntryOptions);
+
+        return patterns;
+    }
+
+    public async Task<ServiceResponse> AddPattern(ulong guildId, string regexPattern, MessageContentPatternType patternType)
+    {
+        if (!_authorizationService.HasClaim(AuthorizationClaim.ManageMessageContentPatterns))
         {
-            _db = db;
-            _authorizationService = authorizationService;
-            _memoryCache = memoryCache;
+            return ServiceResponse.Fail("User does not have claim to manage patterns!");
         }
 
-        private static object GetKeyForCache(ulong guildId) => new { guildId, Target = "MessageContentPattern" };
-
-        private readonly MemoryCacheEntryOptions _patternCacheEntryOptions =
-            new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(1));
-
-        public bool CanViewPatterns() =>
-            _authorizationService.HasClaim(AuthorizationClaim.ManageMessageContentPatterns);
-
-        public async Task<List<MessageContentPatternDto>> GetPatterns(ulong guildId)
+        if (!IsValidRegex(regexPattern))
         {
-            var key = GetKeyForCache(guildId);
-
-            if (_memoryCache.TryGetValue(key, out List<MessageContentPatternDto>? patterns))
-                return patterns ?? [];
-
-            patterns = await _db
-                .Set<MessageContentPatternEntity>()
-                .Where(x => x.GuildId == guildId)
-                .Select(x => new MessageContentPatternDto(x.Pattern, x.PatternType))
-                .ToListAsync();
-
-            _memoryCache.Set(key, patterns, _patternCacheEntryOptions);
-
-            return patterns;
+            return ServiceResponse.Fail("Pattern is not a valid Regex!");
         }
 
-        public async Task<ServiceResponse> AddPattern(ulong guildId, string regexPattern, MessageContentPatternType patternType)
+        if (await DoesPatternExistAsync(guildId, regexPattern))
         {
-            if (!_authorizationService.HasClaim(AuthorizationClaim.ManageMessageContentPatterns))
-            {
-                return ServiceResponse.Fail("User does not have claim to manage patterns!");
-            }
+            return ServiceResponse.Fail("Pattern already exists!");
+        }
 
-            if (!IsValidRegex(regexPattern))
-            {
-                return ServiceResponse.Fail("Pattern is not a valid Regex!");
-            }
+        var entity = new MessageContentPatternEntity
+        {
+            GuildId = guildId,
+            Pattern = regexPattern,
+            PatternType = patternType,
+        };
 
-            if (await DoesPatternExistAsync(guildId, regexPattern))
-            {
-                return ServiceResponse.Fail("Pattern already exists!");
-            }
+        _db.Add(entity);
 
-            var entity = new MessageContentPatternEntity
-            {
-                GuildId = guildId,
-                Pattern = regexPattern,
-                PatternType = patternType,
-            };
+        await _db.SaveChangesAsync();
 
-            _db.Add(entity);
+        ClearCacheForGuild(guildId);
+
+        return ServiceResponse.Ok();
+    }
+
+    private static bool IsValidRegex(string candidate)
+    {
+        try
+        {
+            _ = new Regex(candidate);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public async Task<ServiceResponse> RemovePattern(ulong guildId, string regexPattern)
+    {
+        if (!_authorizationService.HasClaim(AuthorizationClaim.ManageMessageContentPatterns))
+        {
+            return ServiceResponse.Fail("User does not have claim to manage patterns!");
+        }
+
+        var pattern = await _db
+            .Set<MessageContentPatternEntity>()
+            .Where(x => x.GuildId == guildId)
+            .Where(x => x.Pattern == regexPattern)
+            .SingleOrDefaultAsync();
+
+        if (pattern is not null)
+        {
+            _db.Remove(pattern);
 
             await _db.SaveChangesAsync();
-
-            ClearCacheForGuild(guildId);
-
-            return ServiceResponse.Ok();
         }
 
-        private static bool IsValidRegex(string candidate)
-        {
-            try
-            {
-                _ = new Regex(candidate);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+        ClearCacheForGuild(guildId);
 
-            return true;
-        }
+        return ServiceResponse.Ok();
+    }
 
-        public async Task<ServiceResponse> RemovePattern(ulong guildId, string regexPattern)
-        {
-            if (!_authorizationService.HasClaim(AuthorizationClaim.ManageMessageContentPatterns))
-            {
-                return ServiceResponse.Fail("User does not have claim to manage patterns!");
-            }
+    private async Task<bool> DoesPatternExistAsync(ulong guildId, string regexPattern)
+    {
+        return await _db
+            .Set<MessageContentPatternEntity>()
+            .Where(x => x.GuildId == guildId && x.Pattern == regexPattern)
+            .AnyAsync();
+    }
 
-            var pattern = await _db
-                .Set<MessageContentPatternEntity>()
-                .Where(x => x.GuildId == guildId)
-                .Where(x => x.Pattern == regexPattern)
-                .SingleOrDefaultAsync();
-
-            if (pattern is not null)
-            {
-                _db.Remove(pattern);
-
-                await _db.SaveChangesAsync();
-            }
-
-            ClearCacheForGuild(guildId);
-
-            return ServiceResponse.Ok();
-        }
-
-        private async Task<bool> DoesPatternExistAsync(ulong guildId, string regexPattern)
-        {
-            return await _db
-                .Set<MessageContentPatternEntity>()
-                .Where(x => x.GuildId == guildId && x.Pattern == regexPattern)
-                .AnyAsync();
-        }
-
-        private void ClearCacheForGuild(ulong guildId)
-        {
-            var cacheKey = GetKeyForCache(guildId);
-            _memoryCache.Remove(cacheKey);
-        }
+    private void ClearCacheForGuild(ulong guildId)
+    {
+        var cacheKey = GetKeyForCache(guildId);
+        _memoryCache.Remove(cacheKey);
     }
 }

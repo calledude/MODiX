@@ -13,175 +13,174 @@ using Discord.Net;
 using Modix.Services.CommandHelp;
 using Modix.Services.Utilities;
 
-namespace Modix.Modules
+namespace Modix.Modules;
+
+[ModuleHelp("Help", "Provides commands for helping users to understand how to interact with MODiX.")]
+public sealed class HelpModule : InteractionModuleBase
 {
-    [ModuleHelp("Help", "Provides commands for helping users to understand how to interact with MODiX.")]
-    public sealed class HelpModule : InteractionModuleBase
+    private readonly ICommandHelpService _commandHelpService;
+
+    public HelpModule(ICommandHelpService commandHelpService)
     {
-        private readonly ICommandHelpService _commandHelpService;
+        _commandHelpService = commandHelpService;
+    }
 
-        public HelpModule(ICommandHelpService commandHelpService)
+    [SlashCommand("help-dm", "Spams the user's DMs with a list of every command available.")]
+    public async Task HelpDMAsync()
+    {
+        var userDM = await Context.User.CreateDMChannelAsync();
+
+        foreach (var module in _commandHelpService.GetModuleHelpData().OrderBy(x => x.Name))
         {
-            _commandHelpService = commandHelpService;
-        }
+            var embed = GetEmbedForModule(module);
 
-        [SlashCommand("help-dm", "Spams the user's DMs with a list of every command available.")]
-        public async Task HelpDMAsync()
-        {
-            var userDM = await Context.User.CreateDMChannelAsync();
-
-            foreach (var module in _commandHelpService.GetModuleHelpData().OrderBy(x => x.Name))
+            try
             {
-                var embed = GetEmbedForModule(module);
-
-                try
-                {
-                    await userDM.SendMessageAsync(embed: embed.Build());
-                }
-                catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.CannotSendMessageToUser)
-                {
-                    await FollowupAsync(
-                        $"You have private messages for this server disabled, {Context.User.Mention}. Please enable them so that I can send you help.",
-                        allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
-                    return;
-                }
+                await userDM.SendMessageAsync(embed: embed.Build());
             }
-
-            await FollowupAsync($"Check your private messages, {Context.User.Mention}.", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
-        }
-
-        [SlashCommand("help", "Retrieves help from a specific module or command.")]
-        public async Task HelpAsync(
-            [Summary(description: "Name of the module or command to query.")]
-            string query)
-        {
-            await HelpAsync(query, HelpDataType.Command | HelpDataType.Module);
-        }
-
-        private async Task HelpAsync(string query, HelpDataType type)
-        {
-            if (TryGetEmbed(query, type, out var embed))
+            catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.CannotSendMessageToUser)
             {
-                await FollowupAsync($"Results for \"{query}\":", embed: embed.Build(), allowedMentions: AllowedMentions.None);
+                await FollowupAsync(
+                    $"You have private messages for this server disabled, {Context.User.Mention}. Please enable them so that I can send you help.",
+                    allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
                 return;
             }
-
-            await FollowupAsync($"Sorry, I couldn't find help related to \"{query}\".", allowedMentions: AllowedMentions.None);
         }
 
-        private bool TryGetEmbed(string query, HelpDataType queries, [NotNullWhen(true)] out EmbedBuilder? embed)
-        {
-            embed = null;
+        await FollowupAsync($"Check your private messages, {Context.User.Mention}.", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
+    }
 
-            // Prioritize module over command.
-            if (queries.HasFlag(HelpDataType.Module))
+    [SlashCommand("help", "Retrieves help from a specific module or command.")]
+    public async Task HelpAsync(
+        [Summary(description: "Name of the module or command to query.")]
+        string query)
+    {
+        await HelpAsync(query, HelpDataType.Command | HelpDataType.Module);
+    }
+
+    private async Task HelpAsync(string query, HelpDataType type)
+    {
+        if (TryGetEmbed(query, type, out var embed))
+        {
+            await FollowupAsync($"Results for \"{query}\":", embed: embed.Build(), allowedMentions: AllowedMentions.None);
+            return;
+        }
+
+        await FollowupAsync($"Sorry, I couldn't find help related to \"{query}\".", allowedMentions: AllowedMentions.None);
+    }
+
+    private bool TryGetEmbed(string query, HelpDataType queries, [NotNullWhen(true)] out EmbedBuilder? embed)
+    {
+        embed = null;
+
+        // Prioritize module over command.
+        if (queries.HasFlag(HelpDataType.Module))
+        {
+            var byModule = _commandHelpService.GetModuleHelpData(query);
+            if (byModule != null)
             {
-                var byModule = _commandHelpService.GetModuleHelpData(query);
-                if (byModule != null)
-                {
-                    embed = GetEmbedForModule(byModule);
-                    return true;
-                }
-            }
-
-            if (queries.HasFlag(HelpDataType.Command))
-            {
-                var byCommand = _commandHelpService.GetCommandHelpData(query);
-                if (byCommand != null)
-                {
-                    embed = GetEmbedForCommand(byCommand);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        [Flags]
-        public enum HelpDataType
-        {
-            Command = 1 << 1,
-            Module = 1 << 2
-        }
-
-        private static EmbedBuilder GetEmbedForModule(ModuleHelpData module)
-        {
-            var embedBuilder = new EmbedBuilder()
-                              .WithTitle($"Module: {module.Name}")
-                              .WithDescription(module.Summary);
-
-            foreach (var command in module.Commands)
-            {
-                AddCommandFields(embedBuilder, command);
-            }
-
-            return embedBuilder;
-        }
-
-        private static EmbedBuilder GetEmbedForCommand(CommandHelpData command)
-        {
-            return AddCommandFields(new EmbedBuilder(), command);
-        }
-
-        private static EmbedBuilder AddCommandFields(EmbedBuilder embedBuilder, CommandHelpData command)
-        {
-            var summaryBuilder = new StringBuilder(command.Summary ?? "No summary.").AppendLine();
-            var name = command.Aliases.FirstOrDefault() ?? command.Name;
-            AppendAliases(summaryBuilder, command.Aliases.Where(a => !a.Equals(name, StringComparison.OrdinalIgnoreCase)).ToList());
-            AppendParameters(summaryBuilder, command.Parameters);
-
-            var prefix = command.IsSlashCommand
-                ? '/'
-                : '!';
-
-            embedBuilder.AddField(new EmbedFieldBuilder()
-                                 .WithName($"Command: {prefix}{name} {GetParams(command)}")
-                                 .WithValue(summaryBuilder.ToString()));
-
-            return embedBuilder;
-        }
-
-        private static void AppendAliases(StringBuilder stringBuilder, IReadOnlyCollection<string> aliases)
-        {
-            if (aliases.Count == 0)
-                return;
-
-            stringBuilder.AppendLine(Format.Bold("Aliases:"));
-
-            foreach (var alias in FormatUtilities.CollapsePlurals(aliases))
-            {
-                stringBuilder.Append("• ").AppendLine(alias);
+                embed = GetEmbedForModule(byModule);
+                return true;
             }
         }
 
-        private static void AppendParameters(StringBuilder stringBuilder,
-            IReadOnlyCollection<ParameterHelpData> parameters)
+        if (queries.HasFlag(HelpDataType.Command))
         {
-            if (parameters.Count == 0)
-                return;
-
-            stringBuilder.AppendLine(Format.Bold("Parameters:"));
-
-            foreach (var parameter in parameters)
+            var byCommand = _commandHelpService.GetCommandHelpData(query);
+            if (byCommand != null)
             {
-                if (parameter.Summary is not null)
-                    stringBuilder.Append("• ").Append(Format.Bold(parameter.Name)).Append(": ").AppendLine(parameter.Summary);
+                embed = GetEmbedForCommand(byCommand);
+                return true;
             }
         }
 
-        private static string GetParams(CommandHelpData info)
+        return false;
+    }
+
+    [Flags]
+    public enum HelpDataType
+    {
+        Command = 1 << 1,
+        Module = 1 << 2
+    }
+
+    private static EmbedBuilder GetEmbedForModule(ModuleHelpData module)
+    {
+        var embedBuilder = new EmbedBuilder()
+                          .WithTitle($"Module: {module.Name}")
+                          .WithDescription(module.Summary);
+
+        foreach (var command in module.Commands)
         {
-            var sb = new StringBuilder();
-
-            foreach (var parameter in info.Parameters)
-            {
-                if (parameter.IsOptional)
-                    sb.Append('[').Append(parameter.Name).Append(']');
-                else
-                    sb.Append('<').Append(parameter.Name).Append('>');
-            }
-
-            return sb.ToString();
+            AddCommandFields(embedBuilder, command);
         }
+
+        return embedBuilder;
+    }
+
+    private static EmbedBuilder GetEmbedForCommand(CommandHelpData command)
+    {
+        return AddCommandFields(new EmbedBuilder(), command);
+    }
+
+    private static EmbedBuilder AddCommandFields(EmbedBuilder embedBuilder, CommandHelpData command)
+    {
+        var summaryBuilder = new StringBuilder(command.Summary ?? "No summary.").AppendLine();
+        var name = command.Aliases.FirstOrDefault() ?? command.Name;
+        AppendAliases(summaryBuilder, command.Aliases.Where(a => !a.Equals(name, StringComparison.OrdinalIgnoreCase)).ToList());
+        AppendParameters(summaryBuilder, command.Parameters);
+
+        var prefix = command.IsSlashCommand
+            ? '/'
+            : '!';
+
+        embedBuilder.AddField(new EmbedFieldBuilder()
+                             .WithName($"Command: {prefix}{name} {GetParams(command)}")
+                             .WithValue(summaryBuilder.ToString()));
+
+        return embedBuilder;
+    }
+
+    private static void AppendAliases(StringBuilder stringBuilder, IReadOnlyCollection<string> aliases)
+    {
+        if (aliases.Count == 0)
+            return;
+
+        stringBuilder.AppendLine(Format.Bold("Aliases:"));
+
+        foreach (var alias in FormatUtilities.CollapsePlurals(aliases))
+        {
+            stringBuilder.Append("• ").AppendLine(alias);
+        }
+    }
+
+    private static void AppendParameters(StringBuilder stringBuilder,
+        IReadOnlyCollection<ParameterHelpData> parameters)
+    {
+        if (parameters.Count == 0)
+            return;
+
+        stringBuilder.AppendLine(Format.Bold("Parameters:"));
+
+        foreach (var parameter in parameters)
+        {
+            if (parameter.Summary is not null)
+                stringBuilder.Append("• ").Append(Format.Bold(parameter.Name)).Append(": ").AppendLine(parameter.Summary);
+        }
+    }
+
+    private static string GetParams(CommandHelpData info)
+    {
+        var sb = new StringBuilder();
+
+        foreach (var parameter in info.Parameters)
+        {
+            if (parameter.IsOptional)
+                sb.Append('[').Append(parameter.Name).Append(']');
+            else
+                sb.Append('<').Append(parameter.Name).Append('>');
+        }
+
+        return sb.ToString();
     }
 }

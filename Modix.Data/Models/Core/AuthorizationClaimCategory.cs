@@ -1,14 +1,13 @@
-﻿namespace Modix.Data.Models.Core
+﻿namespace Modix.Data.Models.Core;
+
+public enum AuthorizationClaimCategory
 {
-    public enum AuthorizationClaimCategory
-    {
-        Configuration,
-        ModerationActions,
-        DesignatedChannels,
-        DesignatedRoles,
-        PromotionActions,
-        TagActions,
-        Misc,
-        Log,
-    }
+    Configuration,
+    ModerationActions,
+    DesignatedChannels,
+    DesignatedRoles,
+    PromotionActions,
+    TagActions,
+    Misc,
+    Log,
 }

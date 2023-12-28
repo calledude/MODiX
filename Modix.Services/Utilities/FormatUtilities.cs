@@ -17,286 +17,285 @@ using Humanizer.Localisation;
 using Modix.Data.Models.Moderation;
 using Modix.Services.CodePaste;
 
-namespace Modix.Services.Utilities
+namespace Modix.Services.Utilities;
+
+public static partial class FormatUtilities
 {
-    public static partial class FormatUtilities
+    private static readonly Regex _buildContentRegex = CodeMarkdownRegex();
+
+    /// <summary>
+    /// Prepares a piece of input code for use in HTTP operations
+    /// </summary>
+    /// <param name="code">The code to prepare</param>
+    /// <returns>The resulting StringContent for HTTP operations</returns>
+    public static StringContent BuildContent(string code)
     {
-        private static readonly Regex _buildContentRegex = CodeMarkdownRegex();
+        var cleanCode = StripFormatting(code);
+        return new StringContent(cleanCode, Encoding.UTF8, "text/plain");
+    }
 
-        /// <summary>
-        /// Prepares a piece of input code for use in HTTP operations
-        /// </summary>
-        /// <param name="code">The code to prepare</param>
-        /// <returns>The resulting StringContent for HTTP operations</returns>
-        public static StringContent BuildContent(string code)
+    public static string StripFormatting(string code) =>
+        //strip out the ` characters and code block markers
+        _buildContentRegex.Replace(code.Trim(), string.Empty);
+
+    public static async Task UploadToServiceIfBiggerThanAsync(this EmbedBuilder embed, string content, uint size, CodePasteService service)
+    {
+        if (content.Length > size)
         {
-            var cleanCode = StripFormatting(code);
-            return new StringContent(cleanCode, Encoding.UTF8, "text/plain");
-        }
-
-        public static string StripFormatting(string code) =>
-            //strip out the ` characters and code block markers
-            _buildContentRegex.Replace(code.Trim(), string.Empty);
-
-        public static async Task UploadToServiceIfBiggerThanAsync(this EmbedBuilder embed, string content, uint size, CodePasteService service)
-        {
-            if (content.Length > size)
+            try
             {
-                try
-                {
-                    var resultLink = await service.UploadCodeAsync(content);
-                    embed.AddField(a => a.WithName("More...").WithValue($"[View on Hastebin]({resultLink})"));
-                }
-                catch (WebException we)
-                {
-                    embed.AddField(a => a.WithName("More...").WithValue(we.Message));
-                }
+                var resultLink = await service.UploadCodeAsync(content);
+                embed.AddField(a => a.WithName("More...").WithValue($"[View on Hastebin]({resultLink})"));
+            }
+            catch (WebException we)
+            {
+                embed.AddField(a => a.WithName("More...").WithValue(we.Message));
             }
         }
+    }
 
-        public static string FormatInfractionCounts(IDictionary<InfractionType, int> counts)
+    public static string FormatInfractionCounts(IDictionary<InfractionType, int> counts)
+    {
+        if (counts.Values.Sum() == 0)
         {
-            if (counts.Values.Sum() == 0)
-            {
-                return "This user is clean - no active infractions!";
-            }
-
-            var formatted =
-                counts.Select(d =>
-                    {
-                        var formattedKey = d.Key.Humanize().ToLower();
-                        return $"{d.Value} {(d.Value == 1 ? formattedKey : formattedKey.Pluralize())}";
-                    })
-                    .Humanize();
-
-            return $"This user has {formatted}";
+            return "This user is clean - no active infractions!";
         }
 
-        /// <summary>
-        /// Collapses plural forms into a "singular(s)"-type format.
-        /// </summary>
-        /// <param name="sentences">The collection of sentences for which to collapse plurals.</param>
-        /// <returns>A collection of formatted sentences.</returns>
-        public static IReadOnlyCollection<string> CollapsePlurals(IReadOnlyCollection<string> sentences)
+        var formatted =
+            counts.Select(d =>
+                {
+                    var formattedKey = d.Key.Humanize().ToLower();
+                    return $"{d.Value} {(d.Value == 1 ? formattedKey : formattedKey.Pluralize())}";
+                })
+                .Humanize();
+
+        return $"This user has {formatted}";
+    }
+
+    /// <summary>
+    /// Collapses plural forms into a "singular(s)"-type format.
+    /// </summary>
+    /// <param name="sentences">The collection of sentences for which to collapse plurals.</param>
+    /// <returns>A collection of formatted sentences.</returns>
+    public static IReadOnlyCollection<string> CollapsePlurals(IReadOnlyCollection<string> sentences)
+    {
+        var splitIntoWords = sentences.Select(x => x.Split(" ", StringSplitOptions.RemoveEmptyEntries));
+
+        var withSingulars = splitIntoWords.Select(x =>
+        (
+            Singular: x.Select(y => y.Singularize(false)).ToArray(),
+            Value: x
+        ));
+
+        var groupedBySingulars = withSingulars.GroupBy(x => x.Singular, x => x.Value, new SequenceEqualityComparer<string>());
+
+        var withDistinctParts = new HashSet<string>[groupedBySingulars.Count()][];
+
+        foreach (var (singular, singularIndex) in groupedBySingulars.AsIndexable())
         {
-            var splitIntoWords = sentences.Select(x => x.Split(" ", StringSplitOptions.RemoveEmptyEntries));
+            var parts = new HashSet<string>[singular.Key.Count];
 
-            var withSingulars = splitIntoWords.Select(x =>
-            (
-                Singular: x.Select(y => y.Singularize(false)).ToArray(),
-                Value: x
-            ));
+            for (var i = 0; i < parts.Length; i++)
+                parts[i] = [];
 
-            var groupedBySingulars = withSingulars.GroupBy(x => x.Singular, x => x.Value, new SequenceEqualityComparer<string>());
-
-            var withDistinctParts = new HashSet<string>[groupedBySingulars.Count()][];
-
-            foreach (var (singular, singularIndex) in groupedBySingulars.AsIndexable())
+            foreach (var variation in singular)
             {
-                var parts = new HashSet<string>[singular.Key.Count];
-
-                for (var i = 0; i < parts.Length; i++)
-                    parts[i] = [];
-
-                foreach (var variation in singular)
+                foreach (var (part, partIndex) in variation.AsIndexable())
                 {
-                    foreach (var (part, partIndex) in variation.AsIndexable())
-                    {
-                        parts[partIndex].Add(part);
-                    }
-                }
-
-                withDistinctParts[singularIndex] = parts;
-            }
-
-            var parenthesized = new string[withDistinctParts.Length][];
-
-            foreach (var (alias, aliasIndex) in withDistinctParts.AsIndexable())
-            {
-                parenthesized[aliasIndex] = new string[alias.Length];
-
-                foreach (var (word, wordIndex) in alias.AsIndexable())
-                {
-                    if (word.Count == 2)
-                    {
-                        var indexOfDifference = word.First()
-                            .ZipOrDefault(word.Last())
-                            .AsIndexable()
-                            .First(x => x.Value.First != x.Value.Second)
-                            .Index;
-
-                        var longestForm = word.First().Length > word.Last().Length
-                            ? word.First()
-                            : word.Last();
-
-                        parenthesized[aliasIndex][wordIndex] = $"{longestForm[..indexOfDifference]}({longestForm[indexOfDifference..]})";
-                    }
-                    else
-                    {
-                        parenthesized[aliasIndex][wordIndex] = word.Single();
-                    }
+                    parts[partIndex].Add(part);
                 }
             }
 
-            var formatted = parenthesized.Select(aliasParts => string.Join(" ", aliasParts)).ToArray();
-
-            return formatted;
+            withDistinctParts[singularIndex] = parts;
         }
 
-        public static string FormatTimeAgo(DateTimeOffset now, DateTimeOffset ago)
+        var parenthesized = new string[withDistinctParts.Length][];
+
+        foreach (var (alias, aliasIndex) in withDistinctParts.AsIndexable())
         {
-            var span = now - ago;
+            parenthesized[aliasIndex] = new string[alias.Length];
 
-            var humanizedTimeAgo = span > TimeSpan.FromSeconds(60)
-                ? span.Humanize(maxUnit: TimeUnit.Year, culture: CultureInfo.InvariantCulture)
-                : "a few seconds";
-
-            return $"{humanizedTimeAgo} ago ({ago.UtcDateTime:yyyy-MM-ddTHH:mm:ssK})";
-        }
-
-        public static bool ContainsSpoiler(string text)
-            => _containsSpoilerRegex.IsMatch(text);
-
-        private static readonly Regex _containsSpoilerRegex
-            = SpoilerRegex();
-
-        public static string FormatCodeForEmbed(string language, string sourceCode, int maxLength)
-        {
-            if (maxLength <= 0)
-                return string.Empty;
-
-            // Trim, for good measure
-            sourceCode = sourceCode.Trim();
-            var processedLines = new List<string>();
-            var braceOnlyLinesEliminated = 0;
-            var currentLength = 0;
-
-            var lines = sourceCode
-                .Replace("\r", string.Empty)
-                .Split('\n', StringSplitOptions.RemoveEmptyEntries)
-                .Select(x => x.TrimEnd())
-                .Where(x => !string.IsNullOrEmpty(x))
-                .ToImmutableArray();
-
-            // Embeds always end up being too long and then messy to display in chat. They also disrupt conversations
-            // a lot as they just end up being a huge wall of text out of nowhere. To account for this, we will:
-            //   - Trim all lines at the right side
-            //   - Remove blank lines
-            //   - Change all single-line opening brackets to be on the previous line instead
-            //   - Clip every line to the maximum length in an embed
-            //   - Clip the total number of lines to 10
-            //   - If there's more, add a comment indicating the number of remaining lines
-            foreach (var line in lines)
+            foreach (var (word, wordIndex) in alias.AsIndexable())
             {
-                const int MaxLineLength = 61;
-
-                if (line.Length < MaxLineLength - 1)
+                if (word.Count == 2)
                 {
-                    if (line.EndsWith('{') &&
-                        string.IsNullOrWhiteSpace(line[..^1]) &&
-                        processedLines.Count > 0)
-                    {
-                        if (!TryReplaceLine(^1, processedLines[^1] + " {"))
-                        {
-                            AddRemainingLineComment();
-                            break;
-                        }
-                        braceOnlyLinesEliminated++;
-                    }
-                    else if (!TryAddLine(line))
-                    {
-                        AddRemainingLineComment();
-                        break;
-                    }
+                    var indexOfDifference = word.First()
+                        .ZipOrDefault(word.Last())
+                        .AsIndexable()
+                        .First(x => x.Value.First != x.Value.Second)
+                        .Index;
+
+                    var longestForm = word.First().Length > word.Last().Length
+                        ? word.First()
+                        : word.Last();
+
+                    parenthesized[aliasIndex][wordIndex] = $"{longestForm[..indexOfDifference]}({longestForm[indexOfDifference..]})";
                 }
                 else
                 {
-                    if (!TryAddLine(line[..(MaxLineLength - 3)] + "..."))
+                    parenthesized[aliasIndex][wordIndex] = word.Single();
+                }
+            }
+        }
+
+        var formatted = parenthesized.Select(aliasParts => string.Join(" ", aliasParts)).ToArray();
+
+        return formatted;
+    }
+
+    public static string FormatTimeAgo(DateTimeOffset now, DateTimeOffset ago)
+    {
+        var span = now - ago;
+
+        var humanizedTimeAgo = span > TimeSpan.FromSeconds(60)
+            ? span.Humanize(maxUnit: TimeUnit.Year, culture: CultureInfo.InvariantCulture)
+            : "a few seconds";
+
+        return $"{humanizedTimeAgo} ago ({ago.UtcDateTime:yyyy-MM-ddTHH:mm:ssK})";
+    }
+
+    public static bool ContainsSpoiler(string text)
+        => _containsSpoilerRegex.IsMatch(text);
+
+    private static readonly Regex _containsSpoilerRegex
+        = SpoilerRegex();
+
+    public static string FormatCodeForEmbed(string language, string sourceCode, int maxLength)
+    {
+        if (maxLength <= 0)
+            return string.Empty;
+
+        // Trim, for good measure
+        sourceCode = sourceCode.Trim();
+        var processedLines = new List<string>();
+        var braceOnlyLinesEliminated = 0;
+        var currentLength = 0;
+
+        var lines = sourceCode
+            .Replace("\r", string.Empty)
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Select(x => x.TrimEnd())
+            .Where(x => !string.IsNullOrEmpty(x))
+            .ToImmutableArray();
+
+        // Embeds always end up being too long and then messy to display in chat. They also disrupt conversations
+        // a lot as they just end up being a huge wall of text out of nowhere. To account for this, we will:
+        //   - Trim all lines at the right side
+        //   - Remove blank lines
+        //   - Change all single-line opening brackets to be on the previous line instead
+        //   - Clip every line to the maximum length in an embed
+        //   - Clip the total number of lines to 10
+        //   - If there's more, add a comment indicating the number of remaining lines
+        foreach (var line in lines)
+        {
+            const int MaxLineLength = 61;
+
+            if (line.Length < MaxLineLength - 1)
+            {
+                if (line.EndsWith('{') &&
+                    string.IsNullOrWhiteSpace(line[..^1]) &&
+                    processedLines.Count > 0)
+                {
+                    if (!TryReplaceLine(^1, processedLines[^1] + " {"))
                     {
                         AddRemainingLineComment();
                         break;
                     }
+                    braceOnlyLinesEliminated++;
                 }
-
-                if (processedLines.Count == 10)
+                else if (!TryAddLine(line))
                 {
-                    var remainingCount = GetRemainingLineCount();
-
-                    // Might as well just add the last line to the embed,
-                    // since we'd just be adding a "1 more line" line otherwise.
-                    // We'd be adding a line either way, so we should go with the
-                    // more useful option.
-                    if (remainingCount == 1)
-                        continue;
-
-                    if (remainingCount <= 0)
-                        break;
-
+                    AddRemainingLineComment();
+                    break;
+                }
+            }
+            else
+            {
+                if (!TryAddLine(line[..(MaxLineLength - 3)] + "..."))
+                {
                     AddRemainingLineComment();
                     break;
                 }
             }
 
-            var code = string.Join('\n', processedLines);
-            return Format.Code(code, language);
-
-            bool TryAddLine(string line)
+            if (processedLines.Count == 10)
             {
                 var remainingCount = GetRemainingLineCount();
-                var possibleRemainingLineCommentLength = remainingCount > 1 // 1, because the current line is included in the count
-                    ? GetRemainingLineCountComment(remainingCount).Length
-                    : 0;
 
-                if (line.Length + currentLength + possibleRemainingLineCommentLength + 1 > maxLength) // +1 because of the newline that will be added later
-                    return false;
+                // Might as well just add the last line to the embed,
+                // since we'd just be adding a "1 more line" line otherwise.
+                // We'd be adding a line either way, so we should go with the
+                // more useful option.
+                if (remainingCount == 1)
+                    continue;
 
-                processedLines.Add(line);
-                currentLength += line.Length + 1; // +1 because of the newline that will be added later
-                return true;
-            }
+                if (remainingCount <= 0)
+                    break;
 
-            bool TryReplaceLine(Index index, string line)
-            {
-                var remainingCount = GetRemainingLineCount();
-                var possibleRemainingLineCommentLength = remainingCount > 0
-                    ? GetRemainingLineCountComment(remainingCount).Length
-                    : 0;
-
-                var lengthDifference = line.Length - processedLines[index].Length;
-
-                if (lengthDifference + currentLength + possibleRemainingLineCommentLength > maxLength)
-                    return false;
-
-                processedLines[index] = line;
-                currentLength += lengthDifference;
-                return true;
-            }
-
-            int GetRemainingLineCount()
-            {
-                return lines.Length - processedLines.Count - braceOnlyLinesEliminated;
-            }
-
-            string GetRemainingLineCountComment(int remainingCount)
-            {
-                var commentStart = language switch
-                {
-                    "vb" => "'",
-                    _ => "//",
-                };
-
-                return $"{commentStart} {remainingCount} more lines. Follow the link to view.";
-            }
-
-            void AddRemainingLineComment()
-            {
-                processedLines.Add(GetRemainingLineCountComment(GetRemainingLineCount()));
+                AddRemainingLineComment();
+                break;
             }
         }
 
-        [GeneratedRegex(@"```([^\s]*)", RegexOptions.Compiled)]
-        private static partial Regex CodeMarkdownRegex();
-        [GeneratedRegex(@"\|\|.+\|\|", RegexOptions.Compiled)]
-        private static partial Regex SpoilerRegex();
+        var code = string.Join('\n', processedLines);
+        return Format.Code(code, language);
+
+        bool TryAddLine(string line)
+        {
+            var remainingCount = GetRemainingLineCount();
+            var possibleRemainingLineCommentLength = remainingCount > 1 // 1, because the current line is included in the count
+                ? GetRemainingLineCountComment(remainingCount).Length
+                : 0;
+
+            if (line.Length + currentLength + possibleRemainingLineCommentLength + 1 > maxLength) // +1 because of the newline that will be added later
+                return false;
+
+            processedLines.Add(line);
+            currentLength += line.Length + 1; // +1 because of the newline that will be added later
+            return true;
+        }
+
+        bool TryReplaceLine(Index index, string line)
+        {
+            var remainingCount = GetRemainingLineCount();
+            var possibleRemainingLineCommentLength = remainingCount > 0
+                ? GetRemainingLineCountComment(remainingCount).Length
+                : 0;
+
+            var lengthDifference = line.Length - processedLines[index].Length;
+
+            if (lengthDifference + currentLength + possibleRemainingLineCommentLength > maxLength)
+                return false;
+
+            processedLines[index] = line;
+            currentLength += lengthDifference;
+            return true;
+        }
+
+        int GetRemainingLineCount()
+        {
+            return lines.Length - processedLines.Count - braceOnlyLinesEliminated;
+        }
+
+        string GetRemainingLineCountComment(int remainingCount)
+        {
+            var commentStart = language switch
+            {
+                "vb" => "'",
+                _ => "//",
+            };
+
+            return $"{commentStart} {remainingCount} more lines. Follow the link to view.";
+        }
+
+        void AddRemainingLineComment()
+        {
+            processedLines.Add(GetRemainingLineCountComment(GetRemainingLineCount()));
+        }
     }
+
+    [GeneratedRegex(@"```([^\s]*)", RegexOptions.Compiled)]
+    private static partial Regex CodeMarkdownRegex();
+    [GeneratedRegex(@"\|\|.+\|\|", RegexOptions.Compiled)]
+    private static partial Regex SpoilerRegex();
 }

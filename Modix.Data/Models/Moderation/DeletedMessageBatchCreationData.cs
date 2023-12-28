@@ -1,38 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Modix.Data.Models.Moderation
+namespace Modix.Data.Models.Moderation;
+
+/// <summary>
+/// Describes an object that represents the creation of a new <see cref="DeletedMessageBatchEntity"/>.
+/// </summary>
+public class DeletedMessageBatchCreationData
 {
     /// <summary>
-    /// Describes an object that represents the creation of a new <see cref="DeletedMessageBatchEntity"/>.
+    /// See <see cref="DeletedMessageBatchEntity.DeletedMessages"/>.
     /// </summary>
-    public class DeletedMessageBatchCreationData
-    {
-        /// <summary>
-        /// See <see cref="DeletedMessageBatchEntity.DeletedMessages"/>.
-        /// </summary>
-        public required IEnumerable<DeletedMessageCreationData> Data { get; set; }
+    public required IEnumerable<DeletedMessageCreationData> Data { get; set; }
 
-        /// <summary>
-        /// See <see cref="ModerationActionEntity.CreatedById"/>.
-        /// </summary>
-        public ulong CreatedById { get; set; }
+    /// <summary>
+    /// See <see cref="ModerationActionEntity.CreatedById"/>.
+    /// </summary>
+    public ulong CreatedById { get; set; }
 
-        /// <summary>
-        /// See <see cref="ModerationActionEntity.GuildId"/>.
-        /// </summary>
-        public ulong GuildId { get; set; }
+    /// <summary>
+    /// See <see cref="ModerationActionEntity.GuildId"/>.
+    /// </summary>
+    public ulong GuildId { get; set; }
 
-        internal DeletedMessageBatchEntity ToEntity()
-            => new()
+    internal DeletedMessageBatchEntity ToEntity()
+        => new()
+        {
+            CreateAction = new ModerationActionEntity()
             {
-                CreateAction = new ModerationActionEntity()
-                {
-                    Created = DateTimeOffset.UtcNow,
-                    CreatedById = CreatedById,
-                    GuildId = GuildId,
-                    Type = ModerationActionType.MessageBatchDeleted,
-                }
-            };
-    }
+                Created = DateTimeOffset.UtcNow,
+                CreatedById = CreatedById,
+                GuildId = GuildId,
+                Type = ModerationActionType.MessageBatchDeleted,
+            }
+        };
 }
