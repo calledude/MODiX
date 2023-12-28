@@ -80,8 +80,8 @@ namespace Modix.Services.Core
         /// <summary>
         /// Checks if the given channel has the given designation
         /// </summary>
-        /// <param name="guild">The <see cref="IGuild"/> where the channel is located</param>
-        /// <param name="channel">The <see cref="IChannel"/> to check the designation for</param>
+        /// <param name="guildId">The <see cref="IGuild"/> where the channel is located</param>
+        /// <param name="channelId">The <see cref="IChannel"/> to check the designation for</param>
         /// <param name="designation">The <see cref="DesignatedChannelType"/> to check for</param>
         /// <param name="cancellationToken">A token that may be used to cancel the operation.</param>
         /// <returns></returns>
@@ -114,7 +114,7 @@ namespace Modix.Services.Core
         }
 
         /// <inheritdoc />
-        public async Task<long> AddDesignatedChannelAsync(IGuild guild, IMessageChannel logChannel, DesignatedChannelType type)
+        public async Task<long> AddDesignatedChannelAsync(IGuild guild, IMessageChannel channel, DesignatedChannelType type)
         {
             AuthorizationService.RequireAuthenticatedUser();
             AuthorizationService.RequireClaims(AuthorizationClaim.DesignatedChannelMappingCreate);
@@ -123,18 +123,18 @@ namespace Modix.Services.Core
             if (await DesignatedChannelMappingRepository.AnyAsync(new DesignatedChannelMappingSearchCriteria()
             {
                 GuildId = guild.Id,
-                ChannelId = logChannel.Id,
+                ChannelId = channel.Id,
                 IsDeleted = false,
                 Type = type
             }, default))
             {
-                throw new InvalidOperationException($"{logChannel.Name} in {guild.Name} is already assigned to {type}");
+                throw new InvalidOperationException($"{channel.Name} in {guild.Name} is already assigned to {type}");
             }
 
             var id = await DesignatedChannelMappingRepository.CreateAsync(new DesignatedChannelMappingCreationData()
             {
                 GuildId = guild.Id,
-                ChannelId = logChannel.Id,
+                ChannelId = channel.Id,
                 CreatedById = AuthorizationService.CurrentUserId.Value,
                 Type = type
             });
@@ -145,7 +145,7 @@ namespace Modix.Services.Core
         }
 
         /// <inheritdoc />
-        public async Task<int> RemoveDesignatedChannelAsync(IGuild guild, IMessageChannel logChannel, DesignatedChannelType type)
+        public async Task<int> RemoveDesignatedChannelAsync(IGuild guild, IMessageChannel channel, DesignatedChannelType type)
         {
             AuthorizationService.RequireAuthenticatedUser();
             AuthorizationService.RequireClaims(AuthorizationClaim.DesignatedChannelMappingDelete);
@@ -154,13 +154,13 @@ namespace Modix.Services.Core
             var deletedCount = await DesignatedChannelMappingRepository.DeleteAsync(new DesignatedChannelMappingSearchCriteria()
             {
                 GuildId = guild.Id,
-                ChannelId = logChannel.Id,
+                ChannelId = channel.Id,
                 IsDeleted = false,
                 Type = type
             }, AuthorizationService.CurrentUserId.Value);
 
             if (deletedCount == 0)
-                throw new InvalidOperationException($"{logChannel.Name} in {guild.Name} is not assigned to {type}");
+                throw new InvalidOperationException($"{channel.Name} in {guild.Name} is not assigned to {type}");
 
             transaction.Commit();
             return deletedCount;
@@ -218,7 +218,7 @@ namespace Modix.Services.Core
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyCollection<IMessage>> SendToDesignatedChannelsAsync(IGuild guild, DesignatedChannelType designation, string text, Embed? embed = null)
+        public async Task<IReadOnlyCollection<IMessage>> SendToDesignatedChannelsAsync(IGuild guild, DesignatedChannelType designation, string content, Embed? embed = null)
         {
             var channels = await GetDesignatedChannelsAsync(guild, designation);
 
@@ -227,7 +227,7 @@ namespace Modix.Services.Core
                 Log.Warning("Warning: Tried to send to channels assigned to designation {designation}, but none were assigned.", new { designation });
             }
 
-            return await Task.WhenAll(channels.Select(channel => channel.SendMessageAsync(text, false, embed)));
+            return await Task.WhenAll(channels.Select(channel => channel.SendMessageAsync(content, false, embed)));
         }
 
         /// <inheritdoc />

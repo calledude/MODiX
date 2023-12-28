@@ -14,7 +14,7 @@ namespace Modix.Services.Core
         /// <summary>
         /// Updates information about the given channel within the channel tracking feature.
         /// </summary>
-        /// <param name="channel">The channel whose info is to be tracked.</param>
+        /// <param name="channelId">The channel whose info is to be tracked.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the returned <see cref="Task"/> before it completes.</param>
         /// <returns>A <see cref="Task"/> that will complete when the operation has completed.</returns>
         Task TrackChannelAsync(string channelName, ulong channelId, ulong guildId, ulong? parentChannelId, CancellationToken cancellationToken = default);

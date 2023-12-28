@@ -77,7 +77,7 @@ namespace Modix.Services.Core
         /// <summary>
         /// Removes a claim mapping from a user.
         /// </summary>
-        /// <param name="role">The user for which a claim mapping is to be removed.</param>
+        /// <param name="user">The user for which a claim mapping is to be removed.</param>
         /// <param name="type">The type of claim mapping to be removed.</param>
         /// <param name="claim">The claim to be un=mapped.</param>
         /// <returns>A <see cref="Task"/> that will complete when the operation has completed.</returns>
@@ -105,8 +105,8 @@ namespace Modix.Services.Core
         /// <summary>
         /// Retrieves the list of claims currently active and mapped to particular user, within a particular guild.
         /// </summary>
-        /// <param name="user">The user whose claims are to be retrieved.</param>
-        /// <param name="guild"></param>
+        /// <param name="userId">The user whose claims are to be retrieved.</param>
+        /// <param name="guildId"></param>
         /// <param name="roles"></param>
         /// <param name="filterClaims">
         /// An optional list of claims to be used to filter the results.
@@ -116,7 +116,7 @@ namespace Modix.Services.Core
         /// A <see cref="Task"/> that will complete when the operation has completed,
         /// containing the requested list of claims.
         /// </returns>
-        public Task<IReadOnlyCollection<AuthorizationClaim>> GetGuildUserClaimsAsync(ulong user, ulong guild, IReadOnlyList<ulong> roles, params AuthorizationClaim[] filterClaims);
+        public Task<IReadOnlyCollection<AuthorizationClaim>> GetGuildUserClaimsAsync(ulong userId, ulong guildId, IReadOnlyList<ulong> roles, params AuthorizationClaim[] filterClaims);
 
         /// <summary>
         /// Retrieves the list of claims currently active and mapped to particular role.
@@ -408,7 +408,7 @@ namespace Modix.Services.Core
         }
 
         /// <inheritdoc />
-        public Task<IReadOnlyCollection<AuthorizationClaim>> GetGuildUserClaimsAsync(IGuildUser guildUser, params AuthorizationClaim[] filterClaims)
+        public Task<IReadOnlyCollection<AuthorizationClaim>> GetGuildUserClaimsAsync(IGuildUser guildUser, params AuthorizationClaim[] claimsFilter)
         {
             if (guildUser == null)
                 return Task.FromException<IReadOnlyCollection<AuthorizationClaim>>(new ArgumentNullException(nameof(guildUser)));
@@ -419,7 +419,7 @@ namespace Modix.Services.Core
             if ((guildUser.Id == _discordSocketClient.CurrentUser.Id) || guildUser.GuildPermissions.Administrator)
                 return Task.FromResult<IReadOnlyCollection<AuthorizationClaim>>(Enum.GetValues<AuthorizationClaim>());
 
-            return LookupPosessedClaimsAsync(guildUser.GuildId, guildUser.RoleIds, guildUser.Id, filterClaims);
+            return LookupPosessedClaimsAsync(guildUser.GuildId, guildUser.RoleIds, guildUser.Id, claimsFilter);
         }
 
         /// <inheritdoc />

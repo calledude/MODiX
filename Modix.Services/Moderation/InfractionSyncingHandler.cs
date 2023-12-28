@@ -25,7 +25,6 @@ namespace Modix.Services.Moderation
         /// Constructs a new <see cref="InfractionSyncingHandler"/> object with the given injected dependencies.
         /// </summary>
         /// <param name="moderationService">A moderation service to interact with the infractions system.</param>
-        /// <param name="restClient">A REST client to interact with the Discord API.</param>
         public InfractionSyncingHandler(
             IModerationService moderationService,
             IAuthorizationService authorizationService)

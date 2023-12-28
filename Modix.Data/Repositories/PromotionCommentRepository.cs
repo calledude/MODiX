@@ -67,7 +67,7 @@ namespace Modix.Data.Repositories
         /// <summary>
         /// Checks whether the repository contains any comments matching the given search criteria.
         /// </summary>
-        /// <param name="criteria">The criteria for selecting <see cref="PromotionCommentEntity.Id"/> values to be checked for.</param>
+        /// <param name="searchCriteria">The criteria for selecting <see cref="PromotionCommentEntity.Id"/> values to be checked for.</param>
         /// <returns>
         /// A <see cref="Task"/> that will complete when the operation has completed,
         /// containing a flag indicating whether any matching comments exist.

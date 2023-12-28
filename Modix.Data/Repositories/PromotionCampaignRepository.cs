@@ -45,7 +45,7 @@ namespace Modix.Data.Repositories
         /// <summary>
         /// Checks whether the repository contains any campaigns matching the given search criteria.
         /// </summary>
-        /// <param name="criteria">The criteria for selecting <see cref="PromotionCampaignEntity.Id"/> values to be checked for.</param>
+        /// <param name="searchCriteria">The criteria for selecting <see cref="PromotionCampaignEntity.Id"/> values to be checked for.</param>
         /// <returns>
         /// A <see cref="Task"/> that will complete when the operation has completed,
         /// containing a flag indicating whether any matching campaigns exist.
@@ -75,7 +75,7 @@ namespace Modix.Data.Repositories
         /// Marks an existing campaign as closed, based on its ID.
         /// </summary>
         /// <param name="campaignId">The <see cref="PromotionCampaignEntity.Id"/> value of the campaign to be deleted.</param>
-        /// <param name="deletedById">The Discord snowflake ID value of the user that is deleting the infraction.</param>
+        /// <param name="closedById">The Discord snowflake ID value of the user that is deleting the infraction.</param>
         /// <returns>
         /// A <see cref="Task"/> which will complete when the operation is complete,
         /// containing the action representing the closure of the campaign.

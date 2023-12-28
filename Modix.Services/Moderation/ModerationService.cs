@@ -474,7 +474,7 @@ namespace Modix.Services.Moderation
 
             ArgumentNullException.ThrowIfNull(confirmDelegate);
 
-            if (channel is not IGuildChannel guildChannel)
+            if (channel is not IGuildChannel)
             {
                 throw new InvalidOperationException(
                     $"Cannot delete messages in {channel.Name} because it is not a guild channel.");
@@ -494,7 +494,7 @@ namespace Modix.Services.Moderation
                 ? (await channel.GetMessagesAsync(clampedCount + 1).FlattenAsync()).Skip(1)
                 : await channel.GetMessagesAsync(clampedCount).FlattenAsync();
 
-            await DoDeleteMessagesAsync(channel, guildChannel, messages);
+            await DoDeleteMessagesAsync(channel, messages);
         }
 
         public async Task DeleteMessagesAsync(ITextChannel channel, IGuildUser user, int count,
@@ -504,7 +504,7 @@ namespace Modix.Services.Moderation
 
             ArgumentNullException.ThrowIfNull(confirmDelegate);
 
-            if (channel is not IGuildChannel guildChannel)
+            if (channel is not IGuildChannel)
             {
                 throw new InvalidOperationException(
                     $"Cannot delete messages in {channel.Name} because it is not a guild channel.");
@@ -523,7 +523,7 @@ namespace Modix.Services.Moderation
             var messages = (await channel.GetMessagesAsync(100).FlattenAsync()).Where(x => x.Author.Id == user.Id)
                 .Take(clampedCount);
 
-            await DoDeleteMessagesAsync(channel, guildChannel, messages);
+            await DoDeleteMessagesAsync(channel, messages);
         }
 
         public async Task<RecordsPage<DeletedMessageSummary>> SearchDeletedMessagesAsync(
@@ -537,11 +537,11 @@ namespace Modix.Services.Moderation
         }
 
         public Task<IReadOnlyCollection<InfractionSummary>> SearchInfractionsAsync(
-            InfractionSearchCriteria searchCriteria, IEnumerable<SortingCriteria>? sortingCriteria = null)
+            InfractionSearchCriteria searchCriteria, IEnumerable<SortingCriteria>? sortingCriterias = null)
         {
             _authorizationService.RequireClaims(AuthorizationClaim.ModerationRead);
 
-            return _infractionRepository.SearchSummariesAsync(searchCriteria, sortingCriteria);
+            return _infractionRepository.SearchSummariesAsync(searchCriteria, sortingCriterias);
         }
 
         public Task<RecordsPage<InfractionSummary>> SearchInfractionsAsync(InfractionSearchCriteria searchCriteria,
@@ -691,8 +691,7 @@ namespace Modix.Services.Moderation
             }
         }
 
-        private async Task DoDeleteMessagesAsync(ITextChannel channel, IGuildChannel guildChannel,
-            IEnumerable<IMessage> messages)
+        private async Task DoDeleteMessagesAsync(ITextChannel channel, IEnumerable<IMessage> messages)
         {
             await channel.DeleteMessagesAsync(messages);
 

@@ -6,7 +6,6 @@ using Discord.WebSocket;
 
 using Modix.Common.Messaging;
 using Modix.Data.Models.Moderation;
-using Modix.Services.Core;
 
 using Serilog;
 
@@ -25,7 +24,6 @@ namespace Modix.Services.Moderation
         /// Constructs a new <see cref="MutePersistingHandler"/> object with the given injected dependencies.
         /// </summary>
         /// <param name="moderationService">A moderation service to interact with the infractions system.</param>
-        /// <param name="selfUserProvider">The Discord user that the bot is running as.</param>
         public MutePersistingHandler(
             DiscordSocketClient discordSocketClient,
             IModerationService moderationService)
@@ -40,8 +38,7 @@ namespace Modix.Services.Moderation
         /// <summary>
         /// Mutes the user if they have an active mute infraction in the guild.
         /// </summary>
-        /// <param name="guild">The guild that the user joined.</param>
-        /// <param name="user">The user who joined the guild.</param>
+        /// <param name="guildUser">The user who joined the guild.</param>
         /// <returns>
         /// A <see cref="Task"/> that will complete when the operation completes.
         /// </returns>

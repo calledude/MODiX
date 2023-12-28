@@ -212,7 +212,7 @@ namespace Modix.Services.Promotions
 
             var rankRoles = await GetRankRolesAsync(AuthorizationService.CurrentGuildId.Value);
 
-            if (!await CheckIfUserIsRankOrHigherAsync(rankRoles, AuthorizationService.CurrentUserId.Value, campaign.TargetRole.Id))
+            if (!await CheckIfUserIsRankOrHigherAsync(rankRoles, campaign.TargetRole.Id))
                 throw new InvalidOperationException("Commenting on a promotion campaign requires a rank at least as high as the proposed target rank.");
 
             PromotionActionSummary resultAction;
@@ -267,7 +267,7 @@ namespace Modix.Services.Promotions
             return resultAction;
         }
 
-        public async Task AddOrUpdateCommentAsync(long campaignId, Optional<PromotionSentiment> sentiment, Optional<string?> content = default)
+        public async Task AddOrUpdateCommentAsync(long campaignId, Optional<PromotionSentiment> sentiment, Optional<string?> comment = default)
         {
             AuthorizationService.RequireAuthenticatedGuild();
             AuthorizationService.RequireAuthenticatedUser();
@@ -295,7 +295,7 @@ namespace Modix.Services.Promotions
             {
                 var rankRoles = await GetRankRolesAsync(AuthorizationService.CurrentGuildId.Value);
 
-                if (!await CheckIfUserIsRankOrHigherAsync(rankRoles, AuthorizationService.CurrentUserId.Value, campaign.TargetRole.Id))
+                if (!await CheckIfUserIsRankOrHigherAsync(rankRoles, campaign.TargetRole.Id))
                     throw new InvalidOperationException("Commenting on a promotion campaign requires a rank at least as high as the proposed target rank.");
 
                 if (!sentiment.IsSpecified)
@@ -306,7 +306,7 @@ namespace Modix.Services.Promotions
                     GuildId = campaign.GuildId,
                     CampaignId = campaignId,
                     Sentiment = sentiment.GetValueOrDefault(),
-                    Content = content.GetValueOrDefault(),
+                    Content = comment.GetValueOrDefault(),
                     CreatedById = AuthorizationService.CurrentUserId.Value
                 });
             }
@@ -314,20 +314,20 @@ namespace Modix.Services.Promotions
             {
                 // Don't update if nothing has changed.
 
-                if (!sentiment.IsSpecified && !content.IsSpecified)
+                if (!sentiment.IsSpecified && !comment.IsSpecified)
                 {
                     return;
                 }
-                else if (sentiment.IsSpecified && content.IsSpecified)
+                else if (sentiment.IsSpecified && comment.IsSpecified)
                 {
-                    if (sentiment.Value == existingComment.Sentiment && content.Value == (existingComment.Content ?? string.Empty))
+                    if (sentiment.Value == existingComment.Sentiment && comment.Value == (existingComment.Content ?? string.Empty))
                         return;
                 }
                 else if (sentiment.IsSpecified && sentiment.Value == existingComment.Sentiment)
                 {
                     return;
                 }
-                else if (content.IsSpecified && content.Value == (existingComment.Content ?? string.Empty))
+                else if (comment.IsSpecified && comment.Value == (existingComment.Content ?? string.Empty))
                 {
                     return;
                 }
@@ -338,8 +338,8 @@ namespace Modix.Services.Promotions
                         x.Sentiment = sentiment.IsSpecified
                             ? sentiment.Value
                             : existingComment.Sentiment;
-                        x.Content = content.IsSpecified
-                            ? content.Value
+                        x.Content = comment.IsSpecified
+                            ? comment.Value
                             : existingComment.Content;
                     });
             }
@@ -512,7 +512,7 @@ namespace Modix.Services.Promotions
                 .ThenBy(x => x.Id)
                 .ToArray();
 
-        private async Task<bool> CheckIfUserIsRankOrHigherAsync(IEnumerable<GuildRoleBrief> rankRoles, ulong userId, ulong targetRoleId)
+        private async Task<bool> CheckIfUserIsRankOrHigherAsync(IEnumerable<GuildRoleBrief> rankRoles, ulong targetRoleId)
         {
             AuthorizationService.RequireAuthenticatedGuild();
             AuthorizationService.RequireAuthenticatedUser();

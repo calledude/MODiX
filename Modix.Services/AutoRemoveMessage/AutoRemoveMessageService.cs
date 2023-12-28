@@ -28,7 +28,7 @@ namespace Modix.Services.AutoRemoveMessage
         /// <summary>
         /// Registers a removable message with the service and adds an indicator for this to the provided embed.
         /// </summary>
-        /// <param name="user">The users who can remove the message.</param>
+        /// <param name="users">The users who can remove the message.</param>
         /// <param name="embed">The embed to operate on</param>
         /// <param name="callback">A callback that returns the <see cref="IUserMessage"/> to register as removable. The modified embed is provided with this callback.</param>
         /// <exception cref="ArgumentNullException"></exception>
@@ -60,7 +60,7 @@ namespace Modix.Services.AutoRemoveMessage
             => RegisterRemovableMessageAsync(new[] { user }, embed, callback);
 
         /// <inheritdoc />
-        public async Task RegisterRemovableMessageAsync(IUser[] user, EmbedBuilder embed, Func<EmbedBuilder, Task<IUserMessage>> callback)
+        public async Task RegisterRemovableMessageAsync(IUser[] users, EmbedBuilder embed, Func<EmbedBuilder, Task<IUserMessage>> callback)
         {
             ArgumentNullException.ThrowIfNull(callback);
 
@@ -74,7 +74,7 @@ namespace Modix.Services.AutoRemoveMessage
             }
 
             var msg = await callback.Invoke(embed);
-            MessageDispatcher.Dispatch(new RemovableMessageSentNotification(msg, user));
+            MessageDispatcher.Dispatch(new RemovableMessageSentNotification(msg, users));
         }
 
         /// <inheritdoc />

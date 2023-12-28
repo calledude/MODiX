@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -62,7 +61,7 @@ namespace Modix.Services.Core
         /// <summary>
         /// Checks if the given role has the given designation
         /// </summary>
-        /// <param name="guild">The Id of the guild where the role is located</param>
+        /// <param name="guildId">The Id of the guild where the role is located</param>
         /// <param name="roleId">The Id of the role to check the designation for</param>
         /// <param name="designation">The <see cref="DesignatedRoleType"/> to check for</param>
         /// <param name="cancellationToken">A token that may be used to cancel the operation.</param>
@@ -75,7 +74,7 @@ namespace Modix.Services.Core
         /// <summary>
         /// Checks if the given set of roles has the given designation
         /// </summary>
-        /// <param name="guild">The Id of the guild where the role is located</param>
+        /// <param name="guildId">The Id of the guild where the role is located</param>
         /// <param name="roleIds">The Id values of the roles to check the designation for</param>
         /// <param name="designation">The <see cref="DesignatedRoleType"/> to check for</param>
         /// <param name="cancellationToken">A token that may be used to cancel the operation.</param>
