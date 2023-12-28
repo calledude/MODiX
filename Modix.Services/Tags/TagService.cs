@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -18,7 +17,7 @@ namespace Modix.Services.Tags
 {
     public interface ITagService
     {
-        Task CreateTagAsync(ulong guildId, ulong creatorId, string name, string content);
+        Task CreateTagAsync(ulong guildId, ulong creatorId, string? name, string? content);
 
         Task UseTagAsync(ulong guildId, ulong channelId, string name, IMessage invokingMessage);
 
@@ -26,7 +25,7 @@ namespace Modix.Services.Tags
 
         Task DeleteTagAsync(ulong guildId, ulong deleterId, string name);
 
-        Task<TagSummary> GetTagAsync(ulong guildId, string name);
+        Task<TagSummary?> GetTagAsync(ulong guildId, string name);
 
         Task<IReadOnlyCollection<TagSummary>> GetSummariesAsync(TagSearchCriteria criteria);
 
@@ -70,7 +69,7 @@ namespace Modix.Services.Tags
             _tagCache = tagCache;
         }
 
-        public async Task CreateTagAsync(ulong guildId, ulong creatorId, string name, string content)
+        public async Task CreateTagAsync(ulong guildId, ulong creatorId, string? name, string? content)
         {
             _authorizationService.RequireClaims(AuthorizationClaim.CreateTag);
 
@@ -209,7 +208,7 @@ namespace Modix.Services.Tags
             _tagCache.Remove(guildId, name);
         }
 
-        public async Task<TagSummary> GetTagAsync(ulong guildId, string name)
+        public async Task<TagSummary?> GetTagAsync(ulong guildId, string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("The tag name cannot be blank or whitespace.", nameof(name));
@@ -355,9 +354,10 @@ namespace Modix.Services.Tags
             }
         }
 
-        private async Task<bool> CanUserMaintainTagOwnedByRoleAsync(IGuildUser currentUser, GuildRoleEntity ownerRole)
+        private async Task<bool> CanUserMaintainTagOwnedByRoleAsync(IGuildUser currentUser, GuildRoleEntity? ownerRole)
         {
-            Debug.Assert(ownerRole is not null);
+            if (ownerRole is null)
+                return false;
 
             var rankRoles = await GetRankRolesAsync(currentUser.GuildId);
 

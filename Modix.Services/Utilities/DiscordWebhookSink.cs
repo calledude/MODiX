@@ -16,12 +16,12 @@ namespace Modix.Services.Utilities
     {
         private readonly Lazy<CodePasteService> _codePasteService;
         private readonly DiscordWebhookClient _discordWebhookClient;
-        private readonly IFormatProvider _formatProvider;
+        private readonly IFormatProvider? _formatProvider;
         private readonly JsonSerializerSettings _jsonSerializerSettings;
         public DiscordWebhookSink(
             ulong webhookId,
             string webhookToken,
-            IFormatProvider formatProvider,
+            IFormatProvider? formatProvider,
             Lazy<CodePasteService> codePasteService)
         {
             _codePasteService = codePasteService;

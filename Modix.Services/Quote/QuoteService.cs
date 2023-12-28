@@ -15,7 +15,7 @@ namespace Modix.Services.Quote
         /// </summary>
         /// <param name="message">The message to quote</param>
         /// <param name="executingUser">The user that is doing the quoting</param>
-        EmbedBuilder BuildQuoteEmbed(IMessage message, IUser executingUser);
+        EmbedBuilder? BuildQuoteEmbed(IMessage message, IUser executingUser);
 
         Task BuildRemovableEmbed(IMessage message, IUser executingUser, Func<EmbedBuilder, Task<IUserMessage>> callback);
     }
@@ -30,7 +30,7 @@ namespace Modix.Services.Quote
         }
 
         /// <inheritdoc />
-        public EmbedBuilder BuildQuoteEmbed(IMessage message, IUser executingUser)
+        public EmbedBuilder? BuildQuoteEmbed(IMessage message, IUser executingUser)
         {
             if (IsQuote(message))
             {

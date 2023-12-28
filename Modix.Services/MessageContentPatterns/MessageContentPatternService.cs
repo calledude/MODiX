@@ -46,16 +46,16 @@ namespace Modix.Services.MessageContentPatterns
         {
             var key = GetKeyForCache(guildId);
 
-            if (!_memoryCache.TryGetValue(key, out List<MessageContentPatternDto> patterns))
-            {
-                patterns = await _db
-                    .Set<MessageContentPatternEntity>()
-                    .Where(x => x.GuildId == guildId)
-                    .Select(x => new MessageContentPatternDto(x.Pattern, x.PatternType))
-                    .ToListAsync();
+            if (_memoryCache.TryGetValue(key, out List<MessageContentPatternDto>? patterns))
+                return patterns ?? [];
 
-                _memoryCache.Set(key, patterns, _patternCacheEntryOptions);
-            }
+            patterns = await _db
+                .Set<MessageContentPatternEntity>()
+                .Where(x => x.GuildId == guildId)
+                .Select(x => new MessageContentPatternDto(x.Pattern, x.PatternType))
+                .ToListAsync();
+
+            _memoryCache.Set(key, patterns, _patternCacheEntryOptions);
 
             return patterns;
         }

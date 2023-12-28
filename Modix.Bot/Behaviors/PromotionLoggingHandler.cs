@@ -72,22 +72,26 @@ namespace Modix.Behaviors
             }
         }
 
-        private async Task<Embed> FormatPromotionNotificationAsync(long promotionActionId, PromotionActionCreationData data)
+        private async Task<Embed?> FormatPromotionNotificationAsync(long promotionActionId, PromotionActionCreationData data)
         {
             var promotionAction = await PromotionsService.GetPromotionActionSummaryAsync(promotionActionId);
-            var targetCampaign = promotionAction.Campaign ?? promotionAction.NewComment.Campaign;
+            var targetCampaign = promotionAction?.Campaign ?? promotionAction?.NewComment?.Campaign;
 
             var embed = new EmbedBuilder();
 
-            if (promotionAction.Type != PromotionActionType.CampaignClosed)
-                return null;
-            if (targetCampaign.Outcome != PromotionCampaignOutcome.Accepted)
+            if (promotionAction?.Type != PromotionActionType.CampaignClosed)
                 return null;
 
-            var boldName = $"**{targetCampaign.Subject.GetFullUsername()}**";
-            var boldRole = $"**{MentionUtils.MentionRole(targetCampaign.TargetRole.Id)}**";
+            if (targetCampaign?.Outcome != PromotionCampaignOutcome.Accepted)
+                return null;
+
+            var boldName = Format.Bold(targetCampaign.Subject.GetFullUsername());
+            var boldRole = Format.Bold(MentionUtils.MentionRole(targetCampaign.TargetRole.Id));
 
             var subject = await UserService.GetUserInformationAsync(data.GuildId, targetCampaign.Subject.Id);
+
+            if (subject == null)
+                return null;
 
             // https://modix.gg/promotions
             var url = new UriBuilder(ModixConfig.WebsiteBaseUrl)
@@ -104,9 +108,13 @@ namespace Modix.Behaviors
             return embed.Build();
         }
 
-        private async Task<string> FormatPromotionLogEntryAsync(long promotionActionId)
+        private async Task<string?> FormatPromotionLogEntryAsync(long promotionActionId)
         {
             var promotionAction = await PromotionsService.GetPromotionActionSummaryAsync(promotionActionId);
+
+            if (promotionAction is null)
+                return null;
+
             var key = (promotionAction.Type, promotionAction.NewComment?.Sentiment, promotionAction.Campaign?.Outcome);
 
             if (!_logRenderTemplates.TryGetValue(key, out var renderTemplate))

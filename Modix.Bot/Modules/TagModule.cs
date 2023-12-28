@@ -98,7 +98,7 @@ namespace Modix.Bot.Modules
         [SlashCommand("ownedby", "Lists all tags owned by the supplied user or role.")]
         public async Task OwnedByAsync(
             [Summary(description: "The user or role whose tags are to be retrieved. If left blank, the current user.")]
-                IMentionable owner = null)
+                IMentionable? owner = null)
         {
             owner ??= Context.User;
 
@@ -237,7 +237,7 @@ namespace Modix.Bot.Modules
             await FollowupAsync(embed: embed.Build());
         }
 
-        private Embed BuildEmbed(IReadOnlyCollection<TagSummary> tags, IUser ownerUser = null, IGuild ownerGuild = null, IRole ownerRole = null)
+        private Embed BuildEmbed(IReadOnlyCollection<TagSummary> tags, IUser? ownerUser = null, IGuild? ownerGuild = null, IRole? ownerRole = null)
         {
             var orderedTags = tags
                 .OrderByDescending(x => x.Uses)
@@ -296,11 +296,11 @@ namespace Modix.Bot.Modules
 
         [ModalTextInput("tag_name")]
         [RequiredInput]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [ModalTextInput("tag_content", TextInputStyle.Paragraph)]
         [RequiredInput]
-        public string Content { get; set; }
+        public required string Content { get; set; }
     }
 
     public class TagUpdateModal : IModal

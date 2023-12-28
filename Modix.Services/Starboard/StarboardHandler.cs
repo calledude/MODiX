@@ -101,11 +101,9 @@ namespace Modix.Services.Starboard
             return $"**{reactionCount}** {_starboardService.GetStarEmote(reactionCount)}";
         }
 
-        private Embed GetStarEmbed(IUserMessage message, Color color)
+        private Embed? GetStarEmbed(IUserMessage message, Color color)
         {
-            var author = message.Author as IGuildUser;
-            var embed = _quoteService.BuildQuoteEmbed(message, author);
-
+            var embed = _quoteService.BuildQuoteEmbed(message, message.Author);
             if (embed is null)
             {
                 return null;
@@ -113,9 +111,9 @@ namespace Modix.Services.Starboard
 
             embed.WithTimestamp(message.Timestamp)
                 .WithColor(color)
-                .WithUserAsAuthor(author)
+                .WithUserAsAuthor(message.Author)
                 .WithFooter(string.Empty)
-                .AddField("Posted in", $"**{message.GetJumpUrlForEmbed()}**");
+                .AddField("Posted in", Format.Bold(message.GetJumpUrlForEmbed()));
 
             embed.Fields.RemoveAll(x => x.Name == "Quoted by");
 

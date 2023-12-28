@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Data;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using LinqKit;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 
 namespace Modix.Data.Utilities
 {
@@ -35,7 +28,7 @@ namespace Modix.Data.Utilities
             return value.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        public static bool OrdinalEquals(this string value, string search)
+        public static bool OrdinalEquals(this string? value, string? search)
             => string.Equals(value, search, StringComparison.OrdinalIgnoreCase);
     }
 }

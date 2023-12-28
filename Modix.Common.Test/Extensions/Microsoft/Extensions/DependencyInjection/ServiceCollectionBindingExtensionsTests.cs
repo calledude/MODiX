@@ -81,7 +81,7 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
                     IServiceCollection services,
                     IConfiguration configuration)
                 => services.AddSingleton(new FakeConfiguredService1(
-                    configuration[nameof(FakeConfiguredService1)]));
+                    configuration[nameof(FakeConfiguredService1)]!));
         }
 
         private class FakeConfiguredService2
@@ -102,7 +102,7 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
                     IServiceCollection services,
                     IConfiguration configuration)
                 => services.AddSingleton(new FakeConfiguredService2(
-                    configuration[nameof(FakeConfiguredService2)]));
+                    configuration[nameof(FakeConfiguredService2)]!));
         }
 
         private class FakeConfiguredService3
@@ -123,7 +123,7 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
                     IServiceCollection services,
                     IConfiguration configuration)
                 => services.AddSingleton(new FakeConfiguredService3(
-                    configuration[nameof(FakeConfiguredService3)]));
+                    configuration[nameof(FakeConfiguredService3)]!));
         }
 
         #endregion Fakes

@@ -27,7 +27,7 @@ namespace Modix.Modules
             var response = await _wikipediaService.GetWikipediaResultsAsync(phrase);
 
             // Empty response.
-            if (response == null || response.Query == null || !response.Query.Pages.Any())
+            if (response?.Query?.Pages == null || !response.Query.Pages.Any())
             {
                 await FollowupAsync($"Failed to find anything for {phrase}.", allowedMentions: AllowedMentions.None);
                 return;

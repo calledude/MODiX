@@ -86,7 +86,7 @@ namespace Modix.Services.Core
         /// <summary>
         /// A list of authorization claims possessed by the source of the current request.
         /// </summary>
-        IReadOnlyCollection<AuthorizationClaim> CurrentClaims { get; }
+        IReadOnlyCollection<AuthorizationClaim>? CurrentClaims { get; }
 
         /// <summary>
         /// Retrieves the list of claims currently active and mapped to particular user, within a particular guild.
@@ -140,7 +140,7 @@ namespace Modix.Services.Core
         /// A <see cref="Task"/> that will complete when the operation has completed,
         /// containing the set of claims present in <paramref name="claims"/>, but not posessed by <paramref name="guildUser"/>.
         /// </returns>
-        Task<IReadOnlyCollection<AuthorizationClaim>> GetGuildUserMissingClaimsAsync(ulong user, ulong guild, IReadOnlyList<ulong> roles, params AuthorizationClaim[] claims);
+        Task<IReadOnlyCollection<AuthorizationClaim>> GetGuildUserMissingClaimsAsync(ulong user, ulong guild, IReadOnlyList<ulong>? roles, params AuthorizationClaim[] claims);
 
         /// <summary>
         /// Checks whether a given user currently posesses a set of claims.
@@ -185,6 +185,7 @@ namespace Modix.Services.Core
         /// Requires that there be an authenticated user for the current request.
         /// </summary>
         [MemberNotNull(nameof(CurrentUserId))]
+        [MemberNotNull(nameof(CurrentClaims))]
         void RequireAuthenticatedUser();
 
         /// <summary>
@@ -215,7 +216,7 @@ namespace Modix.Services.Core
         public ulong? CurrentGuildId { get; internal protected set; }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<AuthorizationClaim> CurrentClaims { get; internal protected set; }
+        public IReadOnlyCollection<AuthorizationClaim>? CurrentClaims { get; internal protected set; }
 
         /// <inheritdoc />
         public async Task AutoConfigureGuildAsync(IGuild guild, CancellationToken cancellationToken = default)
@@ -276,7 +277,7 @@ namespace Modix.Services.Core
             {
                 await ClaimMappingRepository.CreateAsync(new ClaimMappingCreationData()
                 {
-                    GuildId = CurrentGuildId.Value,
+                    GuildId = CurrentGuildId ?? throw new InvalidOperationException($"{nameof(CurrentGuildId)} was null"),
                     Type = newType.Value,
                     RoleId = roleId,
                     Claim = claim,
@@ -409,7 +410,7 @@ namespace Modix.Services.Core
                 return Task.FromException<IReadOnlyCollection<AuthorizationClaim>>(new ArgumentNullException(nameof(guildUser)));
 
             if (guildUser.Id == CurrentUserId)
-                return Task.FromResult(CurrentClaims);
+                return Task.FromResult(CurrentClaims ?? Array.Empty<AuthorizationClaim>());
 
             if ((guildUser.Id == _discordSocketClient.CurrentUser.Id) || guildUser.GuildPermissions.Administrator)
                 return Task.FromResult<IReadOnlyCollection<AuthorizationClaim>>(Enum.GetValues<AuthorizationClaim>());
@@ -418,13 +419,13 @@ namespace Modix.Services.Core
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyCollection<AuthorizationClaim>> GetGuildUserClaimsAsync(ulong userId, ulong guildId, IReadOnlyList<ulong> roles, params AuthorizationClaim[] filterClaims)
+        public async Task<IReadOnlyCollection<AuthorizationClaim>> GetGuildUserClaimsAsync(ulong userId, ulong guildId, IReadOnlyList<ulong>? roles, params AuthorizationClaim[] filterClaims)
         {
             if (userId == default)
                 throw new ArgumentNullException(nameof(userId));
 
             if (userId == CurrentUserId)
-                return CurrentClaims;
+                return CurrentClaims ?? Array.Empty<AuthorizationClaim>();
 
             if (userId == _discordSocketClient.CurrentUser.Id)
                 return Enum.GetValues<AuthorizationClaim>();
@@ -452,12 +453,12 @@ namespace Modix.Services.Core
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyCollection<AuthorizationClaim>> GetGuildUserMissingClaimsAsync(ulong user, ulong guild, IReadOnlyList<ulong> roles, params AuthorizationClaim[] claims)
+        public async Task<IReadOnlyCollection<AuthorizationClaim>> GetGuildUserMissingClaimsAsync(ulong user, ulong guild, IReadOnlyList<ulong>? roles, params AuthorizationClaim[] claims)
             => claims.Except(await GetGuildUserClaimsAsync(user, guild, roles, claims))
                 .ToArray();
 
         /// <inheritdoc />
-        public async Task<bool> HasClaimsAsync(ulong user, ulong guild, IReadOnlyList<ulong> roles, params AuthorizationClaim[] claims)
+        public async Task<bool> HasClaimsAsync(ulong user, ulong guild, IReadOnlyList<ulong>? roles, params AuthorizationClaim[] claims)
             => !(await GetGuildUserMissingClaimsAsync(user, guild, roles, claims)).Any();
 
         /// <inheritdoc />
@@ -491,9 +492,10 @@ namespace Modix.Services.Core
 
         /// <inheritdoc />
         [MemberNotNull(nameof(CurrentUserId))]
+        [MemberNotNull(nameof(CurrentClaims))]
         public void RequireAuthenticatedUser()
         {
-            if (CurrentUserId == null)
+            if (CurrentUserId is null || CurrentClaims is null)
                 // TODO: Booooo for exception-based flow control
                 throw new InvalidOperationException("The current operation requires an authenticated user.");
         }
@@ -535,7 +537,7 @@ namespace Modix.Services.Core
         /// </summary>
         internal protected IClaimMappingRepository ClaimMappingRepository { get; }
 
-        private async Task<IReadOnlyCollection<AuthorizationClaim>> LookupPosessedClaimsAsync(ulong guildId, IEnumerable<ulong> roleIds, ulong userId, IEnumerable<AuthorizationClaim> claimsFilter = null)
+        private async Task<IReadOnlyCollection<AuthorizationClaim>> LookupPosessedClaimsAsync(ulong guildId, IEnumerable<ulong>? roleIds, ulong userId, IEnumerable<AuthorizationClaim>? claimsFilter = null)
         {
             var posessedClaims = new HashSet<AuthorizationClaim>();
 
@@ -543,7 +545,7 @@ namespace Modix.Services.Core
                 .SearchBriefsAsync(new ClaimMappingSearchCriteria()
                 {
                     GuildId = guildId,
-                    RoleIds = roleIds.ToArray(),
+                    RoleIds = roleIds?.ToArray(),
                     UserId = userId,
                     Claims = claimsFilter?.ToArray(),
                     IsDeleted = false

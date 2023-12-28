@@ -99,7 +99,7 @@ namespace Modix.Services.Core
         /// <param name="content">The text content of the message</param>
         /// <param name="embed">An optional <see cref="Embed"/> to attach to the message</param>
         /// <returns>A <see cref="Task"/> that, when completed, results in a collection of the messages that were sent.</returns>
-        Task<IReadOnlyCollection<IMessage>> SendToDesignatedChannelsAsync(IGuild guild, DesignatedChannelType designation, string content, Embed embed = null);
+        Task<IReadOnlyCollection<IMessage>> SendToDesignatedChannelsAsync(IGuild guild, DesignatedChannelType designation, string content, Embed? embed = null);
     }
 
     public class DesignatedChannelService : IDesignatedChannelService
@@ -224,7 +224,7 @@ namespace Modix.Services.Core
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyCollection<IMessage>> SendToDesignatedChannelsAsync(IGuild guild, DesignatedChannelType designation, string text, Embed embed = null)
+        public async Task<IReadOnlyCollection<IMessage>> SendToDesignatedChannelsAsync(IGuild guild, DesignatedChannelType designation, string text, Embed? embed = null)
         {
             var channels = await GetDesignatedChannelsAsync(guild, designation);
 

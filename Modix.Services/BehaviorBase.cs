@@ -102,7 +102,7 @@ namespace Modix.Services
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, $"An error occurred executing {action.Method.Name} upon {action.Target.GetType().FullName}");
+                    Log.Error(ex, $"An error occurred executing {action.Method.Name} upon {action.Target?.GetType().FullName}");
                     throw;
                 }
             }
@@ -115,7 +115,7 @@ namespace Modix.Services
         /// <typeparam name="TService">A dependency to be resolved and injected into <paramref name="action"/>.</typeparam>
         /// <param name="action">The action to be executed.</param>
         /// <returns>A <see cref="Task"/> that will complete when the operation has completed.</returns>
-        internal protected Task SelfExecuteRequest<TService>(Func<TService, Task> action)
+        internal protected Task SelfExecuteRequest<TService>(Func<TService, Task> action) where TService : notnull
         {
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
@@ -133,6 +133,8 @@ namespace Modix.Services
         /// <param name="action">The action to be executed.</param>
         /// <returns>A <see cref="Task"/> that will complete when the operation has completed.</returns>
         internal protected Task SelfExecuteRequest<TService1, TService2>(Func<TService1, TService2, Task> action)
+            where TService1 : notnull
+            where TService2 : notnull
         {
             if (action == null)
                 throw new ArgumentNullException(nameof(action));

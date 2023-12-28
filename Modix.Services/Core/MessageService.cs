@@ -22,7 +22,7 @@ namespace Modix.Services.Core
         /// A <see cref="Task"/> that will complete when the operation completes,
         /// containing the message, if found, or <see langword="null"/> if not.
         /// </returns>
-        Task<IMessage> FindMessageAsync(ulong guildId, ulong messageId);
+        Task<IMessage?> FindMessageAsync(ulong guildId, ulong messageId);
     }
 
     /// <inheritdoc />
@@ -37,7 +37,7 @@ namespace Modix.Services.Core
         }
 
         /// <inheritdoc />
-        public async Task<IMessage> FindMessageAsync(ulong guildId, ulong messageId)
+        public async Task<IMessage?> FindMessageAsync(ulong guildId, ulong messageId)
         {
             var guild = _discordSocketClient.GetGuild(guildId);
             var trackedMessage = await _messageRepository.GetMessage(messageId);

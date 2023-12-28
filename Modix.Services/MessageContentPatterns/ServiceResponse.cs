@@ -30,19 +30,9 @@ namespace Modix.Services.MessageContentPatterns
             return new ServiceResponse(false, message);
         }
 
-        public static ServiceResponse<T> Fail<T>(string message)
-        {
-            return new ServiceResponse<T>(default(T), false, message);
-        }
-
         public static ServiceResponse Ok()
         {
             return new ServiceResponse(true, string.Empty);
-        }
-
-        public static ServiceResponse<T> Ok<T>(T value)
-        {
-            return new ServiceResponse<T>(value, true, string.Empty);
         }
     }
 

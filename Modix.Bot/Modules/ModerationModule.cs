@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -148,7 +149,7 @@ namespace Modix.Modules
                 DiscordUserOrMessageAuthorEntity subject,
             [Summary("The reason for the unmute (optional).")]
             [Remainder]
-                string reason = null)
+                string? reason = null)
         {
             if (!await GetConfirmationIfRequiredAsync(subject))
             {
@@ -187,7 +188,7 @@ namespace Modix.Modules
                 DiscordUserOrMessageAuthorEntity subject,
             [Summary("The reason for the unban (optional).")]
             [Remainder]
-                string reason = null)
+                string? reason = null)
         {
             if (!await GetConfirmationIfRequiredAsync(subject))
             {
@@ -207,7 +208,12 @@ namespace Modix.Modules
             [Summary("The number of messages to delete.")]
                 int count)
         {
-            var channel = Context.Channel as ITextChannel;
+            if (Context.Channel is not ITextChannel channel)
+            {
+                await ReplyAsync("This channel cannot be pruned");
+                return;
+            }
+
             await ModerationService.DeleteMessagesAsync(
                 channel, count, true,
                     () => Context.GetUserConfirmationAsync(
@@ -236,7 +242,12 @@ namespace Modix.Modules
             [Summary("The user whose messages should be deleted.")]
                 IGuildUser user)
         {
-            var channel = Context.Channel as ITextChannel;
+            if (Context.Channel is not ITextChannel channel)
+            {
+                await ReplyAsync("This channel cannot be pruned");
+                return;
+            }
+
             await ModerationService.DeleteMessagesAsync(
                 channel, user, count,
                     () => Context.GetUserConfirmationAsync(
@@ -274,8 +285,12 @@ namespace Modix.Modules
             }
         }
 
-        private string AppendUrlsFromMessage(string reason)
+        [return: NotNullIfNotNull(nameof(reason))]
+        private string? AppendUrlsFromMessage(string? reason)
         {
+            if (reason is null)
+                return null;
+
             var urls = Context.Message.Attachments
                 .Select(x => x.Url)
                 .Where(x => !string.IsNullOrWhiteSpace(x));

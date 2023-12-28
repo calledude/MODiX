@@ -74,7 +74,7 @@ namespace Modix.Services.Test.Core
                     .Arguments[1] as Action<GuildChannelMutationData>;
 
                 var mutationData = new GuildChannelMutationData();
-                updateAction.Invoke(mutationData);
+                updateAction?.Invoke(mutationData);
 
                 mutationData.Name.ShouldBe(channelName);
             }

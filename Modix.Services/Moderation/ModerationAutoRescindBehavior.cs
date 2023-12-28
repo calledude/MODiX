@@ -81,7 +81,7 @@ namespace Modix.Services.Moderation
             return Task.CompletedTask;
         }
 
-        private void OnUpdateTimerElapsed(object sender, ElapsedEventArgs e)
+        private void OnUpdateTimerElapsed(object? sender, ElapsedEventArgs e)
         {
 #pragma warning disable CS4014
             SelfExecuteRequest<IModerationService>(async moderationService =>

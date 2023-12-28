@@ -257,7 +257,7 @@
         Snackbar.Add($"Added comment to campaign for user {username}.", Severity.Success);
     }
 
-    private async Task ToggleEditDialog(long campaignId, long commentId, PromotionSentiment oldPromotionSentiment, string oldContent)
+    private async Task ToggleEditDialog(long campaignId, long commentId, PromotionSentiment oldPromotionSentiment, string? oldContent)
     {
         var dialogParams = new DialogParameters<EditPromotionCommentDialog>
         {

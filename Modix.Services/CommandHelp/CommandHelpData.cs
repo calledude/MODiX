@@ -5,15 +5,15 @@ namespace Modix.Services.CommandHelp
 {
     public class CommandHelpData
     {
-        public string Name { get; set; }
+        public required string Name { get; init; }
 
-        public string Summary { get; set; }
+        public required string Summary { get; init; }
 
-        public IReadOnlyCollection<string> Aliases { get; set; }
+        public required IReadOnlyCollection<string> Aliases { get; init; }
 
-        public IReadOnlyCollection<ParameterHelpData> Parameters { get; set; }
+        public required IReadOnlyCollection<ParameterHelpData> Parameters { get; init; }
 
-        public bool IsSlashCommand { get; set; }
+        public bool IsSlashCommand { get; init; }
 
         public static CommandHelpData FromCommandInfo(Discord.Commands.CommandInfo command)
             => new()

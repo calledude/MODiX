@@ -42,7 +42,7 @@ namespace Modix.Services.CodePaste
 
             if (!response.IsSuccessStatusCode)
             {
-                var body = await response.Content?.ReadAsStringAsync();
+                var body = await response.Content.ReadAsStringAsync();
                 throw new Exception($"{response.StatusCode} returned when calling {response.RequestMessage?.RequestUri}. Response body: {body}");
             }
 
@@ -58,7 +58,7 @@ namespace Modix.Services.CodePaste
         /// <param name="msg">The Discord message to upload</param>
         /// <param name="code">The string to upload instead of message content</param>
         /// <returns>The URL to the newly created post</returns>
-        public async Task<string> UploadCodeAsync(IMessage msg, string code = null)
+        public async Task<string> UploadCodeAsync(IMessage msg, string? code = null)
         {
             var formatted = string.Format(Header,
                 $"{msg.Author.Username}#{msg.Author.DiscriminatorValue}", msg.Channel.Name,

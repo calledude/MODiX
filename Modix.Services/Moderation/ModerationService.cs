@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
-using Discord.WebSocket;
 using Modix.Data.Models;
 using Modix.Data.Models.Core;
 using Modix.Data.Models.Moderation;
@@ -49,7 +48,7 @@ namespace Modix.Services.Moderation
             IEnumerable<SortingCriteria>? sortingCriterias = null);
 
         Task<RecordsPage<InfractionSummary>> SearchInfractionsAsync(InfractionSearchCriteria searchCriteria,
-            IEnumerable<SortingCriteria> sortingCriteria, PagingCriteria pagingCriteria);
+            IEnumerable<SortingCriteria>? sortingCriteria, PagingCriteria pagingCriteria);
 
         Task<IDictionary<InfractionType, int>> GetInfractionCountsForUserAsync(ulong subjectId);
 
@@ -537,7 +536,7 @@ namespace Modix.Services.Moderation
         }
 
         public Task<RecordsPage<InfractionSummary>> SearchInfractionsAsync(InfractionSearchCriteria searchCriteria,
-            IEnumerable<SortingCriteria> sortingCriteria, PagingCriteria pagingCriteria)
+            IEnumerable<SortingCriteria>? sortingCriteria, PagingCriteria pagingCriteria)
         {
             _authorizationService.RequireClaims(AuthorizationClaim.ModerationRead);
 

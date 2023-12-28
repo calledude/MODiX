@@ -105,14 +105,20 @@ namespace Modix.Services.Starboard
             return messageBrief?.StarboardEntryId != null;
         }
 
-        private async Task<IUserMessage> GetStarboardEntry(IGuild guild, IMessage message)
+        private async Task<IUserMessage?> GetStarboardEntry(IGuild guild, IMessage message)
         {
             var channel = await GetStarboardChannel(guild);
+            if (channel is null)
+                return default;
+
             var brief = await _messageRepository.GetMessage(message.Id);
+            if (brief?.StarboardEntryId is null)
+                return default;
+
             return await channel.GetMessageAsync(brief.StarboardEntryId.Value) as IUserMessage;
         }
 
-        private async Task<ITextChannel> GetStarboardChannel(IGuild guild)
+        private async Task<ITextChannel?> GetStarboardChannel(IGuild guild)
         {
             var starboardChannels = await _designatedChannelService
                 .GetDesignatedChannelsAsync(guild, DesignatedChannelType.Starboard);
@@ -126,7 +132,12 @@ namespace Modix.Services.Starboard
             using (var transaction = await _messageRepository.BeginMaintainTransactionAsync())
             {
                 var messageBrief = await _messageRepository.GetMessage(message.Id);
+                if (messageBrief?.StarboardEntryId is null)
+                    return;
+
                 var channel = await GetStarboardChannel(guild);
+                if (channel is null)
+                    return;
 
                 var msg = await channel.GetMessageAsync(messageBrief.StarboardEntryId.Value);
                 if (msg != default)
@@ -168,6 +179,9 @@ namespace Modix.Services.Starboard
         public async Task AddToStarboard(IGuild guild, IUserMessage message, string content, Embed embed)
         {
             var starChannel = await GetStarboardChannel(guild);
+            if (starChannel is null)
+                return;
+
             var starEntry = await starChannel.SendMessageAsync(content, false, embed);
 
             using (var transaction = await _messageRepository.BeginMaintainTransactionAsync())

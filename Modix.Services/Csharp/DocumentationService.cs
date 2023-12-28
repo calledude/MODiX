@@ -15,7 +15,7 @@ namespace Modix.Services.Csharp
             HttpClientFactory = httpClientFactory;
         }
 
-        public async Task<DocumentationApiResponse> GetDocumentationResultsAsync(string term)
+        public async Task<DocumentationApiResponse?> GetDocumentationResultsAsync(string term)
         {
             var client = HttpClientFactory.CreateClient();
             var response = await client.GetAsync($"{ApiReferenceUrl}{term}{ApiFilter}");

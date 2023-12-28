@@ -20,9 +20,9 @@ namespace Modix
         {
             var baseResult = await base.ReadAsync(context, input, services);
 
-            if (baseResult.IsSuccess)
+            if (baseResult.IsSuccess && baseResult.BestMatch is IUser user)
             {
-                return TypeReaderResult.FromSuccess(DiscordUserEntity.FromIUser(baseResult.BestMatch as IUser));
+                return TypeReaderResult.FromSuccess(DiscordUserEntity.FromIUser(user));
             }
 
             if (ulong.TryParse(input, out var uid) || MentionUtils.TryParseUser(input, out uid))

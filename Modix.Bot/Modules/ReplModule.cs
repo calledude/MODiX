@@ -18,14 +18,14 @@ namespace Modix.Bot.Modules
 {
     public class Result
     {
-        public object ReturnValue { get; set; }
-        public string Exception { get; set; }
-        public string Code { get; set; }
-        public string ExceptionType { get; set; }
+        public object? ReturnValue { get; set; }
+        public string? Exception { get; set; }
+        public string? Code { get; set; }
+        public string? ExceptionType { get; set; }
         public TimeSpan ExecutionTime { get; set; }
         public TimeSpan CompileTime { get; set; }
-        public string ConsoleOut { get; set; }
-        public string ReturnTypeName { get; set; }
+        public string? ConsoleOut { get; set; }
+        public string? ReturnTypeName { get; set; }
     }
 
     [Name("Repl")]
@@ -123,7 +123,7 @@ namespace Modix.Bot.Modules
             await Context.Message.DeleteAsync();
         }
 
-        private async Task ModifyOrSendErrorEmbed(string error, IUserMessage message = null)
+        private async Task ModifyOrSendErrorEmbed(string error, IUserMessage? message = null)
         {
             var embed = new EmbedBuilder()
                 .WithTitle("REPL Error")
@@ -146,8 +146,17 @@ namespace Modix.Bot.Modules
             }
         }
 
-        private async Task<EmbedBuilder> BuildEmbedAsync(IGuildUser guildUser, Result parsedResult)
+        private async Task<EmbedBuilder> BuildEmbedAsync(IGuildUser guildUser, Result? parsedResult)
         {
+            if (parsedResult is null)
+            {
+                return new EmbedBuilder()
+                    .WithTitle($"REPL Result: ERROR")
+                    .WithColor(Color.Red)
+                    .WithDescription("Failed to parse the result from the REPL service")
+                    .WithUserAsAuthor(guildUser);
+            }
+
             var returnValue = parsedResult.ReturnValue?.ToString() ?? " ";
             var consoleOut = parsedResult.ConsoleOut;
             var hasException = !string.IsNullOrEmpty(parsedResult.Exception);
@@ -177,7 +186,7 @@ namespace Modix.Bot.Modules
 
             if (hasException)
             {
-                var diffFormatted = Regex.Replace(parsedResult.Exception, "^", "- ", RegexOptions.Multiline);
+                var diffFormatted = Regex.Replace(parsedResult.Exception!, "^", "- ", RegexOptions.Multiline);
                 embed.AddField(a => a.WithName($"Exception: {parsedResult.ExceptionType}".TruncateTo(EmbedFieldBuilder.MaxFieldNameLength))
                                      .WithValue(Format.Code(diffFormatted.TruncateTo(MaxFormattedFieldSize), "diff")));
                 await embed.UploadToServiceIfBiggerThan(diffFormatted, MaxFormattedFieldSize, _pasteService);
@@ -186,7 +195,7 @@ namespace Modix.Bot.Modules
             return embed;
         }
 
-        private static string FormatOrEmptyCodeblock(string input, string language)
+        private static string FormatOrEmptyCodeblock(string? input, string language)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return "```\n```";

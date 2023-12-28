@@ -30,7 +30,7 @@ namespace Modix.Modules
         [SlashCommand("list", "Lists the currently assigned claims for a user or role.")]
         public async Task ClaimsAsync(
             [Summary(description: "User or role for whom to list the claims, if any. Defaults to the current user.")]
-                IMentionable target = null)
+                IMentionable? target = null)
         {
             target ??= Context.User;
 

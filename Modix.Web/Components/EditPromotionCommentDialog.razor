@@ -35,7 +35,7 @@
     public PromotionSentiment PromotionSentiment { get; set; }
 
     [Parameter]
-    public required string Content { get; set; }
+    public required string? Content { get; set; }
 
     void Submit() => MudDialog?.Close(DialogResult.Ok((PromotionSentiment, Content)));
     void Cancel() => MudDialog?.Cancel();

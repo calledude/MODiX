@@ -30,6 +30,9 @@ namespace Modix.Configuration
                     {
                         var tokens = antiforgery.GetAndStoreTokens(fileResponse.Context);
 
+                        if (tokens.RequestToken is null)
+                            return;
+
                         fileResponse.Context.Response.Cookies.Append(
                             "XSRF-TOKEN", tokens.RequestToken, new CookieOptions() { HttpOnly = false });
                     }

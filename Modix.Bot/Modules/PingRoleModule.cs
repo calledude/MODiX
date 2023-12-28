@@ -68,7 +68,8 @@ namespace Modix.Modules
             [Summary(description: "The role to register to.")]
                 IRole targetRole)
         {
-            var user = Context.User as IGuildUser;
+            if (Context.User is not IGuildUser user)
+                return;
 
             if (user.RoleIds.Any(x => x == targetRole.Id))
             {
@@ -91,7 +92,8 @@ namespace Modix.Modules
             [Summary(description: "The role to unregister from.")]
                 IRole targetRole)
         {
-            var user = Context.User as IGuildUser;
+            if (Context.User is not IGuildUser user)
+                return;
 
             if (!user.RoleIds.Any(x => x == targetRole.Id))
             {

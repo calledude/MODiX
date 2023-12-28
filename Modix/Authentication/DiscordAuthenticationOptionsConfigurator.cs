@@ -16,11 +16,11 @@ namespace Modix.Authentication
         }
 
         public void PostConfigure(
-            string name,
+            string? name,
             DiscordAuthenticationOptions options)
         {
-            options.ClientId = _modixConfig.DiscordClientId;
-            options.ClientSecret = _modixConfig.DiscordClientSecret;
+            options.ClientId = _modixConfig.DiscordClientId!;
+            options.ClientSecret = _modixConfig.DiscordClientSecret!;
         }
 
         private readonly ModixConfig _modixConfig;

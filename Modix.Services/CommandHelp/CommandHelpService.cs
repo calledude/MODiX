@@ -27,7 +27,7 @@ namespace Modix.Services.CommandHelp
         /// <returns>
         /// Help information for the supplied query, or <see langword="null"/> if no information could be found for the supplied query.
         /// </returns>
-        ModuleHelpData GetModuleHelpData(string query);
+        ModuleHelpData? GetModuleHelpData(string query);
 
         /// <summary>
         /// Retrieves command help data for the supplied query.
@@ -36,7 +36,7 @@ namespace Modix.Services.CommandHelp
         /// <returns>
         /// Help information for the supplied query, or <see langword="null"/> if no information could be found for the supplied query.
         /// </returns>
-        CommandHelpData GetCommandHelpData(string query);
+        CommandHelpData? GetCommandHelpData(string query);
     }
 
     /// <inheritdoc />
@@ -44,7 +44,7 @@ namespace Modix.Services.CommandHelp
     {
         private readonly CommandService _commandService;
         private readonly InteractionService _interactionService;
-        private IReadOnlyCollection<ModuleHelpData> _cachedHelpData;
+        private IReadOnlyCollection<ModuleHelpData>? _cachedHelpData;
 
         public CommandHelpService(CommandService commandService, InteractionService interactionService)
         {
@@ -68,7 +68,7 @@ namespace Modix.Services.CommandHelp
             });
 
         /// <inheritdoc />
-        public ModuleHelpData GetModuleHelpData(string query)
+        public ModuleHelpData? GetModuleHelpData(string query)
         {
             var allHelpData = GetModuleHelpData();
 
@@ -92,7 +92,7 @@ namespace Modix.Services.CommandHelp
         }
 
         /// <inheritdoc />
-        public CommandHelpData GetCommandHelpData(string query)
+        public CommandHelpData? GetCommandHelpData(string query)
         {
             var allHelpData = GetModuleHelpData().SelectMany(x => x.Commands);
 

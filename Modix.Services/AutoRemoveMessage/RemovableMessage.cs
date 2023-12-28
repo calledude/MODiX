@@ -4,8 +4,8 @@ namespace Modix.Services.AutoRemoveMessage
 {
     public class RemovableMessage
     {
-        public IMessage Message { get; set; }
+        public required IMessage Message { get; init; }
 
-        public IUser[] Users { get; set; }
+        public required IUser[] Users { get; init; }
     }
 }

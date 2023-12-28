@@ -18,7 +18,7 @@ namespace Modix.Services.CommandHelp
             => services
                 .AddSingleton<ICommandHelpService, CommandHelpService>()
                 .AddScoped<CommandErrorHandler>()
-                .AddScoped<INotificationHandler<ReactionAddedNotification>>(x => x.GetService<CommandErrorHandler>())
-                .AddScoped<INotificationHandler<ReactionRemovedNotification>>(x => x.GetService<CommandErrorHandler>());
+                .AddScoped<INotificationHandler<ReactionAddedNotification>>(x => x.GetRequiredService<CommandErrorHandler>())
+                .AddScoped<INotificationHandler<ReactionRemovedNotification>>(x => x.GetRequiredService<CommandErrorHandler>());
     }
 }

@@ -46,7 +46,7 @@ namespace Modix.Modules
 
             var response = await _documentationService.GetDocumentationResultsAsync(term);
 
-            if (response.Count == 0)
+            if (response is null || response.Count == 0)
             {
                 await FollowupAsync("Could not find documentation for your requested term.");
                 return;
@@ -60,7 +60,7 @@ namespace Modix.Modules
                 embedCount++;
 
                 var urlText = $"{res.ItemType}: {res.DisplayName}";
-                var url = $"https://docs.microsoft.com{res.Url.Replace("(", "%28").Replace(")", "%29")}";
+                var url = $"https://docs.microsoft.com{res.Url?.Replace("(", "%28").Replace(")", "%29")}";
 
                 stringBuild.AppendLine(Format.Bold($"❯ {Format.Url(urlText, url)}"));
                 stringBuild.AppendLine(res.Description);

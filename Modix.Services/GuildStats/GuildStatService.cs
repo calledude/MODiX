@@ -86,11 +86,11 @@ namespace Modix.Services.GuildStats
         {
             var key = GetKeyForMsgCounts(guild, userId);
 
-            if (!_cache.TryGetValue(key, out IReadOnlyCollection<PerUserMessageCount> ret))
-            {
-                ret = await _messageRepository.GetPerUserMessageCounts(guild.Id, userId, TimeSpan.FromDays(30));
-                _cache.Set(key, ret, _msgCountCacheEntryOptions);
-            }
+            if (_cache.TryGetValue(key, out IReadOnlyCollection<PerUserMessageCount>? ret))
+                return ret ?? Array.Empty<PerUserMessageCount>();
+
+            ret = await _messageRepository.GetPerUserMessageCounts(guild.Id, userId, TimeSpan.FromDays(30));
+            _cache.Set(key, ret, _msgCountCacheEntryOptions);
 
             return ret;
         }
@@ -100,28 +100,28 @@ namespace Modix.Services.GuildStats
         {
             var key = GetKeyForGuild(guild);
 
-            if (!_cache.TryGetValue(key, out List<GuildRoleCount> ret))
+            if (_cache.TryGetValue(key, out List<GuildRoleCount>? ret))
+                return ret ?? [];
+
+            //Get all the server roles once, and memoize it
+            var serverRoles = guild.Roles.ToDictionary(d => d.Id, d => d);
+
+            var members = await guild.GetUsersAsync();
+
+            //Group the users by their highest priority role (if they have one)
+            var groupings = members.GroupBy(member => GetHighestRankingRole(serverRoles, member))
+                .Where(d => d.Key != null);
+
+            var roleCounts = groupings.OrderByDescending(d => d.Count());
+
+            ret = roleCounts.Select(d => new GuildRoleCount
             {
-                //Get all the server roles once, and memoize it
-                var serverRoles = guild.Roles.ToDictionary(d => d.Id, d => d);
+                Name = d.Key!.Name, // nullchecked in .Where() above
+                Color = GetRoleColorHex(d.Key),
+                Count = d.Count()
+            }).ToList();
 
-                var members = await guild.GetUsersAsync();
-
-                //Group the users by their highest priority role (if they have one)
-                var groupings = members.GroupBy(member => GetHighestRankingRole(serverRoles, member))
-                    .Where(d => d.Key != null);
-
-                var roleCounts = groupings.OrderByDescending(d => d.Count());
-
-                ret = roleCounts.Select(d => new GuildRoleCount
-                {
-                    Name = d.Key.Name,
-                    Color = GetRoleColorHex(d.Key),
-                    Count = d.Count()
-                }).ToList();
-
-                _cache.Set(key, ret, _roleCacheEntryOptions);
-            }
+            _cache.Set(key, ret, _roleCacheEntryOptions);
 
             return ret;
         }
@@ -141,7 +141,7 @@ namespace Modix.Services.GuildStats
         /// </summary>
         /// <param name="serverRoles">A dictionary of role IDs to roles in the server</param>
         /// <returns>The highest position role</returns>
-        private IRole GetHighestRankingRole(IDictionary<ulong, IRole> serverRoles, IGuildUser user)
+        private IRole? GetHighestRankingRole(IDictionary<ulong, IRole> serverRoles, IGuildUser user)
         {
             //Get the user's role from the cache
             var roles = user.RoleIds.Select(role => serverRoles[role]);

@@ -173,7 +173,7 @@ namespace Modix
             });
 
             // Serve up log files for maintainers only
-            app.MapWhen(x => x.Request.Path.Value.StartsWith(logFilesRequestPath), builder =>
+            app.MapWhen(x => x.Request.Path.Value?.StartsWith(logFilesRequestPath) ?? false, builder =>
             {
                 var fileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "logs"));
                 builder

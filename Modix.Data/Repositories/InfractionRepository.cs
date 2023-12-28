@@ -97,7 +97,7 @@ namespace Modix.Data.Repositories
         /// <param name="sortingCriteria">The criteria for sorting the matching records to be returned.</param>
         /// <param name="pagingCriteria">The criteria for selecting a subset of matching records to be returned.</param>
         /// <returns>A <see cref="Task"/> which will complete when the matching records have been retrieved.</returns>
-        Task<RecordsPage<InfractionSummary>> SearchSummariesPagedAsync(InfractionSearchCriteria searchCriteria, IEnumerable<SortingCriteria> sortingCriteria, PagingCriteria pagingCriteria);
+        Task<RecordsPage<InfractionSummary>> SearchSummariesPagedAsync(InfractionSearchCriteria searchCriteria, IEnumerable<SortingCriteria>? sortingCriteria, PagingCriteria pagingCriteria);
 
         /// <summary>
         /// Marks an existing infraction as rescinded, based on its ID.
@@ -224,7 +224,7 @@ namespace Modix.Data.Repositories
         }
 
         /// <inheritdoc />
-        public async Task<RecordsPage<InfractionSummary>> SearchSummariesPagedAsync(InfractionSearchCriteria searchCriteria, IEnumerable<SortingCriteria> sortingCriteria, PagingCriteria pagingCriteria)
+        public async Task<RecordsPage<InfractionSummary>> SearchSummariesPagedAsync(InfractionSearchCriteria searchCriteria, IEnumerable<SortingCriteria>? sortingCriteria, PagingCriteria pagingCriteria)
         {
             var sourceQuery = ModixContext.Set<InfractionEntity>().AsNoTracking().AsExpandable();
 

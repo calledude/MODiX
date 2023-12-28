@@ -141,7 +141,7 @@ namespace Modix.Services.Test.Core
                 .First();
 
             criteria.GuildId.ShouldBe(guildId);
-            criteria.RoleIds.ShouldBeSetEqualTo(roleIds);
+            criteria.RoleIds?.ShouldBeSetEqualTo(roleIds);
             criteria.Type.ShouldBe(designation);
             criteria.IsDeleted.ShouldBe(false);
 

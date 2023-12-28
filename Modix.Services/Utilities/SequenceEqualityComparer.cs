@@ -6,8 +6,13 @@ namespace Modix.Services.Utilities
 {
     public class SequenceEqualityComparer<T> : IEqualityComparer<IReadOnlyCollection<T>>
     {
-        public bool Equals(IReadOnlyCollection<T> x, IReadOnlyCollection<T> y)
-            => x.SequenceEqual(y);
+        public bool Equals(IReadOnlyCollection<T>? x, IReadOnlyCollection<T>? y)
+        {
+            if (x == null || y == null)
+                return false;
+
+            return x.SequenceEqual(y);
+        }
 
         public int GetHashCode(IReadOnlyCollection<T> obj)
         {

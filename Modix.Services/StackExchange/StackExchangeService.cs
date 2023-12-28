@@ -21,7 +21,7 @@ namespace Modix.Services.StackExchange
             HttpClientFactory = httpClientFactory;
         }
 
-        public async Task<StackExchangeResponse> GetStackExchangeResultsAsync(string token, string phrase, string site, string tags)
+        public async Task<StackExchangeResponse?> GetStackExchangeResultsAsync(string token, string phrase, string site, string tags)
         {
             _apiReferenceUrl = string.Format(_apiReferenceUrl, token);
             phrase = Uri.EscapeDataString(phrase);

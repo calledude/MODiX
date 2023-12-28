@@ -56,7 +56,6 @@ namespace Modix.Modules
                 return;
             }
 
-            var guildUser = Context.User as IGuildUser;
             var message = await Context.Channel.SendMessageAsync("Working...");
 
             var content = FormatUtilities.BuildContent(code);
@@ -91,7 +90,7 @@ namespace Modix.Modules
 
             var parsedResult = await res.Content.ReadAsStringAsync();
 
-            var embed = await BuildEmbedAsync(guildUser, code, parsedResult);
+            var embed = await BuildEmbedAsync(Context.User, code, parsedResult);
 
             await _autoRemoveMessageService.RegisterRemovableMessageAsync(Context.User, embed, async (e) =>
             {
@@ -106,7 +105,7 @@ namespace Modix.Modules
             await Context.Message.DeleteAsync();
         }
 
-        private async Task<EmbedBuilder> BuildEmbedAsync(IGuildUser guildUser, string code, string result)
+        private async Task<EmbedBuilder> BuildEmbedAsync(IUser user, string code, string result)
         {
             var failed = result.Contains("Emit Failed");
 
@@ -114,7 +113,7 @@ namespace Modix.Modules
                .WithTitle("Decompile Result")
                .WithDescription(result.Contains("Emit Failed") ? "Failed" : "Successful")
                .WithColor(failed ? new Color(255, 0, 0) : new Color(0, 255, 0))
-               .WithUserAsAuthor(guildUser);
+               .WithUserAsAuthor(user);
 
             embed.AddField(a => a.WithName("Code").WithValue(Format.Code(code, "cs")));
 

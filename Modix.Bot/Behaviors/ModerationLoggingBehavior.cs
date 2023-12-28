@@ -7,8 +7,6 @@ using Discord;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
-using Modix.Bot.Extensions;
 using Modix.Common.Extensions;
 using Modix.Data.Models.Core;
 using Modix.Data.Models.Moderation;
@@ -47,6 +45,9 @@ namespace Modix.Behaviors
                 return;
 
             var moderationAction = await ModerationService.GetModerationActionSummaryAsync(moderationActionId);
+
+            if (moderationAction is null)
+                return;
 
             if (!_renderTemplates.TryGetValue((moderationAction.Type, moderationAction.Infraction?.Type), out var renderTemplate))
                 return;
@@ -94,7 +95,7 @@ namespace Modix.Behaviors
             => _lazyModerationService.Value;
         private readonly Lazy<IModerationService> _lazyModerationService;
 
-        internal protected static ModixConfig Config { get; private set; }
+        private ModixConfig Config { get; }
 
         // https://modix.gg/logs/deletedMessages?batchId={14}
         private string GetBatchUrl(long? batchId)

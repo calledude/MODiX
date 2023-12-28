@@ -14,7 +14,7 @@ namespace Modix.Services.Wikipedia
             HttpClientFactory = httpClientFactory;
         }
 
-        public async Task<WikipediaResponse> GetWikipediaResultsAsync(string phrase)
+        public async Task<WikipediaResponse?> GetWikipediaResultsAsync(string phrase)
         {
             var query = string.Join(" ", phrase);
             query = WebUtility.UrlEncode(query);

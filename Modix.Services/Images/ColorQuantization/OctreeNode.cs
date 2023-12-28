@@ -10,6 +10,6 @@
 
         public int BCount { get; set; }
 
-        public OctreeNode[] Children { get; } = new OctreeNode[8];
+        public OctreeNode?[] Children { get; } = new OctreeNode?[8];
     }
 }

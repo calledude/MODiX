@@ -164,7 +164,8 @@
             var currentUser = DiscordHelper.GetCurrentUser();
 
             await TagService.CreateTagAsync(currentUser!.Guild.Id, currentUser.Id, _tagNameValue, _tagContentValue);
-            var createdTag = await TagService.GetTagAsync(currentUser.Guild.Id, _tagNameValue);
+            var createdTag = await TagService.GetTagAsync(currentUser.Guild.Id, _tagNameValue!)
+                ?? throw new InvalidOperationException("Tag was not created properly");
 
             Data = Data!.Append(TagData.CreateFromSummary(createdTag)).ToArray();
             Snackbar.Add($"Tag '{_tagNameValue}' created.", Severity.Success);

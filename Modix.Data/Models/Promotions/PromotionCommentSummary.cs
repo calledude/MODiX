@@ -28,7 +28,7 @@ namespace Modix.Data.Models.Promotions
         /// <summary>
         /// See <see cref="PromotionCommentEntity.Content"/>.
         /// </summary>
-        public string Content { get; set; } = null!;
+        public string? Content { get; set; }
 
         /// <summary>
         /// See <see cref="PromotionCommentEntity.CreateAction"/>.

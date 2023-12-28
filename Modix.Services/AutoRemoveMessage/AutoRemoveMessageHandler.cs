@@ -47,8 +47,8 @@ namespace Modix.Services.AutoRemoveMessage
 
             if (cancellationToken.IsCancellationRequested
                 || notification.Reaction.Emote.Name != "❌"
-                || !Cache.TryGetValue(key, out RemovableMessage cachedMessage)
-                || !cachedMessage.Users.Any(user => user.Id == notification.Reaction.UserId))
+                || !Cache.TryGetValue(key, out RemovableMessage? cachedMessage)
+                || !(cachedMessage?.Users.Any(user => user.Id == notification.Reaction.UserId) ?? false))
             {
                 return;
             }

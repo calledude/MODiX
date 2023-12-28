@@ -5,15 +5,15 @@ namespace Modix.Services.CommandHelp
 {
     public class ParameterHelpData
     {
-        public string Name { get; set; }
+        public required string Name { get; init; }
 
-        public string Summary { get; set; }
+        public required string Summary { get; init; }
 
-        public string Type { get; set; }
+        public required string Type { get; init; }
 
         public bool IsOptional { get; set; }
 
-        public IReadOnlyCollection<string> Options { get; set; }
+        public required IReadOnlyCollection<string> Options { get; init; }
 
         public static ParameterHelpData FromParameterInfo(Discord.Commands.ParameterInfo parameter)
             => BuildHelpData(parameter.Name, parameter.Summary, parameter.Type, !parameter.IsOptional);

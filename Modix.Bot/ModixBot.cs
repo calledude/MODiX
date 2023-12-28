@@ -29,7 +29,7 @@ namespace Modix
         private readonly DiscordSerilogAdapter _serilogAdapter;
         private readonly IHostApplicationLifetime _applicationLifetime;
         private readonly IHostEnvironment _env;
-        private IServiceScope _scope;
+        private IServiceScope? _scope;
         private readonly ConcurrentDictionary<ICommandContext, IServiceScope> _commandScopes = new();
 
         public ModixBot(
@@ -65,7 +65,7 @@ namespace Modix
 
             Log.LogInformation("Starting bot background service.");
 
-            IServiceScope scope = null;
+            IServiceScope? scope = null;
             try
             {
                 // Create a new scope for the session.
@@ -201,7 +201,7 @@ namespace Modix
 
         private async Task StartClient(CancellationToken cancellationToken)
         {
-            var whenReadySource = new TaskCompletionSource<object>();
+            var whenReadySource = new TaskCompletionSource();
 
             try
             {
@@ -229,7 +229,7 @@ namespace Modix
                 _client.Ready -= OnClientReady;
                 await _client.SetGameAsync(_config.WebsiteBaseUrl);
 
-                whenReadySource.SetResult(null);
+                whenReadySource.SetResult();
             }
         }
     }

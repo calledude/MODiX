@@ -33,7 +33,14 @@ namespace Modix.Modules
             [Summary(description : "The emoji to jumbofy.")]
                 IEmote emoji)
         {
-            var emojiUrl = EmojiUtilities.GetUrl(emoji.ToString());
+            var emojiString = emoji.ToString();
+            if (emojiString is null)
+            {
+                await FollowupAsync($"Sorry {Context.User.Mention}, I don't recognize that emoji.", allowedMentions: new AllowedMentions { UserIds = new() { Context.User.Id } });
+                return;
+            }
+
+            var emojiUrl = EmojiUtilities.GetUrl(emojiString);
 
             try
             {
@@ -44,7 +51,6 @@ namespace Modix.Modules
             }
             catch (HttpRequestException ex)
             {
-
                 Log.Warning(ex, "Failed jumbofying emoji");
                 await FollowupAsync($"Sorry {Context.User.Mention}, I don't recognize that emoji.", allowedMentions: new AllowedMentions { UserIds = new() { Context.User.Id } });
             }
@@ -53,7 +59,7 @@ namespace Modix.Modules
         [SlashCommand("avatar", "Gets an avatar for a user.")]
         public async Task GetAvatarAsync(
             [Summary(description: "User that has the avatar.")]
-                IUser user = null,
+                IUser? user = null,
             [Summary(description: "Size for the avatar, defaults to 128.")]
             [MinValue(MinimumAvatarSize)]
             [MaxValue(MaximumAvatarSize)]
@@ -95,7 +101,7 @@ namespace Modix.Modules
         [SlashCommand("guild-avatar", "Gets a guild-specific avatar for a user.")]
         public async Task GetGuildAvatarAsync(
             [Summary(description: "User that has the avatar.")]
-                IGuildUser user = null,
+                IGuildUser? user = null,
             [Summary(description: "Size for the avatar, defaults to 128.")]
             [MinValue(MinimumAvatarSize)]
             [MaxValue(MaximumAvatarSize)]

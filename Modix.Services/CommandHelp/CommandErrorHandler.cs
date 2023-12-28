@@ -20,11 +20,11 @@ namespace Modix.Services.CommandHelp
 
         //This relates user messages with errors
         private ConcurrentDictionary<ulong, string> AssociatedErrors =>
-            _memoryCache.GetOrCreate(AssociatedErrorsKey, _ => new ConcurrentDictionary<ulong, string>());
+            _memoryCache.GetOrCreate(AssociatedErrorsKey, _ => new ConcurrentDictionary<ulong, string>())!;
 
         //This relates user messages to modix messages containing errors
         private ConcurrentDictionary<ulong, ulong> ErrorReplies =>
-            _memoryCache.GetOrCreate(ErrorRepliesKey, _ => new ConcurrentDictionary<ulong, ulong>());
+            _memoryCache.GetOrCreate(ErrorRepliesKey, _ => new ConcurrentDictionary<ulong, ulong>())!;
 
         private const string _emoji = "⚠";
         private readonly IEmote _emote = new Emoji(_emoji);

@@ -2,8 +2,8 @@
 {
     public class GuildRoleCount
     {
-        public string Name { get; set; }
-        public int Count { get; set; }
-        public string Color { get; set; }
+        public required string Name { get; init; }
+        public required int Count { get; init; }
+        public required string Color { get; init; }
     }
 }

@@ -16,12 +16,14 @@ namespace Modix.Modules
     public class StackExchangeModule : InteractionModuleBase
     {
         private readonly StackExchangeService _stackExchangeService;
-        private readonly string? _stackOverflowToken;
+        private readonly string _stackOverflowToken;
 
         public StackExchangeModule(
             IOptions<ModixConfig> config,
             StackExchangeService stackExchangeService)
         {
+            ArgumentNullException.ThrowIfNull(config.Value.StackoverflowToken);
+
             _stackExchangeService = stackExchangeService;
             _stackOverflowToken = config.Value.StackoverflowToken;
         }
@@ -61,7 +63,13 @@ namespace Modix.Modules
             tags ??= "c#";
 
             var response = await _stackExchangeService.GetStackExchangeResultsAsync(_stackOverflowToken, phrase, site, tags);
-            var filteredRes = response.Items.Where(x => x.Tags.Contains(tags));
+            if (response?.Items is null)
+            {
+                await ReplyAsync("Invalid response received from StackExchange API");
+                return;
+            }
+
+            var filteredRes = response.Items.Where(x => x.Tags?.Contains(tags) ?? false);
 
             var firstResponse = true;
 

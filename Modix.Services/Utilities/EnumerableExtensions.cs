@@ -40,7 +40,7 @@ namespace Modix.Services.Utilities
             }
         }
 
-        public static IEnumerable<(TFirst First, TSecond Second)> ZipOrDefault<TFirst, TSecond>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second)
+        public static IEnumerable<(TFirst? First, TSecond? Second)> ZipOrDefault<TFirst, TSecond>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second)
         {
             using var e1 = first.GetEnumerator();
             using var e2 = second.GetEnumerator();

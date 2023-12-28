@@ -8,13 +8,13 @@ namespace Modix.Services.CommandHelp
 {
     public class ModuleHelpData
     {
-        public string Name { get; set; }
+        public required string Name { get; init; }
 
-        public string Summary { get; set; }
+        public required string Summary { get; init; }
 
-        public IReadOnlyCollection<CommandHelpData> Commands { get; set; }
+        public required IReadOnlyCollection<CommandHelpData> Commands { get; init; }
 
-        public IReadOnlyCollection<string> HelpTags { get; set; }
+        public required IReadOnlyCollection<string> HelpTags { get; init; }
 
         public static ModuleHelpData FromModuleInfo(Discord.Commands.ModuleInfo module)
         {
@@ -41,7 +41,7 @@ namespace Modix.Services.CommandHelp
             return new()
             {
                 Name = GetModuleHelpName(moduleHelp?.Name ?? module.Name),
-                Summary = !string.IsNullOrWhiteSpace(moduleHelp.Description) ? moduleHelp.Description
+                Summary = !string.IsNullOrWhiteSpace(moduleHelp?.Description) ? moduleHelp.Description
                     : !string.IsNullOrWhiteSpace(module.Description) ? module.Description : "No summary",
                 Commands = module.SlashCommands
                     .Where(x => !ShouldBeHidden(x))

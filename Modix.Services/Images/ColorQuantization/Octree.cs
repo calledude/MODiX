@@ -14,11 +14,7 @@ namespace Modix.Services.Images.ColorQuantization
             for (var i = 0; i < 8; i++)
             {
                 var index = GetOctreeIndex(color, i);
-
-                if (node.Children[index] is null)
-                    node.Children[index] = new OctreeNode();
-
-                node = node.Children[index];
+                node = (node.Children[index] ??= new OctreeNode());
             }
 
             node.ReferenceCount++;

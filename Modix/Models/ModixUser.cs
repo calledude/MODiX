@@ -8,22 +8,19 @@ namespace Modix.Models
 {
     public class ModixUser
     {
-        public string Name { get; set; }
+        public required string Name { get; init; }
         public ulong UserId { get; set; }
-        public string AvatarHash { get; set; }
-        public List<string> Claims { get; set; }
+        public string? AvatarHash { get; set; }
+        public List<string>? Claims { get; set; }
         public ulong SelectedGuild { get; set; }
 
-        public static ModixUser FromClaimsPrincipal(ClaimsPrincipal user)
+        public static ModixUser FromClaimsPrincipal(string name, IEnumerable<Claim> claims)
         {
-            if (user?.Identity?.Name == null)
-            { return null; }
-
             var ret = new ModixUser
             {
-                Name = user.Identity.Name,
-                UserId = ulong.Parse(user.Claims.FirstOrDefault(d => d.Type == ClaimTypes.NameIdentifier).Value),
-                Claims = user.Claims.Where(d => d.Type == ClaimTypes.Role).Select(d => d.Value).ToList()
+                Name = name,
+                UserId = ulong.Parse(claims.FirstOrDefault(d => d.Type == ClaimTypes.NameIdentifier)?.Value ?? "0"),
+                Claims = claims.Where(d => d.Type == ClaimTypes.Role).Select(d => d.Value).ToList()
             };
 
             return ret;

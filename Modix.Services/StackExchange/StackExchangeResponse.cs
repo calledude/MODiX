@@ -16,17 +16,17 @@ namespace Modix.Services.StackExchange
         public int QuotaRemaining { get; set; }
 
         [JsonProperty("items")]
-        public ICollection<StackExchangeResponseItem> Items { get; set; }
+        public ICollection<StackExchangeResponseItem>? Items { get; set; }
     }
 
     [JsonObject]
     public class StackExchangeResponseItem
     {
         [JsonProperty("tags")]
-        public ICollection<string> Tags { get; set; }
+        public ICollection<string>? Tags { get; set; }
 
         [JsonProperty("owner")]
-        public StackExchangeResponseOwner Owner { get; set; }
+        public StackExchangeResponseOwner? Owner { get; set; }
 
         [JsonProperty("is_answered")]
         public bool IsAnswered { get; set; }
@@ -59,10 +59,10 @@ namespace Modix.Services.StackExchange
         public int QuestionId { get; set; }
 
         [JsonProperty("link")]
-        public string Link { get; set; }
+        public string? Link { get; set; }
 
         [JsonProperty("title")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
     }
 
     [JsonObject]
@@ -75,18 +75,18 @@ namespace Modix.Services.StackExchange
         public int UserId { get; set; }
 
         [JsonProperty("user_type")]
-        public string UserType { get; set; }
+        public string? UserType { get; set; }
 
         [JsonProperty("accept_rate")]
         public int AcceptRate { get; set; }
 
         [JsonProperty("profile_image")]
-        public string ProfileImage { get; set; }
+        public string? ProfileImage { get; set; }
 
         [JsonProperty("display_name")]
-        public string DisplayName { get; set; }
+        public string? DisplayName { get; set; }
 
         [JsonProperty("link")]
-        public string Link { get; set; }
+        public string? Link { get; set; }
     }
 }

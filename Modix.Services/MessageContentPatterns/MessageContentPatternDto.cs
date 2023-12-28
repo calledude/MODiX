@@ -12,7 +12,7 @@ namespace Modix.Services.MessageContentPatterns
             Type = patternType;
         }
 
-        private Regex _regex;
+        private Regex? _regex;
 
         public Regex Regex => _regex ??= BuildRegex();
         public string Pattern { get; }
