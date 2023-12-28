@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Modix.Data;
@@ -54,7 +53,7 @@ namespace Modix.Services.Test.Tags
         [Test]
         public async Task CreateTagAsync_TagAlreadyExistsWithSameCasing_Throws()
         {
-            (var autoMocker, var sut, var db) = GetSut();
+            (var _, var sut, var db) = GetSut();
 
             db.Set<TagEntity>().Add(new Data.Models.Tags.TagEntity
             {
@@ -70,7 +69,7 @@ namespace Modix.Services.Test.Tags
         [Test]
         public async Task CreateTagAsync_TagAlreadyExistsWithDifferentCasing_Throws()
         {
-            (var autoMocker, var sut, var db) = GetSut();
+            (var _, var sut, var db) = GetSut();
 
             db.Set<TagEntity>().Add(new Data.Models.Tags.TagEntity
             {

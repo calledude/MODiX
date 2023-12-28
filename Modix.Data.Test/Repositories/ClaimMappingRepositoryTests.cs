@@ -291,7 +291,7 @@ namespace Modix.Data.Test.Repositories
         [TestCaseSource(nameof(ValidSearchCriteriaAndResultIdsTestCases))]
         public async Task SearchBriefsAsync_ClaimMappingsExist_ReturnsMatchingBriefs(ClaimMappingSearchCriteria criteria, long[] resultIds)
         {
-            (var modixContext, var uut) = BuildTestContext();
+            (var _, var uut) = BuildTestContext();
 
             var result = await uut.SearchBriefsAsync(criteria);
 
