@@ -99,9 +99,9 @@ namespace Modix.Modules
         {
             stringBuilder
                 .AppendLine(Format.Bold("\u276F Guild Information"))
-                .AppendLine($"ID: {guild.Id}")
-                .AppendLine($"Owner: {MentionUtils.MentionUser(guild.OwnerId)}")
-                .AppendLine($"Created: {FormatUtilities.FormatTimeAgo(_utcNow, guild.CreatedAt)}")
+                .Append("ID: ").Append(guild.Id).AppendLine()
+                .Append("Owner: ").AppendLine(MentionUtils.MentionUser(guild.OwnerId))
+                .Append("Created: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, guild.CreatedAt))
                 .AppendLine();
         }
 
@@ -116,12 +116,12 @@ namespace Modix.Modules
 
             stringBuilder
                 .AppendLine(Format.Bold("\u276F Guild Participation"))
-                .AppendLine($"Last 7 days: {"message".ToQuantity(weekTotal, "n0")}")
-                .AppendLine($"Last 30 days: {"message".ToQuantity(monthTotal, "n0")}")
-                .AppendLine($"Avg. per day: {"message".ToQuantity(monthTotal / 30, "n0")}");
+                .Append("Last 7 days: ").AppendLine("message".ToQuantity(weekTotal, "n0"))
+                .Append("Last 30 days: ").AppendLine("message".ToQuantity(monthTotal, "n0"))
+                .Append("Avg. per day: ").AppendLine("message".ToQuantity(monthTotal / 30, "n0"));
 
             stringBuilder
-                .AppendLine($"Most active channel: {MentionUtils.MentionChannel(mostActiveChannel.Key)} ({"message".ToQuantity(mostActiveChannel.Value, "n0")} in 30 days)");
+                .Append("Most active channel: ").Append(MentionUtils.MentionChannel(mostActiveChannel.Key)).Append(" (").Append("message".ToQuantity(mostActiveChannel.Value, "n0")).AppendLine(" in 30 days)");
 
             var emojiCounts = await _emojiRepository.GetEmojiStatsAsync(guild.Id, SortDirection.Ascending, 1);
 
@@ -133,7 +133,7 @@ namespace Modix.Modules
                     ? favoriteEmoji.Emoji.ToString()
                     : $"{Format.Url("❔", favoriteEmoji.Emoji.Url)} (`{favoriteEmoji.Emoji.Name}`)";
 
-                stringBuilder.AppendLine($"Favorite emoji: {emojiFormatted} ({"time".ToQuantity(favoriteEmoji.Uses)})");
+                stringBuilder.Append("Favorite emoji: ").Append(emojiFormatted).Append(" (").Append("time".ToQuantity(favoriteEmoji.Uses)).AppendLine(")");
             }
 
             stringBuilder.AppendLine();
@@ -147,9 +147,9 @@ namespace Modix.Modules
 
             stringBuilder
                 .AppendLine(Format.Bold("\u276F Member Information"))
-                .AppendLine($"Total member count: {members}")
-                .AppendLine($"• Humans: {humans}")
-                .AppendLine($"• Bots: {bots}")
+                .Append("Total member count: ").Append(members).AppendLine()
+                .Append("• Humans: ").Append(humans).AppendLine()
+                .Append("• Bots: ").Append(bots).AppendLine()
                 .AppendLine();
         }
 

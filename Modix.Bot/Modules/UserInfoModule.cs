@@ -107,9 +107,9 @@ namespace Modix.Modules
 
             var builder = new StringBuilder();
             builder.AppendLine("**\u276F User Information**");
-            builder.AppendLine("ID: " + user.Id);
-            builder.AppendLine("Profile: " + MentionUtils.MentionUser(user.Id));
-            builder.AppendLine($"Username: {user.Username}");
+            builder.Append("ID: ").Append(user.Id).AppendLine();
+            builder.Append("Profile: ").AppendLine(MentionUtils.MentionUser(user.Id));
+            builder.Append("Username: ").AppendLine(user.Username);
 
             var embedBuilder = new EmbedBuilder()
                 .WithUserAsAuthor(userInfo)
@@ -135,17 +135,17 @@ namespace Modix.Modules
 
                 if (moderationRead)
                 {
-                    builder.AppendLine($"Ban reason: {userInfo.BanReason}");
+                    builder.Append("Ban reason: ").AppendLine(userInfo.BanReason);
                 }
             }
 
-            builder.AppendLine($"Created: {FormatUtilities.FormatTimeAgo(_utcNow, userInfo.CreatedAt)}");
+            builder.Append("Created: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, userInfo.CreatedAt));
 
             if (userInfo.FirstSeen is DateTimeOffset firstSeen)
-                builder.AppendLine($"First seen: {FormatUtilities.FormatTimeAgo(_utcNow, firstSeen)}");
+                builder.Append("First seen: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, firstSeen));
 
             if (userInfo.LastSeen is DateTimeOffset lastSeen)
-                builder.AppendLine($"Last seen: {FormatUtilities.FormatTimeAgo(_utcNow, lastSeen)}");
+                builder.Append("Last seen: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, lastSeen));
 
             if (userInfo.FirstSeen is not null)
             {
@@ -201,12 +201,12 @@ namespace Modix.Modules
 
             if (!string.IsNullOrEmpty(member.Nickname))
             {
-                builder.AppendLine("Nickname: " + Format.Sanitize(member.Nickname));
+                builder.Append("Nickname: ").AppendLine(Format.Sanitize(member.Nickname));
             }
 
             if (member.JoinedAt is DateTimeOffset joinedAt)
             {
-                builder.AppendLine($"Joined: {FormatUtilities.FormatTimeAgo(_utcNow, joinedAt)}");
+                builder.Append("Joined: ").AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, joinedAt));
             }
 
             if (member.RoleIds?.Count > 0)
@@ -220,7 +220,7 @@ namespace Modix.Modules
                     Array.Sort(roles); // Sort by position: lowest positioned role is first
                     Array.Reverse(roles); // Reverse the sort: highest positioned role is first
 
-                    builder.Append($"{"Role".ToQuantity(roles.Length, ShowQuantityAs.None)}: ");
+                    builder.Append("Role".ToQuantity(roles.Length, ShowQuantityAs.None)).Append(": ");
                     builder.AppendLine(roles.Select(r => r.Mention).Humanize());
                 }
             }
@@ -236,7 +236,7 @@ namespace Modix.Modules
             }.RemoveDefaultPort().ToString();
 
             builder.AppendLine();
-            builder.AppendLine($"**\u276F Infractions [see here]({url})**");
+            builder.Append("**\u276F Infractions [see here](").Append(url).AppendLine(")**");
 
             if (!(Context.Channel as IGuildChannel).IsPublic() || ephemeral)
             {
@@ -287,7 +287,7 @@ namespace Modix.Modules
             }
 
             builder.AppendLine(weekParticipation);
-            builder.AppendLine("Last 30 days: " + monthTotal + " messages");
+            builder.Append("Last 30 days: ").Append(monthTotal).AppendLine(" messages");
 
             if (monthTotal > 0)
             {
@@ -304,7 +304,7 @@ namespace Modix.Modules
 
                         if (channel.IsPublic())
                         {
-                            builder.AppendLine($"Most active channel: {MentionUtils.MentionChannel(channel.Id)} ({channelMessageCount.MessageCount} messages)");
+                            builder.Append("Most active channel: ").Append(MentionUtils.MentionChannel(channel.Id)).Append(" (").Append(channelMessageCount.MessageCount).AppendLine(" messages)");
                             break;
                         }
                     }
@@ -323,7 +323,7 @@ namespace Modix.Modules
                     ? favoriteEmoji.Emoji.ToString()
                     : $"{Format.Url("❔", favoriteEmoji.Emoji.Url)} (`{favoriteEmoji.Emoji.Name}`)";
 
-                builder.AppendLine($"Favorite emoji: {emojiFormatted} ({"time".ToQuantity(favoriteEmoji.Uses)})");
+                builder.Append("Favorite emoji: ").Append(emojiFormatted).Append(" (").Append("time".ToQuantity(favoriteEmoji.Uses)).AppendLine(")");
             }
         }
 
@@ -359,7 +359,7 @@ namespace Modix.Modules
 
             foreach (var promotion in promotions.OrderByDescending(x => x.CloseAction!.Id).Take(5))
             {
-                builder.AppendLine($"• {MentionUtils.MentionRole(promotion.TargetRole.Id)} {FormatUtilities.FormatTimeAgo(_utcNow, promotion.CloseAction!.Created)}");
+                builder.Append("• ").Append(MentionUtils.MentionRole(promotion.TargetRole.Id)).Append(' ').AppendLine(FormatUtilities.FormatTimeAgo(_utcNow, promotion.CloseAction!.Created));
             }
         }
     }

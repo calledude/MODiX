@@ -68,9 +68,13 @@ namespace Modix.Modules
 
                 if (embedCount == 3)
                 {
-                    stringBuild.Append(
-                        $"{embedCount}/{response.Results.Count} results shown ~ [click here for more results](https://docs.microsoft.com/dotnet/api/?term={term})"
-                    );
+                    stringBuild
+                        .Append(embedCount)
+                        .Append('/')
+                        .Append(response.Results.Count)
+                        .Append(" results shown ~ [click here for more results](https://docs.microsoft.com/dotnet/api/?term=")
+                        .Append(term)
+                        .Append(')');
                 }
             }
 

@@ -15,7 +15,7 @@ namespace Modix.Modules
         public async Task GetBlacklistAsync()
         {
             var blacklistBuilder = new StringBuilder()
-                .AppendLine($"{Format.Bold("Blacklisted Extensions")}:")
+                .Append(Format.Bold("Blacklisted Extensions")).AppendLine(":")
                 .Append("```")
                 .AppendJoin(", ", AttachmentBlacklistBehavior.BlacklistedExtensions.OrderBy(d => d))
                 .Append("```");

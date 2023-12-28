@@ -127,15 +127,15 @@ namespace Modix.Modules
             var sb = new StringBuilder(emojiFormatted);
 
             if (ephemeralEmoji.Id != null)
-                sb.Append($" (`:{ephemeralEmoji.Name}:`)");
+                sb.Append(" (`:").Append(ephemeralEmoji.Name).Append(":`)");
 
             sb.AppendLine()
-                .AppendLine($"• {"use".ToQuantity(emojiStats.Uses)}")
-                .AppendLine($"• {percentUsage:0.0}% of all emoji uses")
-                .AppendLine($"• {perDay:0.0/day}");
+                .Append("• ").AppendLine("use".ToQuantity(emojiStats.Uses))
+                .Append("• ").AppendFormat("{0:0.0}", percentUsage).AppendLine("% of all emoji uses")
+                .Append("• ").AppendFormat("{0:0.0/day}", perDay).AppendLine();
 
             if (emojiStats.TopUserId != default)
-                sb.AppendLine($"• Top user: {MentionUtils.MentionUser(emojiStats.TopUserId)} ({"use".ToQuantity(emojiStats.TopUserUses)})");
+                sb.Append("• Top user: ").Append(MentionUtils.MentionUser(emojiStats.TopUserId)).Append(" (").Append("use".ToQuantity(emojiStats.TopUserUses)).AppendLine(")");
 
             var embed = new EmbedBuilder()
                 .WithAuthor(Context.Guild.Name, Context.Guild.IconUrl)
@@ -196,13 +196,12 @@ namespace Modix.Modules
 
                 var perDay = perDayStat(emojiStat);
 
-                builder.Append($"{emojiStat.Rank}.")
-                    .Append($" {emojiFormatted}")
-                    .Append($" ({"use".ToQuantity(emojiStat.Uses)})")
-                    .Append($" ({percentUsage:0.0}%),")
-                    .Append($" {perDay:0.0/day}")
-                    .Append(canAccess ? string.Empty : $" ({Format.Url($":{emoji.Name}:", emoji.Url)})")
-                    .AppendLine();
+                builder.Append(emojiStat.Rank).Append('.')
+                    .Append(' ').Append(emojiFormatted)
+                    .Append(" (").Append("use".ToQuantity(emojiStat.Uses)).Append(')')
+                    .Append(" (").AppendFormat("{0:0.0}", percentUsage).Append("%),")
+                    .Append(' ').AppendFormat("{0:0.0/day}", perDay)
+                    .AppendLine(canAccess ? string.Empty : $" ({Format.Url($":{emoji.Name}:", emoji.Url)})");
             }
         }
     }

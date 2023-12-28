@@ -150,7 +150,7 @@ namespace Modix.Modules
 
             foreach (var alias in FormatUtilities.CollapsePlurals(aliases))
             {
-                stringBuilder.AppendLine($"• {alias}");
+                stringBuilder.Append("• ").AppendLine(alias);
             }
 
             return stringBuilder;
@@ -167,7 +167,7 @@ namespace Modix.Modules
             foreach (var parameter in parameters)
             {
                 if (parameter.Summary is not null)
-                    stringBuilder.AppendLine($"• {Format.Bold(parameter.Name)}: {parameter.Summary}");
+                    stringBuilder.Append("• ").Append(Format.Bold(parameter.Name)).Append(": ").AppendLine(parameter.Summary);
             }
 
             return stringBuilder;
@@ -180,9 +180,9 @@ namespace Modix.Modules
             foreach (var parameter in info.Parameters)
             {
                 if (parameter.IsOptional)
-                    sb.Append($"[{parameter.Name}]");
+                    sb.Append('[').Append(parameter.Name).Append(']');
                 else
-                    sb.Append($"<{parameter.Name}>");
+                    sb.Append('<').Append(parameter.Name).Append('>');
             }
 
             return sb.ToString();
