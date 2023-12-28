@@ -141,10 +141,10 @@ namespace Modix.Modules
             return embedBuilder;
         }
 
-        private static StringBuilder AppendAliases(StringBuilder stringBuilder, IReadOnlyCollection<string> aliases)
+        private static void AppendAliases(StringBuilder stringBuilder, IReadOnlyCollection<string> aliases)
         {
             if (aliases.Count == 0)
-                return stringBuilder;
+                return;
 
             stringBuilder.AppendLine(Format.Bold("Aliases:"));
 
@@ -152,15 +152,13 @@ namespace Modix.Modules
             {
                 stringBuilder.Append("• ").AppendLine(alias);
             }
-
-            return stringBuilder;
         }
 
-        private static StringBuilder AppendParameters(StringBuilder stringBuilder,
+        private static void AppendParameters(StringBuilder stringBuilder,
             IReadOnlyCollection<ParameterHelpData> parameters)
         {
             if (parameters.Count == 0)
-                return stringBuilder;
+                return;
 
             stringBuilder.AppendLine(Format.Bold("Parameters:"));
 
@@ -169,8 +167,6 @@ namespace Modix.Modules
                 if (parameter.Summary is not null)
                     stringBuilder.Append("• ").Append(Format.Bold(parameter.Name)).Append(": ").AppendLine(parameter.Summary);
             }
-
-            return stringBuilder;
         }
 
         private static string GetParams(CommandHelpData info)

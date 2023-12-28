@@ -603,7 +603,7 @@ namespace Modix.Services.Promotions
                 throw new InvalidOperationException($"{subject.GetDisplayName()} has joined less than 20 days prior.");
             }
 
-            if (!await CheckIfUserIsRankOrHigherAsync(rankRoles, AuthorizationService.CurrentUserId.Value, targetRankRole.Id))
+            if (!await CheckIfUserIsRankOrHigherAsync(rankRoles, targetRankRole.Id))
                 throw new InvalidOperationException("Creating a promotion campaign requires a rank at least as high as the proposed target rank.");
         }
 

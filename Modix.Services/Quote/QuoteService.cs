@@ -85,15 +85,13 @@ namespace Modix.Services.Quote
             return true;
         }
 
-        private static bool TryAddOtherAttachment(IMessage message, EmbedBuilder embed)
+        private static void TryAddOtherAttachment(IMessage message, EmbedBuilder embed)
         {
             var firstAttachment = message.Attachments.FirstOrDefault();
             if (firstAttachment == null)
-                return false;
+                return;
 
             embed.AddField($"Attachment (Size: {new ByteSize(firstAttachment.Size)})", firstAttachment.Url);
-
-            return true;
         }
 
         private static bool TryAddImageEmbed(IMessage message, EmbedBuilder embed)
