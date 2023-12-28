@@ -118,11 +118,11 @@ namespace Modix.Services.Moderation
             _authorizationService.RequireAuthenticatedUser();
             _authorizationService.RequireClaims(AuthorizationClaim.DesignatedRoleMappingCreate);
 
-            await SetUpMuteRole(guild);
-            await SetUpMentionableRoles(guild);
+            await SetUpMuteRoleAsync(guild);
+            await SetUpMentionableRolesAsync(guild);
         }
 
-        private async Task SetUpMentionableRoles(IGuild guild)
+        private async Task SetUpMentionableRolesAsync(IGuild guild)
         {
             var mentionableRoleMappings = await _designatedRoleMappingRepository.SearchBriefsAsync(
                 new DesignatedRoleMappingSearchCriteria
@@ -162,7 +162,7 @@ namespace Modix.Services.Moderation
             }
         }
 
-        private async Task SetUpMuteRole(IGuild guild)
+        private async Task SetUpMuteRoleAsync(IGuild guild)
         {
             var muteRole = await GetOrCreateDesignatedMuteRoleAsync(guild, _authorizationService.CurrentUserId!.Value);
 

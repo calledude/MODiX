@@ -72,7 +72,7 @@ namespace Modix.Services.MessageContentPatterns
                 return ServiceResponse.Fail("Pattern is not a valid Regex!");
             }
 
-            if (await DoesPatternExist(guildId, regexPattern))
+            if (await DoesPatternExistAsync(guildId, regexPattern))
             {
                 return ServiceResponse.Fail("Pattern already exists!");
             }
@@ -132,7 +132,7 @@ namespace Modix.Services.MessageContentPatterns
             return ServiceResponse.Ok();
         }
 
-        private async Task<bool> DoesPatternExist(ulong guildId, string regexPattern)
+        private async Task<bool> DoesPatternExistAsync(ulong guildId, string regexPattern)
         {
             return await _db
                 .Set<MessageContentPatternEntity>()

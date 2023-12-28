@@ -38,7 +38,7 @@ namespace Modix.Services.Utilities
             //strip out the ` characters and code block markers
             _buildContentRegex.Replace(code.Trim(), string.Empty);
 
-        public static async Task UploadToServiceIfBiggerThan(this EmbedBuilder embed, string content, uint size, CodePasteService service)
+        public static async Task UploadToServiceIfBiggerThanAsync(this EmbedBuilder embed, string content, uint size, CodePasteService service)
         {
             if (content.Length > size)
             {

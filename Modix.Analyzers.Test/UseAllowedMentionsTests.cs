@@ -12,7 +12,7 @@ namespace Modix.Analyzers.Test
     public class UseAllowedMentionsTests
     {
         [Test]
-        public async Task FollowupAsync_NeedsAllowedMentions_HasDiagnostic()
+        public async Task FollowupAsync_NeedsAllowedMentions_HasDiagnosticAsync()
         {
             const string source = @"
 using System;

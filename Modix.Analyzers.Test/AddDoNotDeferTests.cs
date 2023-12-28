@@ -12,7 +12,7 @@ namespace Modix.Analyzers.Test
     public class AddDoNotDeferTests
     {
         [Test]
-        public async Task SlashCommand_NeedsDoNotDefer_HasDiagnostic()
+        public async Task SlashCommand_NeedsDoNotDefer_HasDiagnosticAsync()
         {
             const string source = @"
 using System;

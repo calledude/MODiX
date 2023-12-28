@@ -98,7 +98,7 @@ namespace Modix
 
                 Log.LogInformation("Logging into Discord and starting the client.");
 
-                await StartClient(stoppingToken);
+                await StartClientAsync(stoppingToken);
 
                 Log.LogInformation("Discord client started successfully.");
 
@@ -199,7 +199,7 @@ namespace Modix
             }
         }
 
-        private async Task StartClient(CancellationToken cancellationToken)
+        private async Task StartClientAsync(CancellationToken cancellationToken)
         {
             var whenReadySource = new TaskCompletionSource();
 

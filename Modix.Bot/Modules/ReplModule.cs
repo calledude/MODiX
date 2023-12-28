@@ -61,7 +61,7 @@ namespace Modix.Bot.Modules
         {
             if (Context.Channel is not IGuildChannel || Context.User is not IGuildUser guildUser)
             {
-                await ModifyOrSendErrorEmbed("The REPL can only be executed in public guild channels.");
+                await ModifyOrSendErrorEmbedAsync("The REPL can only be executed in public guild channels.");
                 return;
             }
 
@@ -88,13 +88,13 @@ namespace Modix.Bot.Modules
             }
             catch (IOException ex)
             {
-                await ModifyOrSendErrorEmbed("Received an invalid response from the REPL service." +
+                await ModifyOrSendErrorEmbedAsync("Received an invalid response from the REPL service." +
                                              $"\n\n{Format.Bold("Details:")}\n{ex.Message}", message);
                 return;
             }
             catch (Exception ex)
             {
-                await ModifyOrSendErrorEmbed("An error occurred while sending a request to the REPL service. " +
+                await ModifyOrSendErrorEmbedAsync("An error occurred while sending a request to the REPL service. " +
                                              "This may be due to a StackOverflowException or exceeding the 30 second timeout." +
                                              $"\n\n{Format.Bold("Details:")}\n{ex.Message}", message);
                 return;
@@ -102,7 +102,7 @@ namespace Modix.Bot.Modules
 
             if (!res.IsSuccessStatusCode && res.StatusCode != HttpStatusCode.BadRequest)
             {
-                await ModifyOrSendErrorEmbed($"Status Code: {(int)res.StatusCode} {res.StatusCode}", message);
+                await ModifyOrSendErrorEmbedAsync($"Status Code: {(int)res.StatusCode} {res.StatusCode}", message);
                 return;
             }
 
@@ -123,7 +123,7 @@ namespace Modix.Bot.Modules
             await Context.Message.DeleteAsync();
         }
 
-        private async Task ModifyOrSendErrorEmbed(string error, IUserMessage? message = null)
+        private async Task ModifyOrSendErrorEmbedAsync(string error, IUserMessage? message = null)
         {
             var embed = new EmbedBuilder()
                 .WithTitle("REPL Error")
@@ -174,14 +174,14 @@ namespace Modix.Bot.Modules
             {
                 embed.AddField(a => a.WithName($"Result: {parsedResult.ReturnTypeName}".TruncateTo(EmbedFieldBuilder.MaxFieldNameLength))
                                      .WithValue(FormatOrEmptyCodeblock(returnValue.TruncateTo(MaxFormattedFieldSize), "json")));
-                await embed.UploadToServiceIfBiggerThan(returnValue, MaxFormattedFieldSize, _pasteService);
+                await embed.UploadToServiceIfBiggerThanAsync(returnValue, MaxFormattedFieldSize, _pasteService);
             }
 
             if (!string.IsNullOrWhiteSpace(consoleOut))
             {
                 embed.AddField(a => a.WithName("Console Output")
                                      .WithValue(Format.Code(consoleOut.TruncateTo(MaxFormattedFieldSize), "txt")));
-                await embed.UploadToServiceIfBiggerThan(consoleOut, MaxFormattedFieldSize, _pasteService);
+                await embed.UploadToServiceIfBiggerThanAsync(consoleOut, MaxFormattedFieldSize, _pasteService);
             }
 
             if (hasException)
@@ -189,7 +189,7 @@ namespace Modix.Bot.Modules
                 var diffFormatted = DiffRegex().Replace(parsedResult.Exception!, "- ");
                 embed.AddField(a => a.WithName($"Exception: {parsedResult.ExceptionType}".TruncateTo(EmbedFieldBuilder.MaxFieldNameLength))
                                      .WithValue(Format.Code(diffFormatted.TruncateTo(MaxFormattedFieldSize), "diff")));
-                await embed.UploadToServiceIfBiggerThan(diffFormatted, MaxFormattedFieldSize, _pasteService);
+                await embed.UploadToServiceIfBiggerThanAsync(diffFormatted, MaxFormattedFieldSize, _pasteService);
             }
 
             return embed;

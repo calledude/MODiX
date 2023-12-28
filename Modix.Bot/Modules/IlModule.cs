@@ -118,7 +118,7 @@ namespace Modix.Modules
             embed.AddField(a => a.WithName("Result:")
                  .WithValue(Format.Code(result.TruncateTo(990), "asm")));
 
-            await embed.UploadToServiceIfBiggerThan(result, 990, _pasteService);
+            await embed.UploadToServiceIfBiggerThanAsync(result, 990, _pasteService);
 
             return embed;
         }

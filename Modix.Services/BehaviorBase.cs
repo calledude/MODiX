@@ -85,7 +85,7 @@ namespace Modix.Services
         /// </summary>
         /// <param name="action">The action to be executed.</param>
         /// <returns>A <see cref="Task"/> that will complete when the operation has completed.</returns>
-        internal protected async Task SelfExecuteRequest(Func<IServiceProvider, Task> action)
+        internal protected async Task SelfExecuteRequestAsync(Func<IServiceProvider, Task> action)
         {
             ArgumentNullException.ThrowIfNull(action);
 
@@ -106,7 +106,7 @@ namespace Modix.Services
         }
 
         /// <summary>
-        /// Proxy method for <see cref="SelfExecuteRequest(Func{IServiceProvider, Task})"/>,
+        /// Proxy method for <see cref="SelfExecuteRequestAsync(Func{IServiceProvider, Task})"/>,
         /// which performs dependency resolution, rather than requring the action to perform it manually through an <see cref="IServiceProvider"/>.
         /// </summary>
         /// <typeparam name="TService">A dependency to be resolved and injected into <paramref name="action"/>.</typeparam>
@@ -116,12 +116,12 @@ namespace Modix.Services
         {
             ArgumentNullException.ThrowIfNull(action);
 
-            return SelfExecuteRequest(serviceProvider =>
+            return SelfExecuteRequestAsync(serviceProvider =>
                 action.Invoke(serviceProvider.GetRequiredService<TService>()));
         }
 
         /// <summary>
-        /// Proxy method for <see cref="SelfExecuteRequest(Func{IServiceProvider, Task})"/>,
+        /// Proxy method for <see cref="SelfExecuteRequestAsync(Func{IServiceProvider, Task})"/>,
         /// which performs dependency resolution, rather than requring the action to perform it manually through an <see cref="IServiceProvider"/>.
         /// </summary>
         /// <typeparam name="TService1">A dependency to be resolved and injected into <paramref name="action"/>.</typeparam>
@@ -134,7 +134,7 @@ namespace Modix.Services
         {
             ArgumentNullException.ThrowIfNull(action);
 
-            return SelfExecuteRequest(serviceProvider =>
+            return SelfExecuteRequestAsync(serviceProvider =>
                 action.Invoke(
                     serviceProvider.GetRequiredService<TService1>(),
                     serviceProvider.GetRequiredService<TService2>()));

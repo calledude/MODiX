@@ -105,9 +105,9 @@ namespace Modix.Services.Starboard
             return messageBrief?.StarboardEntryId != null;
         }
 
-        private async Task<IUserMessage?> GetStarboardEntry(IGuild guild, IMessage message)
+        private async Task<IUserMessage?> GetStarboardEntryAsync(IGuild guild, IMessage message)
         {
-            var channel = await GetStarboardChannel(guild);
+            var channel = await GetStarboardChannelAsync(guild);
             if (channel is null)
                 return default;
 
@@ -118,7 +118,7 @@ namespace Modix.Services.Starboard
             return await channel.GetMessageAsync(brief.StarboardEntryId.Value) as IUserMessage;
         }
 
-        private async Task<ITextChannel?> GetStarboardChannel(IGuild guild)
+        private async Task<ITextChannel?> GetStarboardChannelAsync(IGuild guild)
         {
             var starboardChannels = await _designatedChannelService
                 .GetDesignatedChannelsAsync(guild, DesignatedChannelType.Starboard);
@@ -134,7 +134,7 @@ namespace Modix.Services.Starboard
             if (messageBrief?.StarboardEntryId is null)
                 return;
 
-            var channel = await GetStarboardChannel(guild);
+            var channel = await GetStarboardChannelAsync(guild);
             if (channel is null)
                 return;
 
@@ -175,7 +175,7 @@ namespace Modix.Services.Starboard
         /// <inheritdoc />
         public async Task AddToStarboard(IGuild guild, IUserMessage message, string content, Embed embed)
         {
-            var starChannel = await GetStarboardChannel(guild);
+            var starChannel = await GetStarboardChannelAsync(guild);
             if (starChannel is null)
                 return;
 
@@ -202,7 +202,7 @@ namespace Modix.Services.Starboard
         /// <inheritdoc />
         public async Task ModifyEntry(IGuild guild, IUserMessage message, string content, Color embedColor)
         {
-            var starEntry = await GetStarboardEntry(guild, message);
+            var starEntry = await GetStarboardEntryAsync(guild, message);
             if (starEntry != default)
             {
                 await starEntry.ModifyAsync(messageProps =>

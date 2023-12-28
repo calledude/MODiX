@@ -59,7 +59,7 @@ namespace Modix.Services.Moderation
             if (author.Id == _discordSocketClient.CurrentUser.Id)
                 return;
 
-            var isContentBlocked = await IsContentBlocked(channel, message);
+            var isContentBlocked = await IsContentBlockedAsync(channel, message);
 
             if (!isContentBlocked)
             {
@@ -90,7 +90,7 @@ namespace Modix.Services.Moderation
                 $"Sorry {author.Mention} your message contained blocked content and has been removed!");
         }
 
-        private async Task<bool> IsContentBlocked(IGuildChannel channel, IMessage message)
+        private async Task<bool> IsContentBlockedAsync(IGuildChannel channel, IMessage message)
         {
             var patterns = await _messageContentPatternService.GetPatterns(channel.GuildId);
 
