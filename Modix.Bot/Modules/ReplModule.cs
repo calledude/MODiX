@@ -186,7 +186,7 @@ namespace Modix.Bot.Modules
 
             if (hasException)
             {
-                var diffFormatted = DiffRegex().Replace(parsedResult.Exception, "- ");
+                var diffFormatted = DiffRegex().Replace(parsedResult.Exception!, "- ");
                 embed.AddField(a => a.WithName($"Exception: {parsedResult.ExceptionType}".TruncateTo(EmbedFieldBuilder.MaxFieldNameLength))
                                      .WithValue(Format.Code(diffFormatted.TruncateTo(MaxFormattedFieldSize), "diff")));
                 await embed.UploadToServiceIfBiggerThan(diffFormatted, MaxFormattedFieldSize, _pasteService);
