@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Modix.Data.Models.Core;
 
@@ -142,7 +141,7 @@ namespace Modix.Data.Test.TestData
                 ),
                 (
                     "RoleIds Invalid(1)",
-                    new DesignatedRoleMappingSearchCriteria() { RoleIds = Array.Empty<ulong>() },
+                    new DesignatedRoleMappingSearchCriteria() { RoleIds = [] },
                     new long[] { }
                 ),
                 (

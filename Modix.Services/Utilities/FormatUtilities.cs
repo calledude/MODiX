@@ -96,7 +96,7 @@ namespace Modix.Services.Utilities
                 var parts = new HashSet<string>[singular.Key.Count];
 
                 for (var i = 0; i < parts.Length; i++)
-                    parts[i] = new HashSet<string>();
+                    parts[i] = [];
 
                 foreach (var variation in singular)
                 {

@@ -44,7 +44,7 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.Hosting
             : AsyncMethodWithLoggerTestContext
         {
             public readonly List<MockBehavior> MockBehaviors
-                = new List<MockBehavior>();
+                = [];
 
             public BehaviorHost BuildUut()
                 => new BehaviorHost(

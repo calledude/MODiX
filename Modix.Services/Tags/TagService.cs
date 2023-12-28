@@ -382,7 +382,7 @@ namespace Modix.Services.Tags
                 GuildId = user.GuildId,
                 Type = DesignatedRoleType.Rank,
                 IsDeleted = false,
-                RoleIds = user.RoleIds.ToArray(),
+                RoleIds = [.. user.RoleIds],
             }))
             .OrderBy(x => x.Role.Position)
             .FirstOrDefault();

@@ -78,7 +78,7 @@ namespace Modix.Services.Tags
         public ImmutableArray<string> Search(ulong guildId, string partialName, int? maxResults = null)
         {
             if (string.IsNullOrWhiteSpace(partialName))
-                return ImmutableArray<string>.Empty;
+                return [];
 
             _cacheLock.EnterReadLock();
 
@@ -104,7 +104,7 @@ namespace Modix.Services.Tags
         }
 
         private SortedSet<string> GetFromCache(ulong guildId)
-            => _cache.Get<SortedSet<string>>(GetCacheKey(guildId)) ?? new();
+            => _cache.Get<SortedSet<string>>(GetCacheKey(guildId)) ?? [];
 
         private static object GetCacheKey(ulong guildId)
             => new { guildId, Target = "Tags" };

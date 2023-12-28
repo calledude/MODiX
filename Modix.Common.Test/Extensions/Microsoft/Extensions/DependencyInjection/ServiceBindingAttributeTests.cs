@@ -116,100 +116,94 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
         }
 
         public static readonly ImmutableArray<TestCaseData> EnumerateServiceDescriptors_TestCaseData
-            = ImmutableArray.Create(
-                    new TestCaseData(
-                            MakeFakeAssembly(),
-                            ImmutableArray<ServiceDescriptorExpectation>.Empty)
-                        .SetName("{m}(Empty Assembly)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeType).GetTypeInfo()),
-                            ImmutableArray<ServiceDescriptorExpectation>.Empty)
-                        .SetName("{m}(Type has no ServiceBinding)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeSimpleSingletonService).GetTypeInfo()),
-                            ImmutableArray.Create(
-                                /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                    */
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleSingletonService), typeof(FakeSimpleSingletonService), null, ServiceLifetime.Singleton)))
-                        .SetName("{m}(ServiceBinding.Lifetime is Singleton)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeSimpleScopedService).GetTypeInfo()),
-                            ImmutableArray.Create(
-                                /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                */
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleScopedService), typeof(FakeSimpleScopedService), null, ServiceLifetime.Scoped)))
-                        .SetName("{m}(ServiceBinding.Lifetime is Scoped)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeSimpleTransientService).GetTypeInfo()),
-                            ImmutableArray.Create(
-                                /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                    */
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleTransientService), typeof(FakeSimpleTransientService), null, ServiceLifetime.Transient)))
-                        .SetName("{m}(ServiceBinding.Lifetime is Transient)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeAbstractService).GetTypeInfo()),
-                            ImmutableArray.Create(
-                                /*                                  serviceType,                   implementationType,          implementationFactoryServiceType,   lifetime                    */
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), typeof(FakeAbstractService), null, ServiceLifetime.Singleton)))
-                        .SetName("{m}(Service implements an interface)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeSharedAbstractService).GetTypeInfo()),
-                            ImmutableArray.Create(
-                                /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                */
-                                new ServiceDescriptorExpectation(typeof(FakeSharedAbstractService), typeof(FakeSharedAbstractService), null, ServiceLifetime.Scoped),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped)
-                            ))
-                        .SetName("{m}(Service implements many interfaces)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeDisposableService).GetTypeInfo()),
-                            ImmutableArray.Create(
-                                /*                                  serviceType,                    implementationType,             implementationFactoryServiceType,   lifetime                    */
-                                new ServiceDescriptorExpectation(typeof(FakeDisposableService), typeof(FakeDisposableService), null, ServiceLifetime.Transient),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeDisposableService), ServiceLifetime.Transient)
-                            ))
-                        .SetName("{m}(Service is Disposable)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeType).GetTypeInfo(),
-                                typeof(FakeSimpleSingletonService).GetTypeInfo(),
-                                typeof(FakeSimpleScopedService).GetTypeInfo(),
-                                typeof(FakeSimpleTransientService).GetTypeInfo(),
-                                typeof(FakeAbstractService).GetTypeInfo(),
-                                typeof(FakeSharedAbstractService).GetTypeInfo(),
-                                typeof(FakeDisposableService).GetTypeInfo()),
-                            ImmutableArray.Create(
-                                /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                    */
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleSingletonService), typeof(FakeSimpleSingletonService), null, ServiceLifetime.Singleton),
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleScopedService), typeof(FakeSimpleScopedService), null, ServiceLifetime.Scoped),
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleTransientService), typeof(FakeSimpleTransientService), null, ServiceLifetime.Transient),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), typeof(FakeAbstractService), null, ServiceLifetime.Singleton),
-                                new ServiceDescriptorExpectation(typeof(FakeSharedAbstractService), typeof(FakeSharedAbstractService), null, ServiceLifetime.Scoped),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
-                                new ServiceDescriptorExpectation(typeof(FakeDisposableService), typeof(FakeDisposableService), null, ServiceLifetime.Transient),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
-                                new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeDisposableService), ServiceLifetime.Transient)
-                            ))
-                        .SetName("{m}(Many ServiceBindings present)")
-                );
+            =
+            [
+                new TestCaseData(
+                                    MakeFakeAssembly(),
+                                    ImmutableArray<ServiceDescriptorExpectation>.Empty)
+                                .SetName("{m}(Empty Assembly)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeType).GetTypeInfo()),
+                        ImmutableArray<ServiceDescriptorExpectation>.Empty)
+                    .SetName("{m}(Type has no ServiceBinding)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeSimpleSingletonService).GetTypeInfo()),
+                        ImmutableArray.Create(
+                            /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                    */
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleSingletonService), typeof(FakeSimpleSingletonService), null, ServiceLifetime.Singleton)))
+                    .SetName("{m}(ServiceBinding.Lifetime is Singleton)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeSimpleScopedService).GetTypeInfo()),
+                        ImmutableArray.Create(
+                            /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                */
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleScopedService), typeof(FakeSimpleScopedService), null, ServiceLifetime.Scoped)))
+                    .SetName("{m}(ServiceBinding.Lifetime is Scoped)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeSimpleTransientService).GetTypeInfo()),
+                        ImmutableArray.Create(
+                            /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                    */
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleTransientService), typeof(FakeSimpleTransientService), null, ServiceLifetime.Transient)))
+                    .SetName("{m}(ServiceBinding.Lifetime is Transient)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeAbstractService).GetTypeInfo()),
+                        ImmutableArray.Create(
+                            /*                                  serviceType,                   implementationType,          implementationFactoryServiceType,   lifetime                    */
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), typeof(FakeAbstractService), null, ServiceLifetime.Singleton)))
+                    .SetName("{m}(Service implements an interface)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeSharedAbstractService).GetTypeInfo()),
+                        ImmutableArray.Create(
+                            /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                */
+                            new ServiceDescriptorExpectation(typeof(FakeSharedAbstractService), typeof(FakeSharedAbstractService), null, ServiceLifetime.Scoped),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped)
+                        ))
+                    .SetName("{m}(Service implements many interfaces)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeDisposableService).GetTypeInfo()),
+                        ImmutableArray.Create(
+                            /*                                  serviceType,                    implementationType,             implementationFactoryServiceType,   lifetime                    */
+                            new ServiceDescriptorExpectation(typeof(FakeDisposableService), typeof(FakeDisposableService), null, ServiceLifetime.Transient),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeDisposableService), ServiceLifetime.Transient)
+                        ))
+                    .SetName("{m}(Service is Disposable)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeType).GetTypeInfo(),
+                            typeof(FakeSimpleSingletonService).GetTypeInfo(),
+                            typeof(FakeSimpleScopedService).GetTypeInfo(),
+                            typeof(FakeSimpleTransientService).GetTypeInfo(),
+                            typeof(FakeAbstractService).GetTypeInfo(),
+                            typeof(FakeSharedAbstractService).GetTypeInfo(),
+                            typeof(FakeDisposableService).GetTypeInfo()),
+                        ImmutableArray.Create(
+                            /*                                  serviceType,                        implementationType,                 implementationFactoryServiceType,   lifetime                    */
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleSingletonService), typeof(FakeSimpleSingletonService), null, ServiceLifetime.Singleton),
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleScopedService), typeof(FakeSimpleScopedService), null, ServiceLifetime.Scoped),
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleTransientService), typeof(FakeSimpleTransientService), null, ServiceLifetime.Transient),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), typeof(FakeAbstractService), null, ServiceLifetime.Singleton),
+                            new ServiceDescriptorExpectation(typeof(FakeSharedAbstractService), typeof(FakeSharedAbstractService), null, ServiceLifetime.Scoped),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeSharedAbstractService), ServiceLifetime.Scoped),
+                            new ServiceDescriptorExpectation(typeof(FakeDisposableService), typeof(FakeDisposableService), null, ServiceLifetime.Transient),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService1), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService2), null, typeof(FakeDisposableService), ServiceLifetime.Transient),
+                            new ServiceDescriptorExpectation(typeof(IFakeAbstractService3), null, typeof(FakeDisposableService), ServiceLifetime.Transient)
+                        ))
+                    .SetName("{m}(Many ServiceBindings present)")
+,
+            ];
 
         [TestCaseSource(nameof(EnumerateServiceDescriptors_TestCaseData))]
         public void EnumerateServiceDescriptors_Always_ResultsAreExpected(

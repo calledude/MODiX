@@ -42,12 +42,12 @@ namespace Modix.Modules
                 {
                     await FollowupAsync(
                         $"You have private messages for this server disabled, {Context.User.Mention}. Please enable them so that I can send you help.",
-                        allowedMentions: new AllowedMentions { UserIds = new() { Context.User.Id } });
+                        allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
                     return;
                 }
             }
 
-            await FollowupAsync($"Check your private messages, {Context.User.Mention}.", allowedMentions: new AllowedMentions { UserIds = new() { Context.User.Id } });
+            await FollowupAsync($"Check your private messages, {Context.User.Mention}.", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
         }
 
         [SlashCommand("help", "Retrieves help from a specific module or command.")]

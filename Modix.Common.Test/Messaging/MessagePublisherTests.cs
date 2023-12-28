@@ -41,11 +41,12 @@ namespace Modix.Common.Test.Messaging
         #region PublishAsync() Tests
 
         public static readonly ImmutableArray<TestCaseData> PublishAsync_TestCaseData
-            = ImmutableArray.Create(
-                /*                  handlerCount    */
+            =
+            [
                 new TestCaseData(0).SetName("{m}(No handlers)"),
                 new TestCaseData(1).SetName("{m}(Single handler)"),
-                new TestCaseData(3).SetName("{m}(Many handlers)"));
+                new TestCaseData(3).SetName("{m}(Many handlers)"),
+            ];
 
         [TestCaseSource(nameof(PublishAsync_TestCaseData))]
         public async Task PublishAsync_Always_InvokesHandlers(

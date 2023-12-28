@@ -40,7 +40,7 @@ namespace Modix.Services.CommandHelp
                 IsOptional = isNullable || !required,
                 Options = parameterType.IsEnum
                             ? parameterType.GetEnumNames()
-                            : Array.Empty<string>(),
+                            : [],
             };
         }
     }

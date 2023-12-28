@@ -164,81 +164,79 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
         }
 
         public static readonly ImmutableArray<TestCaseData> AddServices_TestCaseData
-            = ImmutableArray.Create(
-                    new TestCaseData(
-                            MakeFakeAssembly(),
-                            MakeFakeConfiguration(),
-                            ImmutableArray<ServiceDescriptorExpectation>.Empty)
-                        .SetName("{m}(Assembly is empty)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeType).GetTypeInfo()),
-                            MakeFakeConfiguration(),
-                            ImmutableArray<ServiceDescriptorExpectation>.Empty)
-                        .SetName("{m}(Assembly contains no relevant types)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeSimpleService1).GetTypeInfo(),
-                                typeof(FakeSimpleService2).GetTypeInfo(),
-                                typeof(FakeSimpleService3).GetTypeInfo()),
-                            MakeFakeConfiguration(),
-                            ImmutableArray.Create(
-                                /*                                  serviceType,                implementationType,         implementationInstanceConfiguredValue,  lifetime                    */
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleService1), typeof(FakeSimpleService1), null, ServiceLifetime.Singleton),
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleService2), typeof(FakeSimpleService2), null, ServiceLifetime.Scoped),
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleService3), typeof(FakeSimpleService3), null, ServiceLifetime.Transient)))
-                        .SetName("{m}(Assembly contains ServiceBindings)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeConfiguredServiceBase).GetTypeInfo(),
-                                typeof(FakeConfiguredService1).GetTypeInfo(),
-                                typeof(FakeConfiguredService2).GetTypeInfo(),
-                                typeof(FakeConfiguredService3).GetTypeInfo(),
-                                typeof(FakeServiceConfigurator1).GetTypeInfo(),
-                                typeof(FakeServiceConfigurator2).GetTypeInfo(),
-                                typeof(FakeServiceConfigurator3).GetTypeInfo()),
-                            MakeFakeConfiguration(
-                                /*                                  key,                            value               */
-                                new KeyValuePair<string, string>(nameof(FakeConfiguredService1), "ConfiguredValue1"),
-                                new KeyValuePair<string, string>(nameof(FakeConfiguredService2), "ConfiguredValue2"),
-                                new KeyValuePair<string, string>(nameof(FakeConfiguredService3), "ConfiguredValue3")),
-                            ImmutableArray.Create(
-                                /*                                  serviceType,                    implementationType, implementationInstanceConfiguredValue,  lifetime                    */
-                                new ServiceDescriptorExpectation(typeof(FakeConfiguredService1), null, "ConfiguredValue1", ServiceLifetime.Singleton),
-                                new ServiceDescriptorExpectation(typeof(FakeConfiguredService2), null, "ConfiguredValue2", ServiceLifetime.Singleton),
-                                new ServiceDescriptorExpectation(typeof(FakeConfiguredService3), null, "ConfiguredValue3", ServiceLifetime.Singleton)))
-                        .SetName("{m}(Assembly contains ServiceConfigurator)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeSimpleService1).GetTypeInfo(),
-                                typeof(FakeSimpleService2).GetTypeInfo(),
-                                typeof(FakeSimpleService3).GetTypeInfo(),
-                                typeof(FakeConfiguredServiceBase).GetTypeInfo(),
-                                typeof(FakeConfiguredService1).GetTypeInfo(),
-                                typeof(FakeConfiguredService2).GetTypeInfo(),
-                                typeof(FakeConfiguredService3).GetTypeInfo(),
-                                typeof(FakeServiceConfigurator1).GetTypeInfo(),
-                                typeof(FakeServiceConfigurator2).GetTypeInfo(),
-                                typeof(FakeServiceConfigurator3).GetTypeInfo()),
-                            MakeFakeConfiguration(
-                                /*                                  key,                            value               */
-                                new KeyValuePair<string, string>(nameof(FakeConfiguredService1), "ConfiguredValue1"),
-                                new KeyValuePair<string, string>(nameof(FakeConfiguredService2), "ConfiguredValue2"),
-                                new KeyValuePair<string, string>(nameof(FakeConfiguredService3), "ConfiguredValue3")),
-                            ImmutableArray.Create(
-                                /*                                  serviceType,                    implementationType,         implementationInstanceConfiguredValue,  lifetime                    */
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleService1), typeof(FakeSimpleService1), null, ServiceLifetime.Singleton),
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleService2), typeof(FakeSimpleService2), null, ServiceLifetime.Scoped),
-                                new ServiceDescriptorExpectation(typeof(FakeSimpleService3), typeof(FakeSimpleService3), null, ServiceLifetime.Transient),
-                                new ServiceDescriptorExpectation(typeof(FakeConfiguredService1), null, "ConfiguredValue1", ServiceLifetime.Singleton),
-                                new ServiceDescriptorExpectation(typeof(FakeConfiguredService2), null, "ConfiguredValue2", ServiceLifetime.Singleton),
-                                new ServiceDescriptorExpectation(typeof(FakeConfiguredService3), null, "ConfiguredValue3", ServiceLifetime.Singleton)))
-                        .SetName("{m}(Assembly contains various relevant types)")
-                );
+            =
+            [
+                new TestCaseData(
+                                    MakeFakeAssembly(),
+                                    MakeFakeConfiguration(),
+                                    ImmutableArray<ServiceDescriptorExpectation>.Empty)
+                                .SetName("{m}(Assembly is empty)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeType).GetTypeInfo()),
+                        MakeFakeConfiguration(),
+                        ImmutableArray<ServiceDescriptorExpectation>.Empty)
+                    .SetName("{m}(Assembly contains no relevant types)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeSimpleService1).GetTypeInfo(),
+                            typeof(FakeSimpleService2).GetTypeInfo(),
+                            typeof(FakeSimpleService3).GetTypeInfo()),
+                        MakeFakeConfiguration(),
+                        ImmutableArray.Create(
+                            /*                                  serviceType,                implementationType,         implementationInstanceConfiguredValue,  lifetime                    */
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleService1), typeof(FakeSimpleService1), null, ServiceLifetime.Singleton),
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleService2), typeof(FakeSimpleService2), null, ServiceLifetime.Scoped),
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleService3), typeof(FakeSimpleService3), null, ServiceLifetime.Transient)))
+                    .SetName("{m}(Assembly contains ServiceBindings)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeConfiguredServiceBase).GetTypeInfo(),
+                            typeof(FakeConfiguredService1).GetTypeInfo(),
+                            typeof(FakeConfiguredService2).GetTypeInfo(),
+                            typeof(FakeConfiguredService3).GetTypeInfo(),
+                            typeof(FakeServiceConfigurator1).GetTypeInfo(),
+                            typeof(FakeServiceConfigurator2).GetTypeInfo(),
+                            typeof(FakeServiceConfigurator3).GetTypeInfo()),
+                        MakeFakeConfiguration(
+                            /*                                  key,                            value               */
+                            new KeyValuePair<string, string>(nameof(FakeConfiguredService1), "ConfiguredValue1"),
+                            new KeyValuePair<string, string>(nameof(FakeConfiguredService2), "ConfiguredValue2"),
+                            new KeyValuePair<string, string>(nameof(FakeConfiguredService3), "ConfiguredValue3")),
+                        ImmutableArray.Create(
+                            /*                                  serviceType,                    implementationType, implementationInstanceConfiguredValue,  lifetime                    */
+                            new ServiceDescriptorExpectation(typeof(FakeConfiguredService1), null, "ConfiguredValue1", ServiceLifetime.Singleton),
+                            new ServiceDescriptorExpectation(typeof(FakeConfiguredService2), null, "ConfiguredValue2", ServiceLifetime.Singleton),
+                            new ServiceDescriptorExpectation(typeof(FakeConfiguredService3), null, "ConfiguredValue3", ServiceLifetime.Singleton)))
+                    .SetName("{m}(Assembly contains ServiceConfigurator)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeSimpleService1).GetTypeInfo(),
+                            typeof(FakeSimpleService2).GetTypeInfo(),
+                            typeof(FakeSimpleService3).GetTypeInfo(),
+                            typeof(FakeConfiguredServiceBase).GetTypeInfo(),
+                            typeof(FakeConfiguredService1).GetTypeInfo(),
+                            typeof(FakeConfiguredService2).GetTypeInfo(),
+                            typeof(FakeConfiguredService3).GetTypeInfo(),
+                            typeof(FakeServiceConfigurator1).GetTypeInfo(),
+                            typeof(FakeServiceConfigurator2).GetTypeInfo(),
+                            typeof(FakeServiceConfigurator3).GetTypeInfo()),
+                        MakeFakeConfiguration(
+                            /*                                  key,                            value               */
+                            new KeyValuePair<string, string>(nameof(FakeConfiguredService1), "ConfiguredValue1"),
+                            new KeyValuePair<string, string>(nameof(FakeConfiguredService2), "ConfiguredValue2"),
+                            new KeyValuePair<string, string>(nameof(FakeConfiguredService3), "ConfiguredValue3")),
+                        ImmutableArray.Create(
+                            /*                                  serviceType,                    implementationType,         implementationInstanceConfiguredValue,  lifetime                    */
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleService1), typeof(FakeSimpleService1), null, ServiceLifetime.Singleton),
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleService2), typeof(FakeSimpleService2), null, ServiceLifetime.Scoped),
+                            new ServiceDescriptorExpectation(typeof(FakeSimpleService3), typeof(FakeSimpleService3), null, ServiceLifetime.Transient),
+                            new ServiceDescriptorExpectation(typeof(FakeConfiguredService1), null, "ConfiguredValue1", ServiceLifetime.Singleton),
+                            new ServiceDescriptorExpectation(typeof(FakeConfiguredService2), null, "ConfiguredValue2", ServiceLifetime.Singleton),
+                            new ServiceDescriptorExpectation(typeof(FakeConfiguredService3), null, "ConfiguredValue3", ServiceLifetime.Singleton)))
+                    .SetName("{m}(Assembly contains various relevant types)")
+,
+            ];
 
         [TestCaseSource(nameof(AddServices_TestCaseData))]
         public void AddServices_Always_ResultsAreExpected(

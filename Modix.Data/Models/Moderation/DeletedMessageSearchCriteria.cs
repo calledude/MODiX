@@ -66,15 +66,8 @@ namespace Modix.Data.Models.Moderation
         /// <summary>
         /// Defines the searchable properties of a <see cref="DeletedMessageSummary"/>.
         /// </summary>
-        public static readonly ImmutableArray<string> SearchablePropertyNames = ImmutableArray.Create
-            (
-                nameof(Channel),
-                nameof(Author),
-                nameof(CreatedBy),
-                nameof(Content),
-                nameof(Reason),
-                nameof(BatchId)
-            );
+        public static readonly ImmutableArray<string> SearchablePropertyNames = [nameof(Channel), nameof(Author), nameof(CreatedBy), nameof(Content), nameof(Reason), nameof(BatchId)
+];
 
         public DeletedMessageSearchCriteria WithPropertyValue(string propertyName, string propertyValue)
         {

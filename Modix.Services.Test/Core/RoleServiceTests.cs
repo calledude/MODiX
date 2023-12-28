@@ -90,13 +90,15 @@ namespace Modix.Services.Test.Core
         }
 
         public static readonly ImmutableArray<TestCaseData> TrackRoleAsync_TestCaseData
-            = ImmutableArray.Create(
+            =
+            [
                 BuildTestCaseData_TrackRoleAsync(guildId: default, roleId: default, roleName: string.Empty, rolePosition: default).SetName("{m}(Default Values)"),
                 BuildTestCaseData_TrackRoleAsync(guildId: ulong.MinValue, roleId: ulong.MinValue, roleName: string.Empty, rolePosition: int.MinValue).SetName("{m}(Min Values)"),
                 BuildTestCaseData_TrackRoleAsync(guildId: ulong.MaxValue, roleId: ulong.MaxValue, roleName: string.Empty, rolePosition: int.MaxValue).SetName("{m}(Max Values)"),
                 BuildTestCaseData_TrackRoleAsync(guildId: 1UL, roleId: 2UL, roleName: "3", rolePosition: 4).SetName("{m}(Unique Values 1)"),
                 BuildTestCaseData_TrackRoleAsync(guildId: 5UL, roleId: 6UL, roleName: "7", rolePosition: 8).SetName("{m}(Unique Values 2)"),
-                BuildTestCaseData_TrackRoleAsync(guildId: 9UL, roleId: 10UL, roleName: "11", rolePosition: 12).SetName("{m}(Unique Values 3)"));
+                BuildTestCaseData_TrackRoleAsync(guildId: 9UL, roleId: 10UL, roleName: "11", rolePosition: 12).SetName("{m}(Unique Values 3)"),
+            ];
 
         [TestCaseSource(nameof(TrackRoleAsync_TestCaseData))]
         public async Task TrackRoleAsync_RoleUpdateSucceeds_DoesNotCreateRole(

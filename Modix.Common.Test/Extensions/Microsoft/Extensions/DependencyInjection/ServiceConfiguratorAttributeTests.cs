@@ -105,24 +105,24 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
         #region EnumerateServiceConfigurators() Tests
 
         public static readonly ImmutableArray<TestCaseData> EnumerateServiceConfigurators_AssemblyIsNotValid_TestCaseData
-            = ImmutableArray.Create(
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(InvalidFakeServiceConfigurator1).GetTypeInfo()),
-                            typeof(InvalidFakeServiceConfigurator1))
-                        .SetName("{m}(ServiceConfigurator does not implement IServiceConfigurator)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(InvalidFakeServiceConfigurator2).GetTypeInfo()),
-                            typeof(InvalidFakeServiceConfigurator2))
-                        .SetName("{m}(ServiceConfigurator constructor is not public)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(InvalidFakeServiceConfigurator3).GetTypeInfo()),
-                            typeof(InvalidFakeServiceConfigurator3))
-                        .SetName("{m}(ServiceConfigurator constructor is not parameterless)"));
+            =
+            [
+                new TestCaseData(
+                                    MakeFakeAssembly(
+                                        typeof(InvalidFakeServiceConfigurator1).GetTypeInfo()),
+                                    typeof(InvalidFakeServiceConfigurator1))
+                                .SetName("{m}(ServiceConfigurator does not implement IServiceConfigurator)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(InvalidFakeServiceConfigurator2).GetTypeInfo()),
+                        typeof(InvalidFakeServiceConfigurator2))
+                    .SetName("{m}(ServiceConfigurator constructor is not public)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(InvalidFakeServiceConfigurator3).GetTypeInfo()),
+                        typeof(InvalidFakeServiceConfigurator3))
+                    .SetName("{m}(ServiceConfigurator constructor is not parameterless)"),
+            ];
 
         [TestCaseSource(nameof(EnumerateServiceConfigurators_AssemblyIsNotValid_TestCaseData))]
         public void EnumerateServiceConfigurators_AssemblyIsNotValid_ThrowsException(
@@ -140,35 +140,34 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
         }
 
         public static readonly ImmutableArray<TestCaseData> EnumerateServiceConfigurators_AssemblyIsValid_TestCaseData
-            = ImmutableArray.Create(
-                    new TestCaseData(
-                            MakeFakeAssembly(),
-                            ImmutableArray<Type>.Empty)
-                        .SetName("{m}(Assembly is empty)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeType).GetTypeInfo()),
-                            ImmutableArray<Type>.Empty)
-                        .SetName("{m}(Assembly contains no ServiceConfigurators)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeServiceConfigurator1).GetTypeInfo()),
-                            ImmutableArray.Create(
-                                typeof(FakeServiceConfigurator1)))
-                        .SetName("{m}(Assembly contains a ServiceConfigurator)"),
-
-                    new TestCaseData(
-                            MakeFakeAssembly(
-                                typeof(FakeServiceConfigurator1).GetTypeInfo(),
-                                typeof(FakeServiceConfigurator2).GetTypeInfo(),
-                                typeof(FakeServiceConfigurator3).GetTypeInfo()),
-                            ImmutableArray.Create(
-                                typeof(FakeServiceConfigurator1),
-                                typeof(FakeServiceConfigurator2),
-                                typeof(FakeServiceConfigurator3)))
-                        .SetName("{m}(Assembly contains many ServiceConfigurators)"));
+            =
+            [
+                new TestCaseData(
+                                    MakeFakeAssembly(),
+                                    ImmutableArray<Type>.Empty)
+                                .SetName("{m}(Assembly is empty)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeType).GetTypeInfo()),
+                        ImmutableArray<Type>.Empty)
+                    .SetName("{m}(Assembly contains no ServiceConfigurators)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeServiceConfigurator1).GetTypeInfo()),
+                        ImmutableArray.Create(
+                            typeof(FakeServiceConfigurator1)))
+                    .SetName("{m}(Assembly contains a ServiceConfigurator)"),
+                new TestCaseData(
+                        MakeFakeAssembly(
+                            typeof(FakeServiceConfigurator1).GetTypeInfo(),
+                            typeof(FakeServiceConfigurator2).GetTypeInfo(),
+                            typeof(FakeServiceConfigurator3).GetTypeInfo()),
+                        ImmutableArray.Create(
+                            typeof(FakeServiceConfigurator1),
+                            typeof(FakeServiceConfigurator2),
+                            typeof(FakeServiceConfigurator3)))
+                    .SetName("{m}(Assembly contains many ServiceConfigurators)"),
+            ];
 
         [TestCaseSource(nameof(EnumerateServiceConfigurators_AssemblyIsValid_TestCaseData))]
         public void EnumerateServiceConfigurators_AssemblyIsValid_ResultsAreExpected(

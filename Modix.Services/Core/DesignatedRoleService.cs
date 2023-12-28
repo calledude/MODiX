@@ -200,7 +200,7 @@ namespace Modix.Services.Core
             => DesignatedRoleMappingRepository.AnyAsync(new DesignatedRoleMappingSearchCriteria()
             {
                 GuildId = guildId,
-                RoleIds = roleIds.ToArray(),
+                RoleIds = [.. roleIds],
                 IsDeleted = false,
                 Type = designation
             }, default);

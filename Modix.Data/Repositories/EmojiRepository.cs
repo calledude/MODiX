@@ -330,7 +330,7 @@ namespace Modix.Data.Repositories
                     });
                 }
 
-                return paramList.ToArray();
+                return [.. paramList];
             }
 
             string GetQuery()
@@ -389,7 +389,7 @@ namespace Modix.Data.Repositories
                     });
                 }
 
-                return paramList.ToArray();
+                return [.. paramList];
             }
 
             string GetQuery()

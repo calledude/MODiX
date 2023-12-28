@@ -117,14 +117,12 @@ namespace Modix.Bot.Modules
         }
 
         private static readonly ImmutableArray<string> _allowedHosts
-            = ImmutableArray.Create
-            (
-                "sharplab.io"
-            );
+            = ["sharplab.io"
+];
 
         private static readonly ImmutableArray<string> _sharplabCSTokens
-            = ImmutableArray.Create(new[]
-            {
+            =
+            [
                 "using",
                 "System",
                 "class",
@@ -145,17 +143,18 @@ namespace Modix.Bot.Modules
                 "Program",
                 "Main",
                 "Console.WriteLine",
-                "", // <help.run.csharp>
+                "",
                 "using System;",
                 "public static void Main()",
                 "public static class Program",
                 "Inspect.Allocations(() =>",
                 "Inspect.MemoryGraph("
-            });
+,
+            ];
 
         private static readonly ImmutableArray<string> _sharplabILTokens
-            = ImmutableArray.Create(new[]
-            {
+            =
+            [
                 "Main ()",
                 "Program",
                 "ConsoleApp",
@@ -167,6 +166,7 @@ namespace Modix.Bot.Modules
                 "extends System.Object",
                 ".method public hidebysig",
                 "call void [System.Console]System.Console::WriteLine("
-            });
+,
+            ];
     }
 }

@@ -42,8 +42,8 @@ namespace Modix.Services.Test.Extensions.Discord
         }
 
         public static readonly ImmutableArray<TestCaseData> EnumerateLongTextAsFieldBuilders_TestCaseData
-            = ImmutableArray.Create(
-                /*                  fieldName,              text,                   fields  (name,                  value)                      */
+            =
+            [
                 new TestCaseData("5", "6", new[] { ("5", "6") }).SetName("{m}(Unique Values 3)"),
                 new TestCaseData("1", "2", new[] { ("1", "2") }).SetName("{m}(Unique Values 1)"),
                 new TestCaseData("3", "4", new[] { ("3", "4") }).SetName("{m}(Unique Values 2)"),
@@ -54,7 +54,8 @@ namespace Modix.Services.Test.Extensions.Discord
                                                                                             ("(continued)",         new string('C', 1024))  }).SetName("{m}(Long text, 2 Fields, Upper Limit)"),
                 new TestCaseData("Long Text Field 4", new string('D', 3000), new[] { ("Long Text Field 4",   new string('D', 1024)),
                                                                                             ("(continued)",         new string('D', 1024)),
-                                                                                            ("(continued)",         new string('D', 952))   }).SetName("{m}(Long text, 3 Fields)"));
+                                                                                            ("(continued)",         new string('D', 952))   }).SetName("{m}(Long text, 3 Fields)"),
+            ];
 
         [TestCaseSource(nameof(EnumerateLongTextAsFieldBuilders_TestCaseData))]
         public void EnumerateLongTextAsFieldBuilders_Otherwise_ResultIsExpected(

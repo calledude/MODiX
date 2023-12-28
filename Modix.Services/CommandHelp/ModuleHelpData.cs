@@ -71,6 +71,6 @@ namespace Modix.Services.CommandHelp
                 .OfType<HelpTagsAttribute>()
                 .SingleOrDefault()
                 ?.Tags
-                ?? Array.Empty<string>();
+                ?? [];
     }
 }

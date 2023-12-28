@@ -36,7 +36,7 @@ namespace Modix.Modules
             var emojiString = emoji.ToString();
             if (emojiString is null)
             {
-                await FollowupAsync($"Sorry {Context.User.Mention}, I don't recognize that emoji.", allowedMentions: new AllowedMentions { UserIds = new() { Context.User.Id } });
+                await FollowupAsync($"Sorry {Context.User.Mention}, I don't recognize that emoji.", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
                 return;
             }
 
@@ -52,7 +52,7 @@ namespace Modix.Modules
             catch (HttpRequestException ex)
             {
                 Log.Warning(ex, "Failed jumbofying emoji");
-                await FollowupAsync($"Sorry {Context.User.Mention}, I don't recognize that emoji.", allowedMentions: new AllowedMentions { UserIds = new() { Context.User.Id } });
+                await FollowupAsync($"Sorry {Context.User.Mention}, I don't recognize that emoji.", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
             }
         }
 
@@ -93,7 +93,7 @@ namespace Modix.Modules
             catch (HttpRequestException ex)
             {
                 Log.Warning(ex, "Failed getting avatar for user {userId}", user.Id);
-                await FollowupAsync($"Sorry {Context.User.Mention}, I couldn't get the avatar!", allowedMentions: new AllowedMentions { UserIds = new() { Context.User.Id } });
+                await FollowupAsync($"Sorry {Context.User.Mention}, I couldn't get the avatar!", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
             }
         }
 
@@ -134,7 +134,7 @@ namespace Modix.Modules
             catch (HttpRequestException ex)
             {
                 Log.Warning(ex, "Failed getting avatar for user {userId}", user.Id);
-                await FollowupAsync($"Sorry {Context.User.Mention}, I couldn't get the avatar!", allowedMentions: new AllowedMentions { UserIds = new() { Context.User.Id } });
+                await FollowupAsync($"Sorry {Context.User.Mention}, I couldn't get the avatar!", allowedMentions: new AllowedMentions { UserIds = [Context.User.Id] });
             }
         }
 
