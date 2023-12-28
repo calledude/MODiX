@@ -17,11 +17,14 @@ namespace Modix.Data.Repositories
     public class RepositoryTransactionFactory
     {
         /// <summary>
+        /// <para>
         /// Returns a new <see cref="IRepositoryTransaction"/> object, which creates a new transaction upon the given database,
         /// and manages its lifetime.
-        ///
+        /// </para>
+        /// <para>
         /// Only one transaction created by this provider may exist at any given time. If this method is called while a transaction
         /// already exists, it will not (asynchronously) return until that transaction is complete.
+        /// </para>
         /// </summary>
         /// <param name="database">The database upon which a transaction is to be performed.</param>
         /// <exception cref="ArgumentNullException">Throws for <paramref name="database"/>.</exception>
@@ -41,11 +44,14 @@ namespace Modix.Data.Repositories
         }
 
         /// <summary>
+        /// <para>
         /// Returns a new <see cref="IRepositoryTransaction"/> object, which creates a new transaction upon the given database,
         /// and manages its lifetime.
-        ///
+        /// </para>
+        /// <para>
         /// Only one transaction created by this provider may exist at any given time. If this method is called while a transaction
         /// already exists, it will not (asynchronously) return until that transaction is complete.
+        /// </para>
         /// </summary>
         /// <param name="database">The database upon which a transaction is to be performed.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the operation early.</param>

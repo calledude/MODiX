@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 namespace Microsoft.Extensions.Hosting
 {
     /// <summary>
+    /// <para>
     /// Describes an application component that performs actions during startup and shutdown of the application host.
     /// This might sound superfluous compared to <see cref="IHostedService"/>, but the difference is that <see cref="IBehavior"/>
     /// actions are executed in parallel, rather than sequentially. This allows behaviors to have dependencies regarding order of completion,
     /// which can be resolved by having one behavior wait upon another to complete, without resulting in deadlock.
-    ///
-    /// Note that <see cref="IBehavior"/> implementations must not be registered as scoped.
+    /// </para>
+    /// <para>Note that <see cref="IBehavior"/> implementations must not be registered as scoped.</para>
     /// </summary>
     public interface IBehavior
     {

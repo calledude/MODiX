@@ -122,7 +122,7 @@ namespace Modix.Services.Quote
         /// </summary>
         /// <param name="message">The message that will be quoted.</param>
         /// <param name="source">The message that contains the message link.</param>
-        /// <returns>True when the the quote succeeds, otherwise False.</returns>
+        /// <returns>True when the quote succeeds, otherwise False.</returns>
         private async Task<bool> SendQuoteEmbedAsync(IMessage message, IMessage source)
         {
             var success = false;
