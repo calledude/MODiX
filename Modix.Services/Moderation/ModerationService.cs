@@ -294,14 +294,16 @@ namespace Modix.Services.Moderation
             {
                 if ((type == InfractionType.Mute) || (type == InfractionType.Ban))
                 {
-                    if (await _infractionRepository.AnyAsync(new InfractionSearchCriteria()
+                    var userHasActiveInfraction = await _infractionRepository.AnyAsync(new InfractionSearchCriteria()
                     {
                         GuildId = guildId,
                         Types = new[] { type },
                         SubjectId = subjectId,
                         IsRescinded = false,
                         IsDeleted = false
-                    }))
+                    });
+
+                    if (userHasActiveInfraction)
                     {
                         throw new InvalidOperationException(
                             $"Discord user {subjectId} already has an active {type} infraction");

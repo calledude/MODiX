@@ -598,10 +598,9 @@ namespace Modix.Services.Promotions
             }
 
             // JoinedAt is null, when it cannot be obtained
-            if (subject.JoinedAt.HasValue)
+            if (subject.JoinedAt.HasValue && subject.JoinedAt.Value.DateTime > (DateTimeOffset.UtcNow - TimeSpan.FromDays(20)))
             {
-                if (subject.JoinedAt.Value.DateTime > (DateTimeOffset.UtcNow - TimeSpan.FromDays(20)))
-                    throw new InvalidOperationException($"{subject.GetDisplayName()} has joined less than 20 days prior.");
+                throw new InvalidOperationException($"{subject.GetDisplayName()} has joined less than 20 days prior.");
             }
 
             if (!await CheckIfUserIsRankOrHigherAsync(rankRoles, AuthorizationService.CurrentUserId.Value, targetRankRole.Id))
