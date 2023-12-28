@@ -151,7 +151,7 @@ namespace Modix.Bot.Modules
             if (parsedResult is null)
             {
                 return new EmbedBuilder()
-                    .WithTitle($"REPL Result: ERROR")
+                    .WithTitle("REPL Result: ERROR")
                     .WithColor(Color.Red)
                     .WithDescription("Failed to parse the result from the REPL service")
                     .WithUserAsAuthor(guildUser);

@@ -70,7 +70,7 @@ namespace Modix.Modules
             }
             catch (TaskCanceledException)
             {
-                await message.ModifyAsync(a => { a.Content = $"Gave up waiting for a response from the Decompile service."; });
+                await message.ModifyAsync(a => { a.Content = "Gave up waiting for a response from the Decompile service."; });
                 return;
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@ namespace Modix.Modules
 
             embed.AddField(a => a.WithName("Code").WithValue(Format.Code(code, "cs")));
 
-            embed.AddField(a => a.WithName($"Result:")
+            embed.AddField(a => a.WithName("Result:")
                  .WithValue(Format.Code(result.TruncateTo(990), "asm")));
 
             await embed.UploadToServiceIfBiggerThan(result, 990, _pasteService);
