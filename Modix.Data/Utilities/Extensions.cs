@@ -17,7 +17,7 @@ namespace Modix.Data.Utilities
 
             var lines = value.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-            return lines.Length > maxLines ? string.Join("\n", lines.Take(maxLines)) : $"{value.Substring(0, maxLength).Trim()}{suffix}";
+            return lines.Length > maxLines ? string.Join("\n", lines.Take(maxLines)) : $"{value[..maxLength].Trim()}{suffix}";
         }
 
         public static bool OrdinalContains(this string value, string search)

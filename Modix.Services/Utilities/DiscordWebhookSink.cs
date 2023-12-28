@@ -105,7 +105,7 @@ namespace Modix.Services.Utilities
                 return str;
             }
 
-            return str.Substring(0, length);
+            return str[..length];
         }
     }
 }

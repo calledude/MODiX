@@ -30,7 +30,7 @@ namespace Modix.Bot
                     while (i < input.Length - 1 && char.IsDigit(input[i]))
                         i++;
 
-                    if (!double.TryParse(input.Slice(start, i - start), out var timeQuantity))
+                    if (!double.TryParse(input[start..i], out var timeQuantity))
                         return false;
 
                     switch (input[i])
