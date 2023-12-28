@@ -18,14 +18,13 @@ namespace Modix.Services.Diagnostics
             IHttpClientFactory httpClientFactory,
             ILogger<HttpGetAvailabilityEndpoint> logger)
         {
-            _displayName = displayName;
+            DisplayName = displayName;
             _url = url;
             _httpClientFactory = httpClientFactory;
             _logger = logger;
         }
 
-        public string DisplayName
-            => _displayName;
+        public string DisplayName { get; }
 
         public async Task<bool> GetAvailabilityAsync(
             CancellationToken cancellationToken)
@@ -50,8 +49,6 @@ namespace Modix.Services.Diagnostics
                 return false;
             }
         }
-
-        private readonly string _displayName;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger _logger;
         private readonly string _url;

@@ -18,15 +18,14 @@ namespace Modix.Services.Diagnostics
             string url,
             ILogger<PingLatencyEndpoint> logger)
         {
-            _displayName = displayName;
+            DisplayName = displayName;
             _logger = logger;
             _url = url;
 
             _ping = new Ping();
         }
 
-        public string DisplayName
-            => _displayName;
+        public string DisplayName { get; }
 
         public void Dispose()
             => _ping.Dispose();
@@ -48,8 +47,6 @@ namespace Modix.Services.Diagnostics
                 return null;
             }
         }
-
-        private readonly string _displayName;
         private readonly ILogger _logger;
         private readonly Ping _ping;
         private readonly string _url;
