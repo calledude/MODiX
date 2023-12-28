@@ -18,11 +18,9 @@ namespace Modix.Services.Utilities
         /// <returns>A flag indicating whether the user can access the supplied emoji.</returns>
         public static bool CanAccessEmoji(this SocketSelfUser user, EphemeralEmoji emoji)
         {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
+            ArgumentNullException.ThrowIfNull(user);
 
-            if (emoji is null)
-                throw new ArgumentNullException(nameof(emoji));
+            ArgumentNullException.ThrowIfNull(emoji);
 
             if (emoji.Id is null)
                 return emoji.Name is not null;

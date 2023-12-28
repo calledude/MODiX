@@ -87,8 +87,7 @@ namespace Modix.Services
         /// <returns>A <see cref="Task"/> that will complete when the operation has completed.</returns>
         internal protected async Task SelfExecuteRequest(Func<IServiceProvider, Task> action)
         {
-            if (action == null)
-                throw new ArgumentNullException(nameof(action));
+            ArgumentNullException.ThrowIfNull(action);
 
             using var serviceScope = ServiceProvider.CreateScope();
             await serviceScope.ServiceProvider.GetRequiredService<IAuthorizationService>()
@@ -115,8 +114,7 @@ namespace Modix.Services
         /// <returns>A <see cref="Task"/> that will complete when the operation has completed.</returns>
         internal protected Task SelfExecuteRequest<TService>(Func<TService, Task> action) where TService : notnull
         {
-            if (action == null)
-                throw new ArgumentNullException(nameof(action));
+            ArgumentNullException.ThrowIfNull(action);
 
             return SelfExecuteRequest(serviceProvider =>
                 action.Invoke(serviceProvider.GetRequiredService<TService>()));
@@ -134,8 +132,7 @@ namespace Modix.Services
             where TService1 : notnull
             where TService2 : notnull
         {
-            if (action == null)
-                throw new ArgumentNullException(nameof(action));
+            ArgumentNullException.ThrowIfNull(action);
 
             return SelfExecuteRequest(serviceProvider =>
                 action.Invoke(

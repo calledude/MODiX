@@ -47,8 +47,7 @@ namespace Modix.Data.Models.Core
     {
         public static IQueryable<DesignatedChannelMappingEntity> FilterBy(this IQueryable<DesignatedChannelMappingEntity> query, DesignatedChannelMappingSearchCriteria criteria)
         {
-            if (query is null)
-                throw new ArgumentNullException(nameof(query));
+            ArgumentNullException.ThrowIfNull(query);
 
             if (criteria is null)
                 return query;

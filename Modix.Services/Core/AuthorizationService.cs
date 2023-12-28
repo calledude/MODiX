@@ -505,8 +505,7 @@ namespace Modix.Services.Core
         {
             RequireAuthenticatedUser();
 
-            if (claims == null)
-                throw new ArgumentNullException(nameof(claims));
+            ArgumentNullException.ThrowIfNull(claims);
 
             var missingClaims = claims
                 .Except(CurrentClaims)

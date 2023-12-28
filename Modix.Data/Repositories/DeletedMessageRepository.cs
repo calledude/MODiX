@@ -75,8 +75,7 @@ namespace Modix.Data.Repositories
             DeletedMessageCreationData data,
             CancellationToken cancellationToken)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             var entity = data.ToEntity();
 

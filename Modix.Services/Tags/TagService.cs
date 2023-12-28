@@ -227,8 +227,7 @@ namespace Modix.Services.Tags
 
         public async Task<IReadOnlyCollection<TagSummary>> GetSummariesAsync(TagSearchCriteria criteria)
         {
-            if (criteria is null)
-                throw new ArgumentNullException(nameof(criteria));
+            ArgumentNullException.ThrowIfNull(criteria);
 
             return await _modixContext.Set<TagEntity>()
                 .Where(x => x.DeleteActionId == null)

@@ -136,8 +136,7 @@ namespace Modix.Data.Repositories
         /// <inheritdoc />
         public async Task<long> CreateAsync(EmojiCreationData data)
         {
-            if (data is null)
-                throw new ArgumentNullException(nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             var entity = data.ToEntity();
 
@@ -150,8 +149,7 @@ namespace Modix.Data.Repositories
         /// <inheritdoc />
         public async Task CreateMultipleAsync(EmojiCreationData data, int count)
         {
-            if (data is null)
-                throw new ArgumentNullException(nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             if (count <= 0)
                 return;
@@ -166,8 +164,7 @@ namespace Modix.Data.Repositories
         /// <inheritdoc />
         public async Task DeleteAsync(EmojiSearchCriteria criteria)
         {
-            if (criteria is null)
-                throw new ArgumentNullException(nameof(criteria));
+            ArgumentNullException.ThrowIfNull(criteria);
 
             var entities = ModixContext.Set<EmojiEntity>().FilterBy(criteria);
 
@@ -178,8 +175,7 @@ namespace Modix.Data.Repositories
         /// <inheritdoc />
         public async Task<IReadOnlyDictionary<EphemeralEmoji, int>> GetCountsAsync(EmojiSearchCriteria criteria)
         {
-            if (criteria is null)
-                throw new ArgumentNullException(nameof(criteria));
+            ArgumentNullException.ThrowIfNull(criteria);
 
             var emoji = await ModixContext.Set<EmojiEntity>().AsNoTracking()
                 .FilterBy(criteria)
@@ -207,8 +203,7 @@ namespace Modix.Data.Repositories
         /// <inheritdoc />
         public async Task<IReadOnlyCollection<EmojiSummary>> SearchSummariesAsync(EmojiSearchCriteria criteria)
         {
-            if (criteria is null)
-                throw new ArgumentNullException(nameof(criteria));
+            ArgumentNullException.ThrowIfNull(criteria);
 
             var emoji = await ModixContext.Set<EmojiEntity>().AsNoTracking()
                 .FilterBy(criteria)

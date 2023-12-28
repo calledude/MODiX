@@ -114,8 +114,7 @@ namespace Modix.Data.Repositories
         /// <inheritdoc />
         public async Task<PromotionActionSummary> CreateAsync(PromotionCampaignCreationData data)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             var entity = data.ToEntity();
 

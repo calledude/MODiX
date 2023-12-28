@@ -54,8 +54,7 @@ namespace Modix.Data.Models.Core
     {
         public static IQueryable<DesignatedRoleMappingEntity> FilterBy(this IQueryable<DesignatedRoleMappingEntity> query, DesignatedRoleMappingSearchCriteria criteria)
         {
-            if (query is null)
-                throw new ArgumentNullException(nameof(query));
+            ArgumentNullException.ThrowIfNull(query);
 
             if (criteria is null)
                 return query;

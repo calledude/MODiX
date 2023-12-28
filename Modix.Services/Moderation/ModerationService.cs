@@ -270,8 +270,7 @@ namespace Modix.Services.Moderation
         {
             _authorizationService.RequireClaims(_createInfractionClaimsByType[type]);
 
-            if (reason is null)
-                throw new ArgumentNullException(nameof(reason));
+            ArgumentNullException.ThrowIfNull(reason);
 
             if (reason.Length >= MaxReasonLength)
                 throw new ArgumentException($"Reason must be less than {MaxReasonLength} characters in length",
@@ -463,8 +462,7 @@ namespace Modix.Services.Moderation
         {
             _authorizationService.RequireClaims(AuthorizationClaim.ModerationMassDeleteMessages);
 
-            if (confirmDelegate is null)
-                throw new ArgumentNullException(nameof(confirmDelegate));
+            ArgumentNullException.ThrowIfNull(confirmDelegate);
 
             if (channel is not IGuildChannel guildChannel)
                 throw new InvalidOperationException(
@@ -492,8 +490,7 @@ namespace Modix.Services.Moderation
         {
             _authorizationService.RequireClaims(AuthorizationClaim.ModerationMassDeleteMessages);
 
-            if (confirmDelegate is null)
-                throw new ArgumentNullException(nameof(confirmDelegate));
+            ArgumentNullException.ThrowIfNull(confirmDelegate);
 
             if (channel is not IGuildChannel guildChannel)
                 throw new InvalidOperationException(
@@ -591,8 +588,7 @@ namespace Modix.Services.Moderation
 
         public async Task<bool> AnyInfractionsAsync(InfractionSearchCriteria criteria)
         {
-            if (criteria is null)
-                throw new ArgumentNullException(nameof(criteria));
+            ArgumentNullException.ThrowIfNull(criteria);
 
             return await _infractionRepository.AnyAsync(criteria);
         }

@@ -71,8 +71,7 @@ namespace Modix.Data.Models.Promotions
     {
         public static IQueryable<PromotionCampaignEntity> FilterBy(this IQueryable<PromotionCampaignEntity> query, PromotionCampaignSearchCriteria criteria)
         {
-            if (query is null)
-                throw new ArgumentNullException(nameof(query));
+            ArgumentNullException.ThrowIfNull(query);
 
             if (criteria is null)
                 return query;

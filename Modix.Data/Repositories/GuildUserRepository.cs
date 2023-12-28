@@ -94,8 +94,7 @@ namespace Modix.Data.Repositories
             GuildUserCreationData data,
             CancellationToken cancellationToken)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             var guildDataEntity = data.ToGuildDataEntity();
 
@@ -135,8 +134,7 @@ namespace Modix.Data.Repositories
             Action<GuildUserMutationData> updateAction,
             CancellationToken cancellationToken)
         {
-            if (updateAction == null)
-                throw new ArgumentNullException(nameof(updateAction));
+            ArgumentNullException.ThrowIfNull(updateAction);
 
             var entity = await ModixContext.Set<GuildUserEntity>()
                 .Where(x => x.UserId == userId)
