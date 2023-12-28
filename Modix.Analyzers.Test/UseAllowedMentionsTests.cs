@@ -14,7 +14,7 @@ namespace Modix.Analyzers.Test
         [Test]
         public async Task FollowupAsync_NeedsAllowedMentions_HasDiagnostic()
         {
-            var source = @"
+            const string source = @"
 using System;
 using System.Threading.Tasks;
 
@@ -40,7 +40,7 @@ public class AllowedMentions
 }
 ";
 
-            var fixedSource = @"
+            const string fixedSource = @"
 using System;
 using System.Threading.Tasks;
 

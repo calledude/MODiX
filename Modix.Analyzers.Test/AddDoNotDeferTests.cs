@@ -14,7 +14,7 @@ namespace Modix.Analyzers.Test
         [Test]
         public async Task SlashCommand_NeedsDoNotDefer_HasDiagnostic()
         {
-            var source = @"
+            const string source = @"
 using System;
 using System.Threading.Tasks;
 
@@ -37,7 +37,7 @@ public class SlashCommandAttribute : Attribute
 }
 ";
 
-            var fixedSource = @"
+            const string fixedSource = @"
 using System;
 using System.Threading.Tasks;
 

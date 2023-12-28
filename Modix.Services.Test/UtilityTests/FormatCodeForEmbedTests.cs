@@ -10,7 +10,7 @@ namespace Modix.Services.Test.UtilityTests
         [Test]
         public void TestCSharp()
         {
-            var source =
+            const string source =
 @"#nullable enable
 
 var c = new C();
@@ -29,7 +29,7 @@ struct CustomHandler
 }
 ";
 
-            var expected =
+            const string expected =
 @"```cs
 #nullable enable
 var c = new C();
@@ -50,7 +50,7 @@ struct CustomHandler {
         [Test]
         public void TestVisualBasic()
         {
-            var source =
+            const string source =
 @"Imports System
 Imports System.Threading.Tasks
 Public Class C
@@ -69,7 +69,7 @@ Public Class C
 End Class
 ";
 
-            var expected =
+            const string expected =
 @"```vb
 Imports System
 Imports System.Threading.Tasks
@@ -90,7 +90,7 @@ Public Class C
         [Test]
         public void TestFSharp()
         {
-            var source =
+            const string source =
 @"open System
 
 let printMessage name =
@@ -104,7 +104,7 @@ let names = [ ""Ana""; ""Felipe""; ""Emillia"" ]
 printNames names
 ";
 
-            var expected =
+            const string expected =
 @"```fs
 open System
 let printMessage name =
@@ -122,7 +122,7 @@ printNames names
         [Test]
         public void TestIL()
         {
-            var source =
+            const string source =
 @".assembly A
 {
 }
@@ -140,7 +140,7 @@ printNames names
 }
 ";
 
-            var expected =
+            const string expected =
 @"```il
 .assembly A {
 }
@@ -160,7 +160,7 @@ printNames names
         [Test]
         public void TestCSharpWithMaxLength()
         {
-            var source =
+            const string source =
 @"
 public class C {
     uint[] s_crcTable = new uint[256];
@@ -253,7 +253,7 @@ public class C {
 }
 ";
 
-            var expected =
+            const string expected =
 @"```cs
 public class C {
     uint[] s_crcTable = new uint[256];
