@@ -273,12 +273,16 @@ namespace Modix.Services.Moderation
             ArgumentNullException.ThrowIfNull(reason);
 
             if (reason.Length >= MaxReasonLength)
+            {
                 throw new ArgumentException($"Reason must be less than {MaxReasonLength} characters in length",
                     nameof(reason));
+            }
 
             if (((type == InfractionType.Notice) || (type == InfractionType.Warning))
                 && string.IsNullOrWhiteSpace(reason))
+            {
                 throw new InvalidOperationException($"{type} infractions require a reason to be given");
+            }
 
             var guild = await _discordClient.GetGuildAsync(guildId);
             var subject = await _userService.TryGetGuildUserAsync(guild, subjectId, default);
@@ -297,8 +301,10 @@ namespace Modix.Services.Moderation
                         IsRescinded = false,
                         IsDeleted = false
                     }))
+                    {
                         throw new InvalidOperationException(
                             $"Discord user {subjectId} already has an active {type} infraction");
+                    }
                 }
 
                 await _infractionRepository.CreateAsync(
@@ -353,8 +359,10 @@ namespace Modix.Services.Moderation
             _authorizationService.RequireClaims(AuthorizationClaim.ModerationRescind);
 
             if (reason?.Length >= MaxReasonLength)
+            {
                 throw new ArgumentException($"Reason must be less than {MaxReasonLength} characters in length",
                     nameof(reason));
+            }
 
             var infraction = (await _infractionRepository.SearchSummariesAsync(
                 new InfractionSearchCriteria()
@@ -429,8 +437,10 @@ namespace Modix.Services.Moderation
             CancellationToken cancellationToken)
         {
             if (message.Channel is not IGuildChannel guildChannel)
+            {
                 throw new InvalidOperationException(
                     $"Cannot delete message {message.Id} because it is not a guild message");
+            }
 
             await _userService.TrackUserAsync((IGuildUser)message.Author, cancellationToken);
             await _channelService.TrackChannelAsync(guildChannel.Name, guildChannel.Id, guildChannel.GuildId, guildChannel is IThreadChannel threadChannel ? threadChannel.CategoryId : null, cancellationToken);
@@ -462,8 +472,10 @@ namespace Modix.Services.Moderation
             ArgumentNullException.ThrowIfNull(confirmDelegate);
 
             if (channel is not IGuildChannel guildChannel)
+            {
                 throw new InvalidOperationException(
                     $"Cannot delete messages in {channel.Name} because it is not a guild channel.");
+            }
 
             var confirmed = await confirmDelegate();
 
@@ -490,8 +502,10 @@ namespace Modix.Services.Moderation
             ArgumentNullException.ThrowIfNull(confirmDelegate);
 
             if (channel is not IGuildChannel guildChannel)
+            {
                 throw new InvalidOperationException(
                     $"Cannot delete messages in {channel.Name} because it is not a guild channel.");
+            }
 
             var confirmed = await confirmDelegate();
 
@@ -778,8 +792,10 @@ namespace Modix.Services.Moderation
             ulong subjectId)
         {
             if (!await DoesModeratorOutrankUserAsync(guildId, moderatorId, subjectId))
+            {
                 throw new InvalidOperationException(
                     "Cannot moderate users that have a rank greater than or equal to your own.");
+            }
         }
 
         private async ValueTask RequireSubjectRankLowerThanModeratorRankAsync(IGuild guild, ulong moderatorId,
@@ -790,8 +806,10 @@ namespace Modix.Services.Moderation
                 return;
 
             if (!await DoesModeratorOutrankUserAsync(guild, moderatorId, subject))
+            {
                 throw new InvalidOperationException(
                     "Cannot moderate users that have a rank greater than or equal to your own.");
+            }
         }
 
         private async Task<bool> DoesModeratorOutrankUserAsync(IGuild guild, ulong moderatorId, IGuildUser subject)

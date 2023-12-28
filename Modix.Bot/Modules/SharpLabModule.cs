@@ -88,9 +88,13 @@ namespace Modix.Bot.Modules
                     sourceCode = UsingDirectiveRegex().Replace(sourceCode, string.Empty);
                 }
                 else if (language is "il")
+                {
                     sourceCode = ReplaceTokens(sourceCode, _sharplabILTokens);
+                }
                 else
+                {
                     sourceCode = sourceCode.Replace("@@", "@");
+                }
 
                 var maxPreviewLength = EmbedBuilder.MaxDescriptionLength - (markdownLength + language.Length + "```\n\n```".Length);
 

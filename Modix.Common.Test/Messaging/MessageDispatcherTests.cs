@@ -114,8 +114,10 @@ namespace Modix.Common.Test.Messaging
                 .CreateScope());
 
             foreach (var mockHandler in mockHandlers)
+            {
                 mockHandler.ShouldHaveReceived(x => x
                     .HandleNotificationAsync(notification, testContext.CancellationToken));
+            }
 
             testContext._mockServiceScope.ShouldHaveReceived(x => x
                 .Dispose());
@@ -186,8 +188,10 @@ namespace Modix.Common.Test.Messaging
             await uut.DispatchAsync(notification);
 
             foreach (var mockHandler in mockHandlers)
+            {
                 mockHandler.ShouldHaveReceived(x => x
                     .HandleNotificationAsync(notification, testContext.CancellationToken));
+            }
 
             testContext._mockServiceScope.ShouldHaveReceived(x => x
                 .Dispose());

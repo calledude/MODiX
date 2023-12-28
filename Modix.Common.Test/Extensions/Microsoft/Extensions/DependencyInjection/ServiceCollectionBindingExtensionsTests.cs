@@ -34,9 +34,11 @@ namespace Modix.Common.Test.Extensions.Microsoft.Extensions.DependencyInjection
             var mockConfiguration = new Mock<IConfiguration>();
 
             foreach (var configuredValue in configuredValues)
+            {
                 mockConfiguration
                     .Setup(x => x[configuredValue.Key])
                     .Returns(configuredValue.Value);
+            }
 
             return mockConfiguration.Object;
         }

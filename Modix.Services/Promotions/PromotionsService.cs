@@ -198,7 +198,9 @@ namespace Modix.Services.Promotions
                 CreatedById = AuthorizationService.CurrentUserId.Value,
                 IsModified = false
             }))
+            {
                 throw new InvalidOperationException("Only one comment can be made per user, per campaign.");
+            }
 
             var campaign = await PromotionCampaignRepository.ReadDetailsAsync(campaignId) ?? throw new InvalidOperationException($"Campaign {campaignId} could not be found.");
 
@@ -313,16 +315,22 @@ namespace Modix.Services.Promotions
                 // Don't update if nothing has changed.
 
                 if (!sentiment.IsSpecified && !content.IsSpecified)
+                {
                     return;
+                }
                 else if (sentiment.IsSpecified && content.IsSpecified)
                 {
                     if (sentiment.Value == existingComment.Sentiment && content.Value == (existingComment.Content ?? string.Empty))
                         return;
                 }
                 else if (sentiment.IsSpecified && sentiment.Value == existingComment.Sentiment)
+                {
                     return;
+                }
                 else if (content.IsSpecified && content.Value == (existingComment.Content ?? string.Empty))
+                {
                     return;
+                }
 
                 resultAction = await PromotionCommentRepository.TryUpdateAsync(existingComment.Id, AuthorizationService.CurrentUserId.Value,
                     x =>
@@ -585,12 +593,16 @@ namespace Modix.Services.Promotions
                 TargetRoleId = targetRankRole.Id,
                 IsClosed = false
             }))
+            {
                 throw new InvalidOperationException($"An active campaign already exists for {subject.GetDisplayName()} to be promoted to {targetRankRole.Name}.");
+            }
 
             // JoinedAt is null, when it cannot be obtained
             if (subject.JoinedAt.HasValue)
+            {
                 if (subject.JoinedAt.Value.DateTime > (DateTimeOffset.UtcNow - TimeSpan.FromDays(20)))
                     throw new InvalidOperationException($"{subject.GetDisplayName()} has joined less than 20 days prior.");
+            }
 
             if (!await CheckIfUserIsRankOrHigherAsync(rankRoles, AuthorizationService.CurrentUserId.Value, targetRankRole.Id))
                 throw new InvalidOperationException("Creating a promotion campaign requires a rank at least as high as the proposed target rank.");

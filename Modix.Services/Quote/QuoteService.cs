@@ -49,9 +49,13 @@ namespace Modix.Services.Quote
                 embed.AddField("Spoiler warning", "The quoted message contains spoilered content.");
             }
             else if (!TryAddImageAttachment(message, embed))
+            {
                 if (!TryAddImageEmbed(message, embed))
+                {
                     if (!TryAddThumbnailEmbed(message, embed))
                         TryAddOtherAttachment(message, embed);
+                }
+            }
 
             AddContent(message, embed);
             AddOtherEmbed(message, embed);

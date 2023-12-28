@@ -238,7 +238,9 @@ namespace Modix.Services.Core
             using var transaction = await ClaimMappingRepository.BeginCreateTransactionAsync();
 
             foreach (var claim in Enum.GetValues(typeof(AuthorizationClaim)).Cast<AuthorizationClaim>())
+            {
                 foreach (var role in guild.Roles.Where(x => x.Permissions.Administrator))
+                {
                     await ClaimMappingRepository.CreateAsync(new ClaimMappingCreationData()
                     {
                         Type = ClaimMappingType.Granted,
@@ -248,6 +250,8 @@ namespace Modix.Services.Core
                         Claim = claim,
                         CreatedById = selfUser.Id
                     });
+                }
+            }
 
             transaction.Commit();
         }
@@ -486,8 +490,10 @@ namespace Modix.Services.Core
         public void RequireAuthenticatedGuild()
         {
             if (CurrentGuildId == null)
+            {
                 // TODO: Booooo for exception-based flow control
                 throw new InvalidOperationException("The current operation requires an authenticated guild.");
+            }
         }
 
         /// <inheritdoc />
@@ -496,8 +502,10 @@ namespace Modix.Services.Core
         public void RequireAuthenticatedUser()
         {
             if (CurrentUserId is null || CurrentClaims is null)
+            {
                 // TODO: Booooo for exception-based flow control
                 throw new InvalidOperationException("The current operation requires an authenticated user.");
+            }
         }
 
         /// <inheritdoc />
@@ -512,8 +520,10 @@ namespace Modix.Services.Core
                 .ToArray();
 
             if (missingClaims.Length != 0)
+            {
                 // TODO: Booooo for exception-based flow control
                 throw new InvalidOperationException($"The current operation could not be authorized. The following claims were missing: {string.Join(", ", missingClaims)}");
+            }
         }
 
         public bool HasClaim(AuthorizationClaim claim)

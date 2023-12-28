@@ -108,7 +108,9 @@ namespace Modix.Services.Core
                 Type = type,
                 IsDeleted = false
             }, default))
+            {
                 throw new InvalidOperationException($"Role {roleId} already has a {type} designation");
+            }
 
             var entityId = await DesignatedRoleMappingRepository.CreateAsync(new DesignatedRoleMappingCreationData()
             {

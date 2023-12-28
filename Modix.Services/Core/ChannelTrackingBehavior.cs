@@ -57,8 +57,10 @@ namespace Modix.Services.Core
         public async Task HandleNotificationAsync(JoinedGuildNotification notification, CancellationToken cancellationToken = default)
         {
             if (((IGuild)notification.Guild).Available)
+            {
                 foreach (var channel in notification.Guild.Channels.OfType<ITextChannel>())
                     await TrackChannelAsync(channel, cancellationToken);
+            }
         }
 
         public async Task HandleNotificationAsync(ThreadCreatedNotification notification, CancellationToken cancellationToken = default)

@@ -49,9 +49,11 @@ namespace Modix.Services.Core
 
             // If we've tracked the message, lookup the channel, and check that one first.
             if (trackedMessage is { })
+            {
                 channels = channels
                     .Where(x => x.Id != trackedMessage.ChannelId)
                     .Prepend(guild.GetTextChannel(trackedMessage.ChannelId));
+            }
 
             // Search through all available channels to find the message.
             foreach (var channel in channels)

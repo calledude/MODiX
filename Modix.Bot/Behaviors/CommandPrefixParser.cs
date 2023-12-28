@@ -30,7 +30,9 @@ namespace Modix.Bot.Behaviors
             // so we can cache the result.
             if (_lastResult.HasValue
                     && _lastResult.Value.message.Id == message.Id)
+            {
                 return Task.FromResult(_lastResult.Value.argPos);
+            }
 
             var argPos = default(int);
 

@@ -35,6 +35,7 @@ namespace Modix.Data.Repositories
         internal protected async Task RaiseModerationActionCreatedAsync(ModerationActionEntity moderationAction)
         {
             foreach (var handler in ModerationActionEventHandlers)
+            {
                 await handler.OnModerationActionCreatedAsync(moderationAction.Id, new ModerationActionCreationData()
                 {
                     GuildId = (ulong)moderationAction.GuildId,
@@ -42,6 +43,7 @@ namespace Modix.Data.Repositories
                     Created = moderationAction.Created,
                     CreatedById = (ulong)moderationAction.CreatedById
                 });
+            }
         }
     }
 }

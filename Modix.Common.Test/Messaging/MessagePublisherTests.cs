@@ -69,8 +69,10 @@ namespace Modix.Common.Test.Messaging
             await uut.PublishAsync(notification, testContext.CancellationToken);
 
             foreach (var mockHandler in mockHandlers)
+            {
                 mockHandler.ShouldHaveReceived(x => x
                     .HandleNotificationAsync(notification, testContext.CancellationToken));
+            }
         }
 
         [Test]

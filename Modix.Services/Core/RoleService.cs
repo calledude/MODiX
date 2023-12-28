@@ -47,7 +47,9 @@ namespace Modix.Services.Core
             });
 
             if (wasUpdateSuccessful)
+            {
                 RolesLogMessages.RoleUpdated(_logger);
+            }
             else
             {
                 RolesLogMessages.RoleUpdateFailed(_logger);

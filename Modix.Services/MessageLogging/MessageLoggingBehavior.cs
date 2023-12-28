@@ -72,10 +72,12 @@ namespace Modix.Services.MessageLogging
                             .WithUserAsAuthor(notification.Message.Value.Author, notification.Message.Value.Author.Id.ToString());
 
                         if (notification.Message.Value.Attachments.Count != 0)
+                        {
                             fields = fields
                                 .Append(new EmbedFieldBuilder()
                                     .WithName("Attachments")
                                     .WithValue(string.Join(", ", notification.Message.Value.Attachments.Select(attachment => $"{attachment.Filename} ({attachment.Size}b)"))));
+                        }
                     }
 
                     return embedBuilder
