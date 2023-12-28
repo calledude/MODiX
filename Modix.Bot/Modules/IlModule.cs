@@ -80,7 +80,7 @@ namespace Modix.Modules
                 return;
             }
 
-            if (!res.IsSuccessStatusCode & res.StatusCode != HttpStatusCode.BadRequest)
+            if (!res.IsSuccessStatusCode && res.StatusCode != HttpStatusCode.BadRequest)
             {
                 await message.ModifyAsync(a => a.Content = $"Decompile failed: {res.StatusCode}");
                 return;

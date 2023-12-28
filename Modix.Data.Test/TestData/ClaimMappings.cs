@@ -91,7 +91,7 @@ namespace Modix.Data.Test.TestData
                 ),
                 (
                     "Empty Criteria",
-                    new ClaimMappingSearchCriteria() { },
+                    new ClaimMappingSearchCriteria(),
                     new long [] { 1, 2, 3, 4 }
                 ),
                 (
