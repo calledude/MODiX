@@ -67,7 +67,7 @@ namespace Modix.Services.Test.Extensions.Discord
                 .ToArray();
 
             results.Length.ShouldBe(fields.Count);
-            foreach (var (result, field) in Enumerable.Zip(results, fields))
+            foreach (var (result, field) in results.Zip(fields))
             {
                 result.Name.ShouldBe(field.name);
                 result.Value.ShouldBe(field.value);
