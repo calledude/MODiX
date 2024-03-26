@@ -25,7 +25,7 @@ public class ExpandableQueryProvider : IAsyncQueryProvider
 
         try
         {
-            return (IQueryable)Activator.CreateInstance(typeof(ExpandableQuery<>).MakeGenericType(elementType), new object[] { this, expression })!;
+            return (IQueryable)Activator.CreateInstance(typeof(ExpandableQuery<>).MakeGenericType(elementType), [this, expression])!;
         }
         catch (TargetInvocationException ex)
         {

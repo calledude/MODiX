@@ -8,7 +8,7 @@ public class TableFilter
     public string? IdString { get; set; }
 
     public InfractionType? Type { get; set; }
-    public InfractionType[]? Types => Type is not null ? new[] { Type.Value } : null;
+    public InfractionType[]? Types => Type is not null ? [Type.Value] : null;
 
     private string? _subject;
     public string? Subject

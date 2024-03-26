@@ -17,11 +17,11 @@ public class UseAllowedMentionsAnalyzer : DiagnosticAnalyzer
     private const string Category = "Discord";
 
     private static readonly DiagnosticDescriptor _descriptor = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
-    private static readonly ImmutableArray<OperationKind> _supportedOperations = ImmutableArray.Create(OperationKind.Invocation);
-    private static readonly ImmutableArray<string> _methodNames = ImmutableArray.Create("FollowupAsync", "ReplyAsync", "RespondAsync", "SendMessageAsync");
+    private static readonly ImmutableArray<OperationKind> _supportedOperations = [OperationKind.Invocation];
+    private static readonly ImmutableArray<string> _methodNames = ["FollowupAsync", "ReplyAsync", "RespondAsync", "SendMessageAsync"];
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
-        = ImmutableArray.Create(_descriptor);
+        = [_descriptor];
 
     public override void Initialize(AnalysisContext context)
     {

@@ -18,7 +18,7 @@ public class UseAllowedMentionsCodeFixProvider : CodeFixProvider
     private const string Title = "Add allowed mentions";
 
     public override ImmutableArray<string> FixableDiagnosticIds { get; }
-        = ImmutableArray.Create(UseAllowedMentionsAnalyzer.DiagnosticId);
+        = [UseAllowedMentionsAnalyzer.DiagnosticId];
 
     public override FixAllProvider? GetFixAllProvider()
         => WellKnownFixAllProviders.BatchFixer;

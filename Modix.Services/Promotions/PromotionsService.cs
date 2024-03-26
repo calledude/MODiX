@@ -501,7 +501,7 @@ public class PromotionsService : IPromotionsService
     internal protected IMessageDispatcher MessageDispatcher { get; }
 
     private async Task<GuildRoleBrief[]> GetRankRolesAsync(ulong guildId)
-        => (await DesignatedRoleService.SearchDesignatedRolesAsync(new DesignatedRoleMappingSearchCriteria()
+        => [.. (await DesignatedRoleService.SearchDesignatedRolesAsync(new DesignatedRoleMappingSearchCriteria()
         {
             GuildId = guildId,
             Type = DesignatedRoleType.Rank,
@@ -509,8 +509,7 @@ public class PromotionsService : IPromotionsService
         }))
             .Select(x => x.Role)
             .OrderBy(x => x.Position)
-            .ThenBy(x => x.Id)
-            .ToArray();
+            .ThenBy(x => x.Id)];
 
     private async Task<bool> CheckIfUserIsRankOrHigherAsync(IEnumerable<GuildRoleBrief> rankRoles, ulong targetRoleId)
     {

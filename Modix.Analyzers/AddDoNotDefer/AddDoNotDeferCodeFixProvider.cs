@@ -17,7 +17,7 @@ public class AddDoNotDeferCodeFixProvider : CodeFixProvider
     private const string Title = "Add DoNotDeferAttribute";
 
     public override ImmutableArray<string> FixableDiagnosticIds { get; }
-        = ImmutableArray.Create(AddDoNotDeferAnalyzer.DiagnosticId);
+        = [AddDoNotDeferAnalyzer.DiagnosticId];
 
     public override FixAllProvider? GetFixAllProvider()
         => WellKnownFixAllProviders.BatchFixer;

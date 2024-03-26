@@ -19,10 +19,10 @@ public class AddDoNotDeferAnalyzer : DiagnosticAnalyzer
     private const string Category = "Discord";
 
     private static readonly DiagnosticDescriptor _descriptor = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
-    private static readonly ImmutableArray<OperationKind> _supportedOperations = ImmutableArray.Create(OperationKind.MethodBody);
+    private static readonly ImmutableArray<OperationKind> _supportedOperations = [OperationKind.MethodBody];
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
-        = ImmutableArray.Create(_descriptor);
+        = [_descriptor];
 
     public override void Initialize(AnalysisContext context)
     {

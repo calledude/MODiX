@@ -230,8 +230,7 @@ public sealed class EmojiRepository : RepositoryBase, IEmojiRepository
         return SingleEmojiUsageStatistics.FromDto(stats);
 
         NpgsqlParameter[] GetParameters() =>
-            new[]
-            {
+            [
                 new NpgsqlParameter(":GuildId", NpgsqlDbType.Bigint)
                 {
                     Value = unchecked((long)guildId),
@@ -251,7 +250,7 @@ public sealed class EmojiRepository : RepositoryBase, IEmojiRepository
                         ? DateTimeOffset.MinValue
                         : DateTimeOffset.UtcNow - dateFilter
                 }
-            };
+            ];
 
         string GetQuery()
             => $@"

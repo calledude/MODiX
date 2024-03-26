@@ -151,7 +151,7 @@ public class EmojiStatsModule : InteractionModuleBase
 
         var emojiFilter = guildOnly
             ? Context.Guild.Emotes.Select(x => x.Id)
-            : Enumerable.Empty<ulong>();
+            : [];
 
         var emojiStats = await _emojiRepository.GetEmojiStatsAsync(guildId, sortDirection, count, emojiIds: emojiFilter);
         var guildStats = await _emojiRepository.GetGuildStatsAsync(guildId, emojiIds: emojiFilter);
