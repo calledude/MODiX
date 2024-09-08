@@ -1,5 +1,6 @@
 ﻿@page "/promotions"
 
+@rendermode RenderMode.InteractiveAuto
 @attribute [Authorize(Roles = nameof(AuthorizationClaim.PromotionsRead))]
 
 @using Microsoft.AspNetCore.Authorization
@@ -166,7 +167,10 @@
     public required ICookieService CookieService { get; set; }
 
     [Inject]
-    public required IHttpClientFactory HttpClientFactory { get; set; }
+    public required ICampaignService CampaignService { get; set; }
+
+    [Inject]
+    public required IRoleService RoleService { get; set; }
 
     [CascadingParameter]
     public required SessionState SessionState { get; set; }
@@ -189,17 +193,16 @@
         if (!firstRender)
             return;
 
-        using var client = HttpClientFactory.CreateClient("api");
+        var roles = await RoleService.GetRolesAsync();
+        var campaigns = await CampaignService.GetCampaignsAsync();
 
-        var roles = await client.GetFromJsonAsync<Dictionary<ulong, RoleInformation>>("api/roles");
-        var campaigns = client.GetFromJsonAsAsyncEnumerable<PromotionCampaignData>("api/campaigns");
-
-        await foreach (var campaign in campaigns)
+        foreach (var campaign in campaigns)
         {
             var roleColor = GetRoleColor(roles, campaign.TargetRoleId);
             Campaigns.Add((roleColor, campaign));
-            StateHasChanged();
         }
+
+        StateHasChanged();
     }
 
     private string GetRoleColor(Dictionary<ulong, RoleInformation> roles, ulong roleId)
@@ -234,9 +237,7 @@
         if (CampaignCommentData.ContainsKey(campaignId))
             return;
 
-        using var client = HttpClientFactory.CreateClient("api");
-        var campaignComments = await client.GetFromJsonAsync<Dictionary<long, CampaignCommentData>>($"api/campaigns/{campaignId}");
-
+        var campaignComments = await CampaignService.GetCampaignCommentsAsync(campaignId);
         if (campaignComments is null)
         {
             Snackbar.Add($"Unable to load campaign details for campaign id {campaignId}.", Severity.Error);
@@ -252,13 +253,8 @@
     {
         try
         {
-            using var client = HttpClientFactory.CreateClient("api");
-            using var response = await client.PutAsJsonAsync($"api/campaigns/{campaignId}/createcomment", new CampaignCommentData(default, sentiment, content, default, default));
 
-            response.EnsureSuccessStatusCode();
-
-            var newComment = await response.Content.ReadFromJsonAsync<CampaignCommentData>();
-
+            var newComment = await CampaignService.CreateCommentAsync(campaignId, new CampaignCommentData(default, sentiment, content, default, default));
             CampaignCommentData[campaignId][newComment!.Id] = newComment;
 
             Snackbar.Add($"Added comment to campaign for user {campaignSubjectName}.", Severity.Success);
@@ -289,12 +285,7 @@
 
         try
         {
-            using var client = HttpClientFactory.CreateClient("api");
-            using var response = await client.PatchAsJsonAsync("api/campaigns/updatecomment", new CampaignCommentData(commentId, newPromotionSentiment, newContent, default, default));
-
-            response.EnsureSuccessStatusCode();
-
-            var newComment = await response.Content.ReadFromJsonAsync<CampaignCommentData>();
+            var newComment = await CampaignService.UpdateCommentAsync(new CampaignCommentData(commentId, newPromotionSentiment, newContent, default, default));
 
             CampaignCommentData[campaignId].Remove(commentId);
             CampaignCommentData[campaignId][newComment!.Id] = newComment;
@@ -337,10 +328,7 @@
 
         try
         {
-            using var client = HttpClientFactory.CreateClient("api");
-            using var response = await client.PostAsync($"api/campaigns/{campaign.Id}/accept/{force}", default);
-
-            response.EnsureSuccessStatusCode();
+            await CampaignService.AcceptCampaignAsync(campaign.Id, force);
 
             campaign.Outcome = PromotionCampaignOutcome.Accepted;
             Snackbar.Add($"Campaign for '{username}' was accepted.", Severity.Success);
@@ -357,10 +345,7 @@
     {
         try
         {
-            using var client = HttpClientFactory.CreateClient("api");
-            using var response = await client.PostAsync($"api/campaigns/{campaign.Id}/reject", default);
-
-            response.EnsureSuccessStatusCode();
+            await CampaignService.RejectCampaignAsync(campaign.Id);
 
             campaign.Outcome = PromotionCampaignOutcome.Rejected;
             Snackbar.Add($"Campaign for '{campaign.SubjectName}' was rejected.", Severity.Success);

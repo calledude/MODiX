@@ -16,6 +16,10 @@ public class Program
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
         builder.Services
+            .AddScoped<IRoleService, RoleService>()
+            .AddScoped<ICampaignService, CampaignService>();
+
+        builder.Services
             .AddScoped<SessionState>()
             .AddScoped<ICookieService, CookieService>();
 
