@@ -67,7 +67,8 @@ public static class Setup
             .AddHttpContextAccessor()
             .AddScoped<UserHelper>()
             .AddScoped<ICampaignService, CampaignService>()
-            .AddScoped<IRoleService, RoleService>();
+            .AddScoped<IRoleService, RoleService>()
+            .AddScoped<IAutocompletionService, AutocompletionService>();
 
         services
             .AddScoped<DiscordHelper>()

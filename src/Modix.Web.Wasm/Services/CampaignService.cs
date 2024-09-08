@@ -1,9 +1,6 @@
-﻿using Modix.Web.Shared.Models.Common;
-using System.Net.Http.Json;
-using System.Net.Http;
+﻿using System.Net.Http.Json;
 using Modix.Web.Shared.Models.Promotions;
 using Modix.Web.Shared.Services;
-using System.ComponentModel.Design;
 
 namespace Modix.Web.Wasm.Services;
 
@@ -66,19 +63,15 @@ public sealed class CampaignService : ICampaignService
 
     public async Task<NextRank> GetNextRankRoleForUserAsync(ulong subjectId)
     {
-        return null;
-        //var nextRank = await _promotionsService.GetNextRankRoleForUserAsync(subjectId);
-
-        //if (nextRank is null)
-        //    return new NextRank("None", "#607d8b");
-
-        //var currentUser = await _userHelper.GetCurrentUserAsync();
-        //var color = currentUser.Guild.Roles.First(r => r.Id == nextRank.Id).Color;
-        //return new NextRank(nextRank.Name, color.ToString());
+        using var client = _httpClientFactory.CreateClient("api");
+        return await client.GetFromJsonAsync<NextRank>($"api/campaigns/{subjectId}/nextrank");
     }
 
     public async Task CreateAsync(PromotionCreationData creationData)
     {
-        //await _promotionsService.CreateCampaignAsync(creationData.UserId, creationData.Comment);
+        using var client = _httpClientFactory.CreateClient("api");
+        using var response = await client.PutAsJsonAsync("api/campaigns/create", creationData);
+
+        response.EnsureSuccessStatusCode();
     }
 }

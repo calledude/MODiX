@@ -17,7 +17,8 @@ public class Program
 
         builder.Services
             .AddScoped<IRoleService, RoleService>()
-            .AddScoped<ICampaignService, CampaignService>();
+            .AddScoped<ICampaignService, CampaignService>()
+            .AddScoped<IAutocompletionService, AutocompletionService>();
 
         builder.Services
             .AddScoped<SessionState>()

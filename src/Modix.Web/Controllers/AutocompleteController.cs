@@ -5,6 +5,7 @@ using Modix.Data.Utilities;
 using Modix.Services.Core;
 using Modix.Services.Utilities;
 using Modix.Web.Shared.Models.Common;
+using Modix.Web.Shared.Services;
 
 namespace Modix.Web.Controllers;
 
@@ -12,31 +13,20 @@ namespace Modix.Web.Controllers;
 [ApiController]
 public class AutocompleteController : ModixController
 {
+    private readonly IAutocompletionService _autocompletionService;
     private readonly IUserService _userService;
 
-    public AutocompleteController(DiscordSocketClient discordSocketClient, IUserService userService, Modix.Services.Core.IAuthorizationService authorizationService)
+    public AutocompleteController(IAutocompletionService autocompletionService, DiscordSocketClient discordSocketClient, IUserService userService, Modix.Services.Core.IAuthorizationService authorizationService)
         : base(discordSocketClient, authorizationService)
     {
+        _autocompletionService = autocompletionService;
         _userService = userService;
     }
 
     [HttpGet("users/{query}")]
-    public async Task<IEnumerable<ModixUser>> AutocompleteUsersAsync(string query)
+    public async Task<IEnumerable<ModixUser>?> AutocompleteUsersAsync(string query)
     {
-        var result = UserGuild.Users
-                .Where(d => d.Username.OrdinalContains(query) || d.Id.ToString() == query)
-                .Take(10)
-                .Select(FromIGuildUser);
-
-        if (result.Any() || !ulong.TryParse(query, out var userId))
-            return result;
-
-        var user = await _userService.GetUserInformationAsync(UserGuild.Id, userId);
-
-        if (user is not null)
-            return [ FromNonGuildUser(user) ];
-
-        return [];
+        return await _autocompletionService.AutocompleteUsersAsync(query);
     }
 
     [HttpGet("channels/{query}")]
@@ -71,18 +61,4 @@ public class AutocompleteController : ModixController
 
         return result.Take(10).Select(d => new RoleInformation(d.Id, d.Name, d.Color.ToString()));
     }
-
-    public static ModixUser FromIGuildUser(IGuildUser user) => new()
-    {
-        Name = user.GetDisplayName(),
-        UserId = user.Id,
-        AvatarUrl = user.GetDisplayAvatarUrl() ?? user.GetDefaultAvatarUrl()
-    };
-
-    public static ModixUser FromNonGuildUser(IUser user) => new()
-    {
-        Name = user.GetDisplayName(),
-        UserId = user.Id,
-        AvatarUrl = user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl()
-    };
 }
