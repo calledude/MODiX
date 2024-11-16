@@ -4,9 +4,11 @@
 @using Modix.Web.Models;
 @using Modix.Web.Shared.Models.Common
 @using Modix.Web.Shared.Models.Promotions
+@using Modix.Web.Shared.Services
 @using Modix.Web.Wasm.Components
 @using MudBlazor
 
+@rendermode RenderMode.InteractiveAuto
 @attribute [Authorize(Roles = nameof(AuthorizationClaim.PromotionsCreateCampaign))]
 
 <PageTitle>Modix - Start A Campaign</PageTitle>
@@ -69,7 +71,10 @@
 @code {
 
     [Inject]
-    public required IHttpClientFactory HttpClientFactory { get; set; }
+    public required ICampaignService CampaignService { get; set; }
+
+    [Inject]
+    public required IAutocompletionService AutocompletionService { get; set; }
 
     [Inject]
     public required ISnackbar Snackbar { get; set; }
@@ -94,19 +99,14 @@
         if (user is null)
             return;
 
-        using var client = HttpClientFactory.CreateClient("api");
-        _nextRank = await client.GetFromJsonAsync<NextRank>($"api/campaigns/{user.UserId}/nextrank");
+        _nextRank = await CampaignService.GetNextRankRoleForUserAsync(user.UserId);
     }
 
     private async Task CreateCampaign()
     {
         try
         {
-            using var client = HttpClientFactory.CreateClient("api");
-
-            using var response = await client.PutAsJsonAsync("api/campaigns/create", new PromotionCreationData(_selectedUser!.UserId, _promotionComment));
-
-            response.EnsureSuccessStatusCode();
+            await CampaignService.CreateAsync(new PromotionCreationData(_selectedUser!.UserId, _promotionComment));
 
             NavigationManager.NavigateTo("/promotions");
         }
@@ -120,10 +120,7 @@
 
     private async Task<IEnumerable<ModixUser>> AutoCompleteAsync(string query)
     {
-        using var client = HttpClientFactory.CreateClient("api");
-
-        var users = await client.GetFromJsonAsync<ModixUser[]>($"api/autocomplete/users/{query}");
-
+        var users = await AutocompletionService.AutocompleteUsersAsync(query);
         return users ?? [];
     }
 }
